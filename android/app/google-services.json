@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "515456705685",
+    "project_id": "muslim-app-9d5a2",
+    "storage_bucket": "muslim-app-9d5a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515456705685:android:74cd9a4e77f061871f679c",
+        "android_client_info": {
+          "package_name": "com.RzRio.muslim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWWmSJtj7og08_eV-ivuAFkhpiyfLkHrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
