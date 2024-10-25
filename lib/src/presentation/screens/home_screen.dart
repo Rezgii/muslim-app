@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:muslim/src/presentation/screens/services/prayer_time_screen.dart';
+import 'package:muslim/src/presentation/screens/services/quran_screen.dart';
+import 'package:muslim/src/presentation/screens/services/thiker_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
     return Scaffold(
-      body: SafeArea(
-          child: Stack(
+      body: Stack(
         children: [
           Container(
             height: 250.h,
@@ -33,10 +39,10 @@ class HomeScreen extends StatelessWidget {
                         height: 60.h,
                       ),
                       12.horizontalSpace,
-                      const Text(
+                      Text(
                         'أهلا و سهلا',
                         style: TextStyle(
-                            color: AppColors.primaryColor, fontSize: 24),
+                            color: AppColors.primaryColor, fontSize: 24.sp),
                       )
                     ],
                   ),
@@ -63,25 +69,25 @@ class HomeScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'DHUHR',
-                                style: TextStyle(fontSize: 22),
+                                style: TextStyle(fontSize: 22.sp),
                               ),
                               5.verticalSpace,
-                              const Text(
+                              Text(
                                 '- 01 : 25 : 30',
-                                style: TextStyle(fontSize: 22),
+                                style: TextStyle(fontSize: 22.sp),
                               ),
                               5.verticalSpace,
-                              const Text(
+                              Text(
                                 '12 : 13 PM',
-                                style: TextStyle(fontSize: 22),
+                                style: TextStyle(fontSize: 22.sp),
                               ),
                               5.verticalSpace,
-                              const Text(
+                              Text(
                                 '10/20/2024',
                                 style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     color: AppColors.secondaryColor),
                               ),
                             ],
@@ -120,17 +126,17 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   50.verticalSpace,
-                  const Row(
+                  Row(
                     children: [
                       Text(
                         'Features',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20.sp),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Text(
                         'View All',
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             color: AppColors.primaryColor,
                             fontWeight: FontWeight.bold),
                       ),
@@ -159,7 +165,6 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     child: Column(
-                      // alignment: Alignment.topLeft,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
@@ -179,10 +184,10 @@ class HomeScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Flexible(
+                            Flexible(
                               child: Text(
                                 'Doua For Ahel Gazza',
-                                style: TextStyle(fontSize: 32),
+                                style: TextStyle(fontSize: 32.sp),
                               ),
                             ),
                             Image.asset(
@@ -199,7 +204,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
-      )),
+      ),
     );
   }
 }
@@ -220,7 +225,13 @@ class HomeItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, routeName);
+        if (title == 'Quran') {
+          Get.to(() => const QuranScreen());
+        } else if (title == 'Thiker') {
+          Get.to(() => const ThikerScreen());
+        } else {
+          Get.to(() => const PrayerTimeScreen());
+        }
       },
       child: Container(
         height: 140.h,
@@ -238,7 +249,7 @@ class HomeItemWidget extends StatelessWidget {
             ),
             Text(
               title,
-              style: const TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20.sp),
             )
           ],
         ),
