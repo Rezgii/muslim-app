@@ -15,7 +15,7 @@ class AthkarController extends GetxController {
               (item) => item.copyWith(thiker: item.thiker, repeat: item.repeat))
           .toList());
     } else if (Get.arguments['type'] == 'evening') {
-      athkar.addAll(morning
+      athkar.addAll(evening
           .map(
               (item) => item.copyWith(thiker: item.thiker, repeat: item.repeat))
           .toList());

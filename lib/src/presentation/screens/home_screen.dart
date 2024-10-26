@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:muslim/src/presentation/controllers/home_controller.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_screen.dart';
 import 'package:muslim/src/presentation/screens/services/quran_screen.dart';
 import 'package:muslim/src/presentation/screens/services/thiker_screen.dart';
@@ -12,6 +13,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeController _controller = Get.put(HomeController());
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     return Scaffold(

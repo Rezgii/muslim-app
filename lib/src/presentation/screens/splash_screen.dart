@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:muslim/src/core/utils/func/functions.dart';
+import 'package:get/get.dart';
+import 'package:muslim/src/data/apis/current_date_api.dart';
+import 'package:muslim/src/data/apis/prayer_time_by_address_api.dart';
+import 'package:muslim/src/data/models/prayer_time_model.dart';
+import 'package:muslim/src/presentation/screens/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,13 +14,28 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late PrayerTimeModel _prayersTime;
+  String _date = '';
+
+  getDate() async {
+    //TODO: Ask For User Data
+    _date = await CurrentDateApi.instance.getDate('Africa/Algiers');
+    _prayersTime = PrayerTimeModel.fromMap(await PrayerTimeByAddressApi.instance
+        .getPrayerTime('Tebessa, Algeria', _date));
+  }
+
   @override
   void initState() {
     super.initState();
+    getDate();
     Future.delayed(
       const Duration(seconds: 2),
       () {
-        initializeScreen(context);
+        // initializeScreen(context);
+        Get.to(() => const HomeScreen(), arguments: {
+          'date': _date,
+          'prayersTime': _prayersTime,
+        });
       },
     );
   }

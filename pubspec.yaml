@@ -49,6 +49,8 @@ dependencies:
   local_auth_android: ^1.0.46
   timeline_tile:  ^2.0.0
   vibration: ^2.0.1
+  animated_text_kit: ^4.2.2
+  dio: ^5.7.0
 
 
 dev_dependencies:
