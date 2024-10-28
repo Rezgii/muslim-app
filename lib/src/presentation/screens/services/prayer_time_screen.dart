@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/src/data/models/prayer_model.dart';
 import 'package:muslim/src/data/models/time_line_model.dart';
+import 'package:muslim/src/presentation/controllers/prayer_time_controller.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class PrayerTimeScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class PrayerTimeScreen extends StatefulWidget {
 }
 
 class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
+  final PrayerTimeController _controller = Get.put(PrayerTimeController());
   Widget _buildTimeline(List<TimeLine> statusList, List<PrayerModel> prayers) {
     return Row(
       children: [
@@ -33,7 +36,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                       PrayerTimeWidget(
                         timeImage: prayers[index].timeImage,
                         prayerName: prayers[index].prayerName,
-                        prayerTime: prayers[index].prayerTime,
+                        prayerTime: prayers[index].prayerTime.substring(0, 5),
                         soundIcon: prayers[index].soundIcon,
                       ),
                     ],
@@ -106,73 +109,82 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Today Prayer Time'),
+        backgroundColor: AppColors.backgroundColor,
+        surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
-          child: Column(
-        children: [
-          //The place Widget
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.location_on,
-                  color: AppColors.primaryColor,
-                  size: 30.sp,
-                ),
-                10.horizontalSpace,
-                Text(
-                  'Tebessa, Algeria',
-                  style: TextStyle(fontSize: 20.sp),
-                )
-              ],
-            ),
-          ),
-          //The Date Widget
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.calendar_month,
-                  color: AppColors.primaryColor,
-                  size: 30.sp,
-                ),
-                10.horizontalSpace,
-                Text.rich(
-                  TextSpan(
-                    style: TextStyle(fontSize: 20.sp),
-                    children: const <TextSpan>[
-                      TextSpan(
-                        text: 'Monday - 18 Rabia al-thani 1446',
-                      ),
-                      TextSpan(
-                        text: '\n21 October 2024',
-                        style: TextStyle(color: AppColors.secondaryColor),
-                      ),
-                    ],
+          child: SingleChildScrollView(
+        child: Column(
+          children: [
+            //The place Widget
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    color: AppColors.primaryColor,
+                    size: 30.sp,
                   ),
-                ),
-              ],
+                  10.horizontalSpace,
+                  Text(
+                    'Tebessa, Algeria',
+                    style: TextStyle(fontSize: 20.sp),
+                  )
+                ],
+              ),
             ),
-          ),
-          //The next prayer + timer
-          Text(
-            'Sunrise',
-            style: TextStyle(fontSize: 22.sp),
-          ),
-          Text(
-            '6:40 AM',
-            style: TextStyle(fontSize: 16.sp, color: AppColors.secondaryColor),
-          ),
-          Text(
-            '- 01 : 25 : 30',
-            style: TextStyle(fontSize: 32.sp),
-          ),
-          10.verticalSpace,
-          //Today Prayer Time
-          Expanded(
-            child: Container(
+            //The Date Widget
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 16, 0, 16),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      //TODO: Open Month Calendar
+                    },
+                    icon: Icon(
+                      Icons.calendar_month,
+                      color: AppColors.primaryColor,
+                      size: 30.sp,
+                    ),
+                  ),
+                  Text.rich(
+                    TextSpan(
+                      style: TextStyle(fontSize: 20.sp),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '${_controller.day} - ${_controller.dateHijri}',
+                        ),
+                        TextSpan(
+                          text: '\n${_controller.date}',
+                          style:
+                              const TextStyle(color: AppColors.secondaryColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            //The next prayer + timer
+            Text(
+              _controller.prayerName,
+              style: TextStyle(fontSize: 24.sp),
+            ),
+            Text(
+              _controller.prayerTime,
+              style:
+                  TextStyle(fontSize: 18.sp, color: AppColors.secondaryColor),
+            ),
+            Obx(() => Text(
+                  _controller.countdown.toString(),
+                  style:
+                      TextStyle(fontSize: 32.sp, color: AppColors.primaryColor),
+                )),
+            10.verticalSpace,
+            //Today Prayer Time
+            Container(
               width: 430.w,
               alignment: Alignment.center,
               // padding: REdgeInsets.fromLTRB(16),
@@ -183,54 +195,79 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                   topRight: Radius.circular(50),
                 ),
               ),
-              child: _buildTimeline([
-                TimeLine(active: true, timestamp: Timestamp.now()),
-                TimeLine(active: false, timestamp: Timestamp.now()),
-                TimeLine(active: false, timestamp: Timestamp.now()),
-                TimeLine(active: false, timestamp: Timestamp.now()),
-                TimeLine(active: false, timestamp: Timestamp.now()),
-                TimeLine(active: false, timestamp: Timestamp.now()),
-              ], [
-                const PrayerModel(
-                  timeImage: 'assets/images/sunset.png',
-                  prayerName: 'Al-Fadjr',
-                  prayerTime: '5:15 AM',
-                  soundIcon: 'assets/images/volume.png',
-                ),
-                const PrayerModel(
-                  timeImage: 'assets/images/sunrise.png',
-                  prayerName: 'Sunrise',
-                  prayerTime: '6:40 AM',
-                  soundIcon: 'assets/images/mute.png',
-                ),
-                const PrayerModel(
-                  timeImage: 'assets/images/contrast.png',
-                  prayerName: 'Dhuhr',
-                  prayerTime: '12:13 PM',
-                  soundIcon: 'assets/images/volume.png',
-                ),
-                const PrayerModel(
-                  timeImage: 'assets/images/partly-cloudy.png',
-                  prayerName: 'Al-Asr',
-                  prayerTime: '03:20 PM',
-                  soundIcon: 'assets/images/volume.png',
-                ),
-                const PrayerModel(
-                  timeImage: 'assets/images/sunset.png',
-                  prayerName: 'Al-Maghrib',
-                  prayerTime: '5:48 PM',
-                  soundIcon: 'assets/images/volume.png',
-                ),
-                const PrayerModel(
-                  timeImage: 'assets/images/half-moon.png',
-                  prayerName: 'Al-Esha',
-                  prayerTime: '07:06 PM',
-                  soundIcon: 'assets/images/volume.png',
-                ),
-              ]),
-            ),
-          )
-        ],
+              child: Column(
+                children: [
+                  25.verticalSpace,
+                  _buildTimeline([
+                    //TODO: This time line
+                    TimeLine(active: true, timestamp: Timestamp.now()),
+                    TimeLine(active: false, timestamp: Timestamp.now()),
+                    TimeLine(active: false, timestamp: Timestamp.now()),
+                    TimeLine(active: false, timestamp: Timestamp.now()),
+                    TimeLine(active: false, timestamp: Timestamp.now()),
+                    TimeLine(active: false, timestamp: Timestamp.now()),
+                    TimeLine(active: false, timestamp: Timestamp.now()),
+                    TimeLine(active: false, timestamp: Timestamp.now()),
+                  ], [
+                    PrayerModel(
+                      timeImage: 'assets/images/midnight.png',
+                      prayerName: 'Imsak',
+                      prayerTime: _controller.todayPrayer.prayersTime['Imsak'],
+                      soundIcon: 'assets/images/mute.png',
+                    ),
+                    PrayerModel(
+                      timeImage: 'assets/images/sunset.png',
+                      prayerName: 'Al-Fadjr',
+                      prayerTime: _controller.todayPrayer.prayersTime['Fajr'],
+                      soundIcon: 'assets/images/volume.png',
+                    ),
+                    PrayerModel(
+                      timeImage: 'assets/images/sunrise.png',
+                      prayerName: 'Sunrise',
+                      prayerTime:
+                          _controller.todayPrayer.prayersTime['Sunrise'],
+                      soundIcon: 'assets/images/mute.png',
+                    ),
+                    PrayerModel(
+                      timeImage: 'assets/images/contrast.png',
+                      prayerName: 'Dhuhr',
+                      prayerTime: _controller.todayPrayer.prayersTime['Dhuhr'],
+                      soundIcon: 'assets/images/volume.png',
+                    ),
+                    PrayerModel(
+                      timeImage: 'assets/images/partly-cloudy.png',
+                      prayerName: 'Al-Asr',
+                      prayerTime: _controller.todayPrayer.prayersTime['Asr'],
+                      soundIcon: 'assets/images/volume.png',
+                    ),
+                    PrayerModel(
+                      timeImage: 'assets/images/sunset.png',
+                      prayerName: 'Al-Maghrib',
+                      prayerTime:
+                          _controller.todayPrayer.prayersTime['Maghrib'],
+                      soundIcon: 'assets/images/volume.png',
+                    ),
+                    PrayerModel(
+                      timeImage: 'assets/images/half-moon.png',
+                      prayerName: 'Al-Esha',
+                      prayerTime: _controller.todayPrayer.prayersTime['Isha'],
+                      soundIcon: 'assets/images/volume.png',
+                    ),
+
+                    PrayerModel(
+                      timeImage: 'assets/images/midnight.png',
+                      prayerName: 'Last Third',
+                      prayerTime:
+                          _controller.todayPrayer.prayersTime['Lastthird'],
+                      soundIcon: 'assets/images/mute.png',
+                    ),
+                  ]),
+                  10.verticalSpace,
+                ],
+              ),
+            )
+          ],
+        ),
       )),
     );
   }
@@ -290,7 +327,7 @@ class PrayerTimeWidget extends StatelessWidget {
           const Spacer(),
           Image.asset(
             soundIcon,
-            height: 40.h,
+            height: 32.h,
           ),
           15.horizontalSpace,
         ],

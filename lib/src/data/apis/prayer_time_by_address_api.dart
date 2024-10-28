@@ -11,7 +11,7 @@ class PrayerTimeByAddressApi {
 
   getPrayerTime(String address, String date) async {
     final uri =
-        'https://api.aladhan.com/v1/timingsByAddress/$date?address=$address';
+        'https://api.aladhan.com/v1/timingsByAddress/$date?address=$address&method=19&tune=0,2,1,1,0,4,4,1,0';
 
     Response<dynamic> response = await Dio().get(
       uri,

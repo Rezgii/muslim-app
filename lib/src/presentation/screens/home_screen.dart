@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/controllers/home_controller.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_screen.dart';
 import 'package:muslim/src/presentation/screens/services/quran_screen.dart';
@@ -13,7 +14,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HomeController _controller = Get.put(HomeController());
+    HomeController controller = Get.put(HomeController());
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     return Scaffold(
@@ -50,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   20.verticalSpace,
                   Container(
-                    height: 220.h,
+                    height: 200.h,
                     width: 400.w,
                     padding: REdgeInsets.symmetric(vertical: 8, horizontal: 5),
                     decoration: BoxDecoration(
@@ -61,8 +62,8 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Container(
-                          height: 190.h,
-                          width: 160.w,
+                          height: 170.h,
+                          width: 170.w,
                           padding: REdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: AppColors.boxGreykBg,
@@ -72,26 +73,30 @@ class HomeScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'DHUHR',
+                                controller.prayerName,
                                 style: TextStyle(fontSize: 22.sp),
                               ),
                               5.verticalSpace,
                               Text(
-                                '- 01 : 25 : 30',
-                                style: TextStyle(fontSize: 22.sp),
+                                controller.prayerTime,
+                                style: TextStyle(fontSize: 24.sp),
                               ),
                               5.verticalSpace,
                               Text(
-                                '12 : 13 PM',
-                                style: TextStyle(fontSize: 22.sp),
-                              ),
-                              5.verticalSpace,
-                              Text(
-                                '10/20/2024',
+                                controller.todayPrayer.date['gregorian']
+                                    ['date'],
                                 style: TextStyle(
                                     fontSize: 16.sp,
                                     color: AppColors.secondaryColor),
                               ),
+                              5.verticalSpace,
+                              Center(
+                                child: Obx(() => Text(
+                                    controller.countdown.value,
+                                    style: TextStyle(
+                                        fontSize: 24.sp,
+                                        color: AppColors.primaryColor))),
+                              )
                             ],
                           ),
                         ),
@@ -120,10 +125,11 @@ class HomeScreen extends StatelessWidget {
                         routeName: '/thiker',
                       ),
                       15.horizontalSpace,
-                      const HomeItemWidget(
+                      HomeItemWidget(
                         title: 'Prayer',
                         img: 'assets/images/time.png',
                         routeName: '/prayer',
+                        prayerTimeModel: controller.todayPrayer,
                       ),
                     ],
                   ),
@@ -217,11 +223,13 @@ class HomeItemWidget extends StatelessWidget {
     required this.title,
     required this.img,
     required this.routeName,
+    this.prayerTimeModel,
   });
 
   final String title;
   final String img;
   final String routeName;
+  final PrayerTimeModel? prayerTimeModel;
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +240,8 @@ class HomeItemWidget extends StatelessWidget {
         } else if (title == 'Thiker') {
           Get.to(() => const ThikerScreen());
         } else {
-          Get.to(() => const PrayerTimeScreen());
+          Get.to(() => const PrayerTimeScreen(),
+              arguments: {'prayersTime': prayerTimeModel});
         }
       },
       child: Container(

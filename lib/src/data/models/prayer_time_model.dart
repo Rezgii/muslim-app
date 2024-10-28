@@ -28,10 +28,10 @@ class PrayerTimeModel {
     };
   }
 
-  factory PrayerTimeModel.fromMap(Map<String, dynamic> map) {
+  factory PrayerTimeModel.fromMap(Map<dynamic, dynamic> map) {
     return PrayerTimeModel(
-      prayersTime: Map<String, dynamic>.from((map['timings'] as Map<String, dynamic>)),
-      date: Map<String, dynamic>.from((map['date'] as Map<String, dynamic>)),
+      prayersTime: Map<String, dynamic>.from((map['timings'] as Map<dynamic, dynamic>)),
+      date: Map<String, dynamic>.from((map['date'] as Map<dynamic, dynamic>)),
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../data/models/user_model.dart';
+// import '../../data/models/user_model.dart';
 
 
 
@@ -8,14 +8,14 @@ class HiveService {
   HiveService._();
   static HiveService instance = HiveService._();
   late Box _settingsBox;
-  late Box _userBox;
+  late Box _prayerBox;
 
   Future<void> init() async {
     try {
       await Hive.initFlutter();
-      Hive.registerAdapter(UserModelAdapter());
+      // Hive.registerAdapter(UserModelAdapter());
       _settingsBox = await Hive.openBox('settings');
-      _userBox = await Hive.openBox('user');
+      _prayerBox = await Hive.openBox('prayer');
 
       final settings = {'intro': false, 'darkMode': false};
       for (final entry in settings.entries) {
@@ -30,19 +30,20 @@ class HiveService {
 
   // Getters for the boxes
   Box get settingsBox => _settingsBox;
-  Box get userBox => _userBox;
+  Box get prayerBox => _prayerBox;
 
   // Dynamic Getters
   dynamic getSetting(String key) => _settingsBox.get(key);
-  dynamic getUserData(String key) => _userBox.get(key);
+  dynamic getPrayerTimes(String key) => _prayerBox.get(key);
 
   // Dynamic Setters
   Future<void> setSetting(String key, dynamic value) async {
     await _settingsBox.put(key, value);
   }
 
-  Future<void> setUserData(String key, dynamic value) async {
-    await _userBox.put(key, value);
+  Future<void> setPrayerTimes(String key, dynamic value) async {
+    await _prayerBox.put(key, value).then((value) {
+    },);
   }
 
   // Remove a setting
@@ -51,7 +52,7 @@ class HiveService {
   }
 
   // Remove user data
-  Future<void> removeUserData(String key) async {
-    await _userBox.delete(key);
+  Future<void> removePrayers(String key) async {
+    await _prayerBox.delete(key);
   }
 }

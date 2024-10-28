@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:muslim/src/core/config/hive_service.dart';
+import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:muslim/src/data/apis/current_date_api.dart';
 import 'package:muslim/src/data/apis/prayer_time_by_address_api.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
@@ -15,36 +17,43 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late PrayerTimeModel _prayersTime;
-  String _date = '';
 
   getDate() async {
     //TODO: Ask For User Data
-    _date = await CurrentDateApi.instance.getDate('Africa/Algiers');
-    _prayersTime = PrayerTimeModel.fromMap(await PrayerTimeByAddressApi.instance
-        .getPrayerTime('Tebessa, Algeria', _date));
+    if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
+      String date = await CurrentDateApi.instance.getDate('Africa/Algiers');
+      _prayersTime = PrayerTimeModel.fromMap(await PrayerTimeByAddressApi
+          .instance
+          .getPrayerTime('Tebessa, Algeria', date));
+    } else {
+      DateTime today = DateTime.now();
+      _prayersTime = PrayerTimeModel.fromMap(HiveService.instance
+              .getPrayerTimes('yearlyPrayerTime')[today.month.toString()]
+          [today.day - 1]);
+      await Future.delayed(
+        const Duration(seconds: 1),
+      );
+    }
+  }
+
+  initialise() async {
+    await getDate();
+
+    Get.to(() => const HomeScreen(), arguments: {
+      'prayersTime': _prayersTime,
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    getDate();
-    Future.delayed(
-      const Duration(seconds: 2),
-      () {
-        // initializeScreen(context);
-        Get.to(() => const HomeScreen(), arguments: {
-          'date': _date,
-          'prayersTime': _prayersTime,
-        });
-      },
-    );
+    initialise();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 'Muslim',
                 style: TextStyle(
                   fontSize: 24.sp,
-                  color: Colors.black,
+                  color: AppColors.primaryColor,
                 ),
               )
             ],
