@@ -23,6 +23,15 @@ class PrayerTimeController extends GetxController {
     _formatFields();
   }
 
+  bool isPrayerBefore(String name) {
+    DateTime prayerDateTime = _parsePrayerTime(todayPrayer.prayersTime[name]);
+    if (prayerDateTime.isBefore(DateTime.now())) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void _formatFields() {
     // Format all Fields
     date = todayPrayer.date['gregorian']['day'] +

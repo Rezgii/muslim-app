@@ -4,33 +4,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class TimeLine extends Equatable {
-  final bool active;
+  final String prayerName;
   final Timestamp timestamp;
   const TimeLine({
-    required this.active,
+    required this.prayerName,
     required this.timestamp,
   });
 
   TimeLine copyWith({
-    bool? active,
+    String? prayerName,
     Timestamp? timestamp,
   }) {
     return TimeLine(
-      active: active ?? this.active,
+      prayerName: prayerName ?? this.prayerName,
       timestamp: timestamp ?? this.timestamp,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'active': active,
+      'prayerName': prayerName,
       'timestamp': timestamp,
     };
   }
 
   factory TimeLine.fromMap(Map<String, dynamic> map) {
     return TimeLine(
-      active: map['active'] as bool,
+      prayerName: map['prayerName'] as String,
       timestamp: map['timestamp'] as Timestamp,
     );
   }
@@ -40,9 +40,7 @@ class TimeLine extends Equatable {
   factory TimeLine.fromJson(String source) =>
       TimeLine.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  @override
-  bool get stringify => true;
 
   @override
-  List<Object> get props => [active, timestamp];
+  List<Object> get props => [prayerName, timestamp];
 }

@@ -27,6 +27,8 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
             crossAxisAlignment:
                 CrossAxisAlignment.center, // Center horizontally
             children: List.generate(statusList.length, (index) {
+              print('((((((((((((($index)))))))))))))');
+
               return TimelineTile(
                 alignment: TimelineAlign.start,
                 endChild: Padding(
@@ -55,47 +57,51 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                 indicatorStyle: IndicatorStyle(
                     width: 25.r,
                     height: 25.r,
-                    indicator: statusList[index].active
-                        ? Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.primaryColor,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.circle,
-                                color: Colors.white,
-                                size: 15.r,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.boxBlackBg,
-                              border: Border(
-                                bottom: BorderSide(
+                    indicator:
+                        statusList[index].prayerName == _controller.prayerName
+                            ? Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
                                   color: AppColors.primaryColor,
                                 ),
-                                top: BorderSide(
-                                  color: AppColors.primaryColor,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.circle,
+                                    color: Colors.white,
+                                    size: 15.r,
+                                  ),
                                 ),
-                                left: BorderSide(
-                                  color: AppColors.primaryColor,
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _controller.isPrayerBefore(
+                                          statusList[index].prayerName)
+                                      ? AppColors.primaryColor
+                                      : AppColors.boxBlackBg,
+                                  border: const Border(
+                                    bottom: BorderSide(
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    top: BorderSide(
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    left: BorderSide(
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    right: BorderSide(
+                                      color: AppColors.primaryColor,
+                                    ),
+                                  ),
                                 ),
-                                right: BorderSide(
-                                  color: AppColors.primaryColor,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.circle,
+                                    color: AppColors.primaryColor,
+                                    size: 15.r,
+                                  ),
                                 ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.circle,
-                                color: AppColors.primaryColor,
-                                size: 15.r,
-                              ),
-                            ),
-                          )),
+                              )),
               );
             }),
           ),
@@ -199,16 +205,23 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                 children: [
                   25.verticalSpace,
                   _buildTimeline([
-                    //TODO: This time line
-                    TimeLine(active: true, timestamp: Timestamp.now()),
-                    TimeLine(active: false, timestamp: Timestamp.now()),
-                    TimeLine(active: false, timestamp: Timestamp.now()),
-                    TimeLine(active: false, timestamp: Timestamp.now()),
-                    TimeLine(active: false, timestamp: Timestamp.now()),
-                    TimeLine(active: false, timestamp: Timestamp.now()),
-                    TimeLine(active: false, timestamp: Timestamp.now()),
-                    TimeLine(active: false, timestamp: Timestamp.now()),
+                    TimeLine(
+                        prayerName: 'Lastthird', timestamp: Timestamp.now()),
+                    TimeLine(prayerName: 'Imsak', timestamp: Timestamp.now()),
+                    TimeLine(prayerName: 'Fajr', timestamp: Timestamp.now()),
+                    TimeLine(prayerName: 'Sunrise', timestamp: Timestamp.now()),
+                    TimeLine(prayerName: 'Dhuhr', timestamp: Timestamp.now()),
+                    TimeLine(prayerName: 'Asr', timestamp: Timestamp.now()),
+                    TimeLine(prayerName: 'Maghrib', timestamp: Timestamp.now()),
+                    TimeLine(prayerName: 'Isha', timestamp: Timestamp.now()),
                   ], [
+                    PrayerModel(
+                      timeImage: 'assets/images/midnight.png',
+                      prayerName: 'Last Third',
+                      prayerTime:
+                          _controller.todayPrayer.prayersTime['Lastthird'],
+                      soundIcon: 'assets/images/mute.png',
+                    ),
                     PrayerModel(
                       timeImage: 'assets/images/midnight.png',
                       prayerName: 'Imsak',
@@ -217,7 +230,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/sunset.png',
-                      prayerName: 'Al-Fadjr',
+                      prayerName: 'Fajr',
                       prayerTime: _controller.todayPrayer.prayersTime['Fajr'],
                       soundIcon: 'assets/images/volume.png',
                     ),
@@ -236,30 +249,22 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/partly-cloudy.png',
-                      prayerName: 'Al-Asr',
+                      prayerName: 'Asr',
                       prayerTime: _controller.todayPrayer.prayersTime['Asr'],
                       soundIcon: 'assets/images/volume.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/sunset.png',
-                      prayerName: 'Al-Maghrib',
+                      prayerName: 'Maghrib',
                       prayerTime:
                           _controller.todayPrayer.prayersTime['Maghrib'],
                       soundIcon: 'assets/images/volume.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/half-moon.png',
-                      prayerName: 'Al-Esha',
+                      prayerName: 'Isha',
                       prayerTime: _controller.todayPrayer.prayersTime['Isha'],
                       soundIcon: 'assets/images/volume.png',
-                    ),
-
-                    PrayerModel(
-                      timeImage: 'assets/images/midnight.png',
-                      prayerName: 'Last Third',
-                      prayerTime:
-                          _controller.todayPrayer.prayersTime['Lastthird'],
-                      soundIcon: 'assets/images/mute.png',
                     ),
                   ]),
                   10.verticalSpace,
