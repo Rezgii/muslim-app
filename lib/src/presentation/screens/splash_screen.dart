@@ -30,28 +30,20 @@ class _SplashScreenState extends State<SplashScreen> {
       _prayersTime = PrayerTimeModel.fromMap(HiveService.instance
               .getPrayerTimes('yearlyPrayerTime')[today.month.toString()]
           [today.day - 1]);
-      await Future.delayed(
-        const Duration(seconds: 1),
-      );
     }
   }
 
   initialise() async {
     await getDate();
 
-    Get.to(() => const HomeScreen(), arguments: {
+    Get.offAll(() => const HomeScreen(), arguments: {
       'prayersTime': _prayersTime,
     });
   }
 
   @override
-  void initState() {
-    super.initState();
-    initialise();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    initialise();
     return SafeArea(
       child: Scaffold(
         body: Center(

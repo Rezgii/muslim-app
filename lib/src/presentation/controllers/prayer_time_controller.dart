@@ -1,26 +1,39 @@
 import 'dart:async';
 import 'package:get/get.dart';
+import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 
 class PrayerTimeController extends GetxController {
-  final PrayerTimeModel todayPrayer = Get.arguments['prayersTime'];
+  PrayerTimeModel todayPrayer = Get.arguments['prayersTime'];
+  final bool isToday = Get.arguments['isToday'];
   late String prayerName = '';
   late String prayerTime = '';
+  late DateTime prayerDay;
   late String date = '';
   late String dateHijri = '';
   late String day = '';
 
   RxString countdown = '- 00 : 00 : 00'.obs; // Observable for countdown display
   Timer? _timer; // Timer for the countdown
+  bool _isPositiveTimer = false;
 
   @override
   void onInit() {
     super.onInit();
-
+    _setupPrayerDay();
     _updateNextPrayer(); // Set the initial prayerName and prayerTime based on the next prayer
-    _initializeCountdown();
-    _startCountdown();
+    if (isToday) {
+      _initializeAndStartCountdown();
+    }
     _formatFields();
+  }
+
+  void _setupPrayerDay() {
+    prayerDay = DateTime(
+      int.parse(todayPrayer.date['gregorian']['year']),
+      todayPrayer.date['gregorian']['month']['number'],
+      int.parse(todayPrayer.date['gregorian']['day']),
+    );
   }
 
   bool isPrayerBefore(String name) {
@@ -50,33 +63,65 @@ class PrayerTimeController extends GetxController {
   }
 
   DateTime _parsePrayerTime(String time) {
-    DateTime now = DateTime.now();
     int hour = int.parse(time.substring(0, 2));
     int minute = int.parse(time.substring(3, 5));
-    return DateTime(now.year, now.month, now.day, hour, minute);
+    return DateTime(
+        prayerDay.year, prayerDay.month, prayerDay.day, hour, minute);
   }
 
-  void _startCountdown() {
-    DateTime now = DateTime.now();
-    DateTime nextPrayerDateTime =
-        _parsePrayerTime(prayerTime); // Use the next prayer time
+  void _initializeAndStartCountdown() {
+    DateTime nextPrayerDateTime = _parsePrayerTime(prayerTime);
 
-    if (nextPrayerDateTime.isBefore(now)) {
-      // Update to the next day's prayer time if the prayer has passed
-      nextPrayerDateTime = nextPrayerDateTime.add(const Duration(days: 1));
+    if (nextPrayerDateTime.isBefore(DateTime.now())) {
+      Duration passedDuration = DateTime.now().difference(nextPrayerDateTime);
+
+      if (passedDuration.inMinutes < 30) {
+        countdown.value = _formatPositiveDuration(passedDuration);
+        _isPositiveTimer = true;
+      } else {
+        nextPrayerDateTime = nextPrayerDateTime.add(const Duration(days: 1));
+        countdown.value =
+            _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+        _isPositiveTimer = false;
+      }
+    } else {
+      countdown.value =
+          _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+      _isPositiveTimer = false;
     }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      Duration remaining = nextPrayerDateTime.difference(DateTime.now());
-      if (remaining.inSeconds > 0) {
-        countdown.value = _formatDuration(remaining);
-        update();
+      if (_isPositiveTimer) {
+        _startCountUpTimer(nextPrayerDateTime);
       } else {
-        _updateNextPrayer();
-        _initializeCountdown();
-        _startCountdown();
+        _startCountDownTimer(nextPrayerDateTime);
       }
     });
+  }
+
+  void _startCountDownTimer(DateTime nextPrayerDateTime) {
+    Duration remaining = nextPrayerDateTime.difference(DateTime.now());
+    if (remaining.inSeconds > 0) {
+      countdown.value = _formatDuration(remaining);
+    } else {
+      _isPositiveTimer = true;
+      _timer?.cancel();
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        _startCountUpTimer(nextPrayerDateTime);
+      });
+    }
+  }
+
+  void _startCountUpTimer(DateTime initialPrayerEndTime) {
+    Duration positiveRemaining =
+        DateTime.now().difference(initialPrayerEndTime);
+    if (positiveRemaining.inMinutes < 30) {
+      countdown.value = _formatPositiveDuration(positiveRemaining);
+    } else {
+      _isPositiveTimer = false;
+      _updateNextPrayer();
+      _initializeAndStartCountdown();
+    }
   }
 
   String _formatDuration(Duration duration) {
@@ -88,19 +133,12 @@ class PrayerTimeController extends GetxController {
     return "- $hours : $minutes : $seconds";
   }
 
-  void _initializeCountdown() {
-    DateTime now = DateTime.now();
-    DateTime nextPrayerDateTime =
-        _parsePrayerTime(prayerTime); // Use the next prayer time
-
-    if (nextPrayerDateTime.isBefore(now)) {
-      // Update to the next day's prayer time if the prayer has passed
-      nextPrayerDateTime = nextPrayerDateTime.add(const Duration(days: 1));
-    }
-
-    // Set the initial countdown value
-    Duration remaining = nextPrayerDateTime.difference(now);
-    countdown.value = _formatDuration(remaining);
+  String _formatPositiveDuration(Duration duration) {
+    String minutes =
+        duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    String seconds =
+        duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "+ 00 : $minutes : $seconds";
   }
 
   void _updateNextPrayer() {
@@ -108,13 +146,19 @@ class PrayerTimeController extends GetxController {
     DateTime? nextPrayerDateTime;
     String? nextPrayerName;
 
-    // Find the next prayer time that is after the current time
     todayPrayer.prayersTime.forEach((name, time) {
       DateTime prayerDateTime = _parsePrayerTime(time);
-      if (prayerDateTime.isAfter(now) &&
+      if (prayerDateTime.isBefore(now) &&
           name != 'Sunset' &&
-          name != 'Sunrise' &&
-          name != 'Lastthird' &&
+          name != 'Firstthird' &&
+          name != 'Midnight') {
+        Duration passedDuration = DateTime.now().difference(prayerDateTime);
+        if (passedDuration.inMinutes < 30) {
+          nextPrayerDateTime = prayerDateTime;
+          nextPrayerName = name;
+        }
+      } else if (prayerDateTime.isAfter(now) &&
+          name != 'Sunset' &&
           name != 'Firstthird' &&
           name != 'Midnight') {
         if (nextPrayerDateTime == null ||
@@ -125,19 +169,21 @@ class PrayerTimeController extends GetxController {
       }
     });
 
-    // If no prayer time remains for today, use the first prayer time for tomorrow
     if (nextPrayerDateTime == null) {
+      now = now.add(const Duration(days: 1));
+      todayPrayer = PrayerTimeModel.fromMap(HiveService.instance
+              .getPrayerTimes('yearlyPrayerTime')[now.month.toString()]
+          [now.day - 1]);
       nextPrayerName = todayPrayer.prayersTime.keys.first;
       nextPrayerDateTime =
-          _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!)
-              .add(const Duration(days: 1));
+          _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);
     }
 
-    // Update prayerName and prayerTime with the next prayer details
     if (nextPrayerName != null && nextPrayerDateTime != null) {
       prayerName = nextPrayerName!;
       prayerTime = _formatTime(nextPrayerDateTime!);
     }
+    update();
   }
 
   String _formatTime(DateTime dateTime) {

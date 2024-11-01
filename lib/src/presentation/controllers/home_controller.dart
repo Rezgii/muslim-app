@@ -6,17 +6,23 @@ import 'package:muslim/src/data/apis/prayer_time_calendar_by_address_api.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 
 class HomeController extends GetxController {
-  final PrayerTimeModel todayPrayer = Get.arguments['prayersTime'];
+  PrayerTimeModel todayPrayer = Get.arguments['prayersTime'];
   late String prayerName = 'Loading...';
   late String prayerTime = 'Loading...';
+  late DateTime prayerDay;
 
   RxString countdown = '- 00 : 00 : 00'.obs;
   Timer? _timer;
-  bool _isPositiveTimer = false; // Flag for the 30-minute positive timer
+  bool _isPositiveTimer = false;
 
   @override
   void onInit() {
     super.onInit();
+    prayerDay = DateTime(
+      int.parse(todayPrayer.date['gregorian']['year']),
+      todayPrayer.date['gregorian']['month']['number'],
+      int.parse(todayPrayer.date['gregorian']['day']),
+    );
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
@@ -28,8 +34,6 @@ class HomeController extends GetxController {
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
       _savePrayersInHive('2024');
     }
-    //TODO:
-    // AudioPlayer().play(AssetSource('sounds/adhan.mp3'));
   }
 
   void _savePrayersInHive(String year) async {
@@ -48,10 +52,10 @@ class HomeController extends GetxController {
   }
 
   DateTime _parsePrayerTime(String time) {
-    DateTime now = DateTime.now();
     int hour = int.parse(time.substring(0, 2));
     int minute = int.parse(time.substring(3, 5));
-    return DateTime(now.year, now.month, now.day, hour, minute);
+    return DateTime(
+        prayerDay.year, prayerDay.month, prayerDay.day, hour, minute);
   }
 
   void _initializeAndStartCountdown() {
@@ -60,23 +64,19 @@ class HomeController extends GetxController {
     if (nextPrayerDateTime.isBefore(DateTime.now())) {
       Duration passedDuration = DateTime.now().difference(nextPrayerDateTime);
 
-      // Check if the prayer time has passed by less than 30 minutes
       if (passedDuration.inMinutes < 30) {
-        // Format the passed time using _formatPositiveDuration
         countdown.value = _formatPositiveDuration(passedDuration);
-        _isPositiveTimer = true; // Start count-up timer
+        _isPositiveTimer = true;
       } else {
-        // If more than 30 minutes have passed, move to the next day
         nextPrayerDateTime = nextPrayerDateTime.add(const Duration(days: 1));
-        countdown.value = _formatDuration(nextPrayerDateTime
-            .difference(DateTime.now())); // Set initial countdown
-        _isPositiveTimer = false; // Start count-down timer
+        countdown.value =
+            _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+        _isPositiveTimer = false;
       }
     } else {
-      // If the next prayer time is still in the future
-      countdown.value = _formatDuration(nextPrayerDateTime
-          .difference(DateTime.now())); // Set initial countdown
-      _isPositiveTimer = false; // Start count-down timer
+      countdown.value =
+          _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+      _isPositiveTimer = false;
     }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -92,31 +92,26 @@ class HomeController extends GetxController {
     Duration remaining = nextPrayerDateTime.difference(DateTime.now());
     if (remaining.inSeconds > 0) {
       countdown.value = _formatDuration(remaining);
+    } else if (remaining.inSeconds == 0) {
+      AudioPlayer().play(AssetSource('sounds/adhan.mp3'));
     } else {
-      _isPositiveTimer = true; // Switch to count-up timer
-      countdown.value = "+ 00 : 00 : 00"; // Start the 30-minute positive timer
-      _updateNextPrayer();
-      _initializeAndStartCountdown();
+      _isPositiveTimer = true;
+      _timer?.cancel();
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        _startCountUpTimer(nextPrayerDateTime);
+      });
     }
   }
 
   void _startCountUpTimer(DateTime initialPrayerEndTime) {
-    _startAdhan();
     Duration positiveRemaining =
         DateTime.now().difference(initialPrayerEndTime);
     if (positiveRemaining.inMinutes < 30) {
       countdown.value = _formatPositiveDuration(positiveRemaining);
     } else {
-      _isPositiveTimer = false; // Switch back to countdown
+      _isPositiveTimer = false;
       _updateNextPrayer();
       _initializeAndStartCountdown();
-    }
-  }
-
-  void _startAdhan() {
-    DateTime nextPrayerDateTime = _parsePrayerTime(prayerTime);
-    if (nextPrayerDateTime.isAtSameMomentAs(DateTime.now())) {
-      AudioPlayer().play(AssetSource('sounds/adhan.mp3'));
     }
   }
 
@@ -142,12 +137,22 @@ class HomeController extends GetxController {
     DateTime? nextPrayerDateTime;
     String? nextPrayerName;
 
-    // Find the next prayer time that is after the current time
     todayPrayer.prayersTime.forEach((name, time) {
-      // print('=================$name');
       DateTime prayerDateTime = _parsePrayerTime(time);
-      if (prayerDateTime.isAfter(now) &&
+      if (prayerDateTime.isBefore(now) &&
           name != 'Sunset' &&
+          name != 'Imsak' &&
+          name != 'Firstthird' &&
+          name != 'Lastthird' &&
+          name != 'Midnight') {
+        Duration passedDuration = DateTime.now().difference(prayerDateTime);
+        if (passedDuration.inMinutes < 30) {
+          nextPrayerDateTime = prayerDateTime;
+          nextPrayerName = name;
+        }
+      } else if (prayerDateTime.isAfter(now) &&
+          name != 'Sunset' &&
+          name != 'Imsak' &&
           name != 'Firstthird' &&
           name != 'Lastthird' &&
           name != 'Midnight') {
@@ -159,18 +164,21 @@ class HomeController extends GetxController {
       }
     });
 
-    // If no prayer time remains for today, use the first prayer time for tomorrow but keep today’s date
     if (nextPrayerDateTime == null) {
+      now = now.add(const Duration(days: 1));
+      todayPrayer = PrayerTimeModel.fromMap(HiveService.instance
+              .getPrayerTimes('yearlyPrayerTime')[now.month.toString()]
+          [now.day - 1]);
       nextPrayerName = todayPrayer.prayersTime.keys.first;
       nextPrayerDateTime =
           _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);
     }
 
-    // Update prayerName and prayerTime with the next prayer details
     if (nextPrayerName != null && nextPrayerDateTime != null) {
       prayerName = nextPrayerName!;
       prayerTime = _formatTime(nextPrayerDateTime!);
     }
+    update();
   }
 
   String _formatTime(DateTime dateTime) {

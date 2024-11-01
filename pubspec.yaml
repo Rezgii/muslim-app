@@ -52,6 +52,7 @@ dependencies:
   animated_text_kit: ^4.2.2
   dio: ^5.7.0
   audioplayers: ^6.1.0
+  flutter_calendar_carousel: ^2.4.4
 
 
 dev_dependencies:

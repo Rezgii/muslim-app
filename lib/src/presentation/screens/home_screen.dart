@@ -5,6 +5,7 @@ import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/controllers/home_controller.dart';
+import 'package:muslim/src/presentation/screens/services/prayer_time_calendar_screen.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_screen.dart';
 import 'package:muslim/src/presentation/screens/services/quran_screen.dart';
 import 'package:muslim/src/presentation/screens/services/thiker_screen.dart';
@@ -18,19 +19,19 @@ class HomeScreen extends StatelessWidget {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            height: 250.h,
-            decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(.35),
-                borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(50),
-                    bottomRight: Radius.circular(50))),
-          ),
-          Padding(
-            padding: REdgeInsets.all(25),
-            child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Container(
+              height: 250.h,
+              decoration: BoxDecoration(
+                  color: AppColors.primaryColor.withOpacity(.35),
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      bottomRight: Radius.circular(50))),
+            ),
+            Padding(
+              padding: REdgeInsets.all(25),
               child: Column(
                 children: [
                   25.verticalSpace,
@@ -110,30 +111,39 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  50.verticalSpace,
-                  Wrap(
+                  10.verticalSpace,
+                  GridView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 10,
+                        mainAxisExtent: 140.h),
                     children: [
                       const HomeItemWidget(
                         title: 'Quran',
                         img: 'assets/images/quran.png',
                         routeName: '/quran',
                       ),
-                      15.horizontalSpace,
                       const HomeItemWidget(
                         title: 'Thiker',
                         img: 'assets/images/tasbih.png',
                         routeName: '/thiker',
                       ),
-                      15.horizontalSpace,
                       HomeItemWidget(
                         title: 'Prayer',
                         img: 'assets/images/time.png',
                         routeName: '/prayer',
                         prayerTimeModel: controller.todayPrayer,
                       ),
+                      HomeItemWidget(
+                        title: 'Calendar',
+                        img: 'assets/images/calendar_time.png',
+                        routeName: '/prayer',
+                        prayerTimeModel: controller.todayPrayer,
+                      ),
                     ],
                   ),
-                  50.verticalSpace,
                   Row(
                     children: [
                       Text(
@@ -203,15 +213,16 @@ class HomeScreen extends StatelessWidget {
                               height: 150.h,
                             )
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
+                  50.verticalSpace
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -239,14 +250,19 @@ class HomeItemWidget extends StatelessWidget {
           Get.to(() => const QuranScreen());
         } else if (title == 'Thiker') {
           Get.to(() => const ThikerScreen());
+        } else if (title == 'Calendar') {
+          Get.to(() => const PrayerTimeCalendarScreen());
         } else {
-          Get.to(() => const PrayerTimeScreen(),
-              arguments: {'prayersTime': prayerTimeModel});
+          Get.to(() => const PrayerTimeScreen(), arguments: {
+            'isToday': true,
+            'prayersTime': prayerTimeModel,
+          });
         }
       },
       child: Container(
         height: 140.h,
         width: 113.w,
+        margin: REdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
           color: AppColors.boxGreykBg,
           borderRadius: BorderRadius.circular(20),

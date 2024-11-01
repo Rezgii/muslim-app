@@ -17,6 +17,7 @@ class PrayerTimeScreen extends StatefulWidget {
 
 class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   final PrayerTimeController _controller = Get.put(PrayerTimeController());
+
   Widget _buildTimeline(List<TimeLine> statusList, List<PrayerModel> prayers) {
     return Row(
       children: [
@@ -27,8 +28,6 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
             crossAxisAlignment:
                 CrossAxisAlignment.center, // Center horizontally
             children: List.generate(statusList.length, (index) {
-              print('((((((((((((($index)))))))))))))');
-
               return TimelineTile(
                 alignment: TimelineAlign.start,
                 endChild: Padding(
@@ -58,56 +57,93 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                     width: 25.r,
                     height: 25.r,
                     indicator:
-                        statusList[index].prayerName == _controller.prayerName
-                            ? Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.primaryColor,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.circle,
-                                    color: Colors.white,
-                                    size: 15.r,
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _controller.isPrayerBefore(
-                                          statusList[index].prayerName)
-                                      ? AppColors.primaryColor
-                                      : AppColors.boxBlackBg,
-                                  border: const Border(
-                                    bottom: BorderSide(
-                                      color: AppColors.primaryColor,
-                                    ),
-                                    top: BorderSide(
-                                      color: AppColors.primaryColor,
-                                    ),
-                                    left: BorderSide(
-                                      color: AppColors.primaryColor,
-                                    ),
-                                    right: BorderSide(
-                                      color: AppColors.primaryColor,
-                                    ),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.circle,
-                                    color: AppColors.primaryColor,
-                                    size: 15.r,
-                                  ),
-                                ),
-                              )),
+                        _checkTimeForTimeLine(statusList[index].prayerName)),
               );
             }),
           ),
         ),
       ],
     );
+  }
+
+  Widget _checkTimeForTimeLine(String prayerName) {
+    if (_controller.isToday) {
+      if (prayerName == _controller.prayerName) {
+        return Container(
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primaryColor,
+          ),
+          child: Center(
+            child: Icon(
+              Icons.circle,
+              color: Colors.white,
+              size: 15.r,
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _controller.isPrayerBefore(prayerName)
+                ? AppColors.primaryColor
+                : AppColors.boxBlackBg,
+            border: const Border(
+              bottom: BorderSide(
+                color: AppColors.primaryColor,
+              ),
+              top: BorderSide(
+                color: AppColors.primaryColor,
+              ),
+              left: BorderSide(
+                color: AppColors.primaryColor,
+              ),
+              right: BorderSide(
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.circle,
+              color: AppColors.primaryColor,
+              size: 15.r,
+            ),
+          ),
+        );
+      }
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: _controller.isPrayerBefore(prayerName)
+              ? AppColors.primaryColor
+              : AppColors.boxBlackBg,
+          border: const Border(
+            bottom: BorderSide(
+              color: AppColors.primaryColor,
+            ),
+            top: BorderSide(
+              color: AppColors.primaryColor,
+            ),
+            left: BorderSide(
+              color: AppColors.primaryColor,
+            ),
+            right: BorderSide(
+              color: AppColors.primaryColor,
+            ),
+          ),
+        ),
+        child: Center(
+          child: Icon(
+            Icons.circle,
+            color: AppColors.primaryColor,
+            size: 15.r,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -135,32 +171,28 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                   10.horizontalSpace,
                   Text(
                     'Tebessa, Algeria',
-                    style: TextStyle(fontSize: 20.sp),
+                    style: TextStyle(fontSize: 18.sp),
                   )
                 ],
               ),
             ),
             //The Date Widget
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 16, 0, 16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Row(
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      //TODO: Open Month Calendar
-                    },
-                    icon: Icon(
-                      Icons.calendar_month,
-                      color: AppColors.primaryColor,
-                      size: 30.sp,
-                    ),
+                  Icon(
+                    Icons.calendar_month,
+                    color: AppColors.primaryColor,
+                    size: 30.sp,
                   ),
+                  10.horizontalSpace,
                   Text.rich(
                     TextSpan(
-                      style: TextStyle(fontSize: 20.sp),
+                      style: TextStyle(fontSize: 18.sp),
                       children: <TextSpan>[
                         TextSpan(
-                          text: '${_controller.day} - ${_controller.dateHijri}',
+                          text: '${_controller.day} \n${_controller.dateHijri}',
                         ),
                         TextSpan(
                           text: '\n${_controller.date}',
@@ -173,22 +205,34 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                 ],
               ),
             ),
-            //The next prayer + timer
-            Text(
-              _controller.prayerName,
-              style: TextStyle(fontSize: 24.sp),
-            ),
-            Text(
-              _controller.prayerTime,
-              style:
-                  TextStyle(fontSize: 18.sp, color: AppColors.secondaryColor),
-            ),
-            Obx(() => Text(
-                  _controller.countdown.toString(),
-                  style:
-                      TextStyle(fontSize: 32.sp, color: AppColors.primaryColor),
-                )),
             10.verticalSpace,
+            //The next prayer + timer
+            Builder(builder: (context) {
+              return _controller.isToday
+                  ? Column(
+                      children: [
+                        Text(
+                          _controller.prayerName == 'Lastthird'
+                              ? 'Last Third'
+                              : _controller.prayerName,
+                          style: TextStyle(fontSize: 24.sp),
+                        ),
+                        Text(
+                          _controller.prayerTime,
+                          style: TextStyle(
+                              fontSize: 18.sp, color: AppColors.secondaryColor),
+                        ),
+                        Obx(() => Text(
+                              _controller.countdown.toString(),
+                              style: TextStyle(
+                                  fontSize: 32.sp,
+                                  color: AppColors.primaryColor),
+                            )),
+                        10.verticalSpace,
+                      ],
+                    )
+                  : const SizedBox();
+            }),
             //Today Prayer Time
             Container(
               width: 430.w,
