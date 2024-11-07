@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:muslim/src/core/utils/const/damo_data.dart';
+import 'package:muslim/src/core/utils/const/athkar_data.dart';
 import 'package:muslim/src/data/models/thiker_model.dart';
 
 class AthkarController extends GetxController {

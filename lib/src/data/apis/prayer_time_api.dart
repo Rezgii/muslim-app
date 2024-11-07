@@ -3,15 +3,15 @@
 import 'package:dio/dio.dart';
 // import 'package:path_provider/path_provider.dart';
 
-class PrayerTimeByAddressApi {
-  PrayerTimeByAddressApi._();
+class PrayerTimeApi {
+  PrayerTimeApi._();
 
-  static final PrayerTimeByAddressApi _instance = PrayerTimeByAddressApi._();
-  static PrayerTimeByAddressApi get instance => _instance;
+  static final PrayerTimeApi _instance = PrayerTimeApi._();
+  static PrayerTimeApi get instance => _instance;
 
-  getPrayerTime(String address, String date) async {
+  getPrayerTime(String latitude, String longitude, String date) async {
     final uri =
-        'https://api.aladhan.com/v1/timingsByAddress/$date?address=$address&method=19&tune=0,2,1,1,0,4,4,1,0';
+        'https://api.aladhan.com/v1/timings/$date?latitude=$latitude&longitude=$longitude&method=19&tune=0,2,1,1,0,5,5,1,0';
 
     Response<dynamic> response = await Dio().get(
       uri,

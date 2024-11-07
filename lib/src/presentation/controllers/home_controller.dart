@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
-import 'package:muslim/src/data/apis/prayer_time_calendar_by_address_api.dart';
+import 'package:muslim/src/data/apis/prayer_time_calendar_api.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 
 class HomeController extends GetxController {
-  PrayerTimeModel todayPrayer = Get.arguments['prayersTime'];
+  late PrayerTimeModel todayPrayer;
   late String prayerName = 'Loading...';
   late String prayerTime = 'Loading...';
   late DateTime prayerDay;
@@ -18,6 +18,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    todayPrayer = Get.arguments['prayersTime'];
     prayerDay = DateTime(
       int.parse(todayPrayer.date['gregorian']['year']),
       todayPrayer.date['gregorian']['month']['number'],
@@ -37,8 +38,7 @@ class HomeController extends GetxController {
   }
 
   void _savePrayersInHive(String year) async {
-    Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarByAddressApi
-        .instance
+    Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
         .getPrayerTimeCalendar('Tebessa, Algeria', year);
     HiveService.instance.setPrayerTimes(
       'yearlyPrayerTime',

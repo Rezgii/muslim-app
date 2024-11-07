@@ -3,12 +3,12 @@
 import 'package:dio/dio.dart';
 // import 'package:path_provider/path_provider.dart';
 
-class PrayerTimeCalendarByAddressApi {
-  PrayerTimeCalendarByAddressApi._();
+class PrayerTimeCalendarApi {
+  PrayerTimeCalendarApi._();
 
-  static final PrayerTimeCalendarByAddressApi _instance =
-      PrayerTimeCalendarByAddressApi._();
-  static PrayerTimeCalendarByAddressApi get instance => _instance;
+  static final PrayerTimeCalendarApi _instance =
+      PrayerTimeCalendarApi._();
+  static PrayerTimeCalendarApi get instance => _instance;
 
   getPrayerTimeCalendar(String address, String year) async {
     final uri =

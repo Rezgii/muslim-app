@@ -37,6 +37,8 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: CalendarCarousel<Event>(
+                    minSelectedDate: DateTime(2024, 1, 1),
+                    maxSelectedDate: DateTime(2024, 12, 31),
                     pageSnapping: true,
                     selectedDayButtonColor: AppColors.primaryColor,
                     selectedDayBorderColor: AppColors.primaryColor,
@@ -52,7 +54,6 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                       fontSize: 18.sp,
                     ),
                     onDayPressed: (DateTime date, List<Event> events) {
-                      // setState(() => _currentDate = date);
                       Get.to(() => const PrayerTimeScreen(), arguments: {
                         'isToday': false,
                         'prayersTime': getPrayerTime(date)
