@@ -77,14 +77,14 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
               ),
               50.verticalSpace,
               Text(
-                'Allow your location',
+                'Allow your location'.tr,
                 style: TextStyle(
                   fontSize: 24.sp,
                 ),
               ),
               15.verticalSpace,
               Text(
-                'We will need your location to \ngive you better experinece',
+                'We will need your location to \ngive you better experinece'.tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16.sp, color: Colors.grey),
               ),
@@ -113,9 +113,9 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
                     );
                     await getLocation();
                   },
-                  child: const Text(
-                    "Sure, I'd like that",
-                    style: TextStyle(
+                  child: Text(
+                    "Sure, I'd like that".tr,
+                    style: const TextStyle(
                       color: AppColors.backgroundColor,
                     ),
                   ),

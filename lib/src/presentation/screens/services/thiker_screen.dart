@@ -11,22 +11,20 @@ class ThikerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Athkar Muslim"),
+        title: Text("Athkar Muslim".tr),
       ),
       body: SafeArea(
           child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const ThekrWidget(
-              title: 'Morning Athkar',
-              time: '6:00 - 12:00',
+            ThekrWidget(
+              title: 'Morning Athkar'.tr,
               type: 'morning',
             ),
             25.verticalSpace,
-            const ThekrWidget(
-              title: 'Evening Athkar',
-              time: 'Al-Asr - 00:00',
+            ThekrWidget(
+              title: 'Evening Athkar'.tr,
               type: 'evening',
             ),
           ],
@@ -40,12 +38,10 @@ class ThekrWidget extends StatelessWidget {
   const ThekrWidget({
     super.key,
     required this.title,
-    this.time,
     required this.type,
   });
 
   final String title;
-  final String? time;
   final String type;
 
   @override
@@ -66,19 +62,12 @@ class ThekrWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               title,
               style: TextStyle(color: AppColors.primaryColor, fontSize: 20.sp),
             ),
-            const Spacer(),
-            time != null
-                ? Text(
-                    time!,
-                    style: TextStyle(
-                        color: const Color(0xFF696D76), fontSize: 16.sp),
-                  )
-                : const SizedBox()
           ],
         ),
       ),

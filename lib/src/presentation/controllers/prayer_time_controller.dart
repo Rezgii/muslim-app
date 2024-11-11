@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
@@ -47,17 +48,33 @@ class PrayerTimeController extends GetxController {
 
   void _formatFields() {
     // Format all Fields
-    date = todayPrayer.date['gregorian']['day'] +
-        ' ' +
-        todayPrayer.date['gregorian']['month']['en'] +
-        ' ' +
-        todayPrayer.date['gregorian']['year'];
-    dateHijri = todayPrayer.date['hijri']['day'] +
-        ' ' +
-        todayPrayer.date['hijri']['month']['en'] +
-        ' ' +
-        todayPrayer.date['hijri']['year'];
-    day = todayPrayer.date['gregorian']['weekday']['en'];
+    if (Get.locale == const Locale('ar_AE')) {
+      //Getting English date data
+      date = todayPrayer.date['gregorian']['day'] +
+          ' ' +
+          todayPrayer.date['gregorian']['month']['en'] +
+          ' ' +
+          todayPrayer.date['gregorian']['year'];
+      dateHijri = todayPrayer.date['hijri']['day'] +
+          ' ' +
+          todayPrayer.date['hijri']['month']['en'] +
+          ' ' +
+          todayPrayer.date['hijri']['year'];
+      day = todayPrayer.date['gregorian']['weekday']['en'];
+    } else {
+      //Getting Arabic date data
+      date = todayPrayer.date['gregorian']['day'] +
+          ' ' +
+          todayPrayer.date['gregorian']['month']['en'].toString().tr +
+          ' ' +
+          todayPrayer.date['gregorian']['year'];
+      dateHijri = todayPrayer.date['hijri']['day'] +
+          ' ' +
+          todayPrayer.date['hijri']['month']['ar'] +
+          ' ' +
+          todayPrayer.date['hijri']['year'];
+      day = todayPrayer.date['hijri']['weekday']['ar'];
+    }
     prayerTime =
         '${prayerTime.substring(0, 2)} ${prayerTime.substring(2, 3)} ${prayerTime.substring(3)}';
   }

@@ -38,7 +38,7 @@ class TranslationsController extends GetxController {
   }
 
   initLanguage() {
-    _currentLanguage = HiveService.instance.settingsBox.get("lang") ?? 'EN';
+    _currentLanguage = HiveService.instance.settingsBox.get("lang") ?? 'AR';
     changeLanguage(_currentLanguage!);
   }
 }

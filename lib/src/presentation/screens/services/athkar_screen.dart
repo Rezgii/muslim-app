@@ -24,7 +24,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_controller.title),
+        title: Text(_controller.title.tr),
         surfaceTintColor: Colors.transparent,
         backgroundColor: AppColors.backgroundColor,
       ),
@@ -46,7 +46,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
                               totalRepeatCount: 1,
                               animatedTexts: [
                                 TyperAnimatedText(
-                                  'You finished all Athakr.\nYou are good to go.',
+                                  'You finished all Athakr.\nYou are good to go.'.tr,
                                   textAlign: TextAlign.center,
                                   textStyle: TextStyle(
                                       fontSize: 22.sp,
@@ -132,7 +132,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text('Repeat'),
+                          Text('Repeat'.tr),
                           Container(
                             width: 30.w,
                             height: 30.h,

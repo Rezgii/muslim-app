@@ -150,7 +150,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Today Prayer Time'),
+        title: Text('Today Prayer Time'.tr),
         backgroundColor: AppColors.backgroundColor,
         surfaceTintColor: Colors.transparent,
       ),
@@ -159,23 +159,23 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
         child: Column(
           children: [
             //The place Widget
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.location_on,
-                    color: AppColors.primaryColor,
-                    size: 30.sp,
-                  ),
-                  10.horizontalSpace,
-                  Text(
-                    'Tebessa, Algeria',
-                    style: TextStyle(fontSize: 18.sp),
-                  )
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            //   child: Row(
+            //     children: [
+            //       Icon(
+            //         Icons.location_on,
+            //         color: AppColors.primaryColor,
+            //         size: 30.sp,
+            //       ),
+            //       10.horizontalSpace,
+            //       Text(
+            //         'Tebessa, Algeria'.tr,
+            //         style: TextStyle(fontSize: 18.sp),
+            //       )
+            //     ],
+            //   ),
+            // ),
             //The Date Widget
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -213,8 +213,8 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                       children: [
                         Text(
                           _controller.prayerName == 'Lastthird'
-                              ? 'Last Third'
-                              : _controller.prayerName,
+                              ? 'Last Third'.tr
+                              : _controller.prayerName.tr,
                           style: TextStyle(fontSize: 24.sp),
                         ),
                         Text(
@@ -224,6 +224,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                         ),
                         Obx(() => Text(
                               _controller.countdown.toString(),
+                              textDirection: TextDirection.ltr,
                               style: TextStyle(
                                   fontSize: 32.sp,
                                   color: AppColors.primaryColor),
@@ -261,52 +262,52 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                   ], [
                     PrayerModel(
                       timeImage: 'assets/images/midnight.png',
-                      prayerName: 'Last Third',
+                      prayerName: 'Last Third'.tr,
                       prayerTime:
                           _controller.todayPrayer.prayersTime['Lastthird'],
                       soundIcon: 'assets/images/mute.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/midnight.png',
-                      prayerName: 'Imsak',
+                      prayerName: 'Imsak'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Imsak'],
                       soundIcon: 'assets/images/mute.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/sunset.png',
-                      prayerName: 'Fajr',
+                      prayerName: 'Fajr'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Fajr'],
                       soundIcon: 'assets/images/volume.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/sunrise.png',
-                      prayerName: 'Sunrise',
+                      prayerName: 'Sunrise'.tr,
                       prayerTime:
                           _controller.todayPrayer.prayersTime['Sunrise'],
                       soundIcon: 'assets/images/mute.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/contrast.png',
-                      prayerName: 'Dhuhr',
+                      prayerName: 'Dhuhr'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Dhuhr'],
                       soundIcon: 'assets/images/volume.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/partly-cloudy.png',
-                      prayerName: 'Asr',
+                      prayerName: 'Asr'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Asr'],
                       soundIcon: 'assets/images/volume.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/sunset.png',
-                      prayerName: 'Maghrib',
+                      prayerName: 'Maghrib'.tr,
                       prayerTime:
                           _controller.todayPrayer.prayersTime['Maghrib'],
                       soundIcon: 'assets/images/volume.png',
                     ),
                     PrayerModel(
                       timeImage: 'assets/images/half-moon.png',
-                      prayerName: 'Isha',
+                      prayerName: 'Isha'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Isha'],
                       soundIcon: 'assets/images/volume.png',
                     ),

@@ -110,7 +110,7 @@ class HomeScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                controller.prayerName,
+                                controller.prayerName.tr,
                                 style: TextStyle(fontSize: 22.sp),
                               ),
                               5.verticalSpace,
@@ -122,6 +122,7 @@ class HomeScreen extends StatelessWidget {
                               Text(
                                 controller.todayPrayer.date['gregorian']
                                     ['date'],
+                                textDirection: TextDirection.ltr,
                                 style: TextStyle(
                                     fontSize: 16.sp,
                                     color: AppColors.secondaryColor),
@@ -130,6 +131,7 @@ class HomeScreen extends StatelessWidget {
                               Center(
                                 child: Obx(() => Text(
                                     controller.countdown.value,
+                                    textDirection: TextDirection.ltr,
                                     style: TextStyle(
                                         fontSize: 24.sp,
                                         color: AppColors.primaryColor))),
@@ -149,7 +151,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   25.verticalSpace,
                   Text(
-                    'Features',
+                    'Features'.tr,
                     style: TextStyle(
                       fontSize: 22.sp,
                       color: AppColors.primaryColor,
@@ -319,7 +321,7 @@ class HomeItemWidget extends StatelessWidget {
               height: 75.h,
             ),
             Text(
-              title,
+              title.tr,
               style: TextStyle(fontSize: 20.sp),
             )
           ],

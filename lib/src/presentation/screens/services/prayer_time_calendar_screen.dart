@@ -23,6 +23,7 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Prayer Time Calender'.tr),
         backgroundColor: AppColors.backgroundColor,
         surfaceTintColor: Colors.transparent,
       ),
@@ -37,6 +38,7 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: CalendarCarousel<Event>(
+                    locale: Get.locale!.languageCode,
                     minSelectedDate: DateTime(2024, 1, 1),
                     maxSelectedDate: DateTime(2024, 12, 31),
                     pageSnapping: true,
