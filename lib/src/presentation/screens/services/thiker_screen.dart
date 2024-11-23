@@ -27,6 +27,21 @@ class ThikerScreen extends StatelessWidget {
               title: 'Evening Athkar'.tr,
               type: 'evening',
             ),
+            25.verticalSpace,
+            ThekrWidget(
+              title: 'Wake up Athkar'.tr,
+              type: 'wakeup',
+            ),
+            25.verticalSpace,
+            ThekrWidget(
+              title: 'Sleep Athkar'.tr,
+              type: 'sleep',
+            ),
+            25.verticalSpace,
+            ThekrWidget(
+              title: 'After Praying Athkar'.tr,
+              type: 'praying',
+            ),
           ],
         ),
       )),
@@ -48,10 +63,14 @@ class ThekrWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => const AthkarScreen(), arguments: {
-          'type': type,
-          'title': title,
-        });
+        Get.to(() => const AthkarScreen(),
+            arguments: {
+              'type': type,
+              'title': title,
+            },
+            duration: const Duration(milliseconds: 650),
+            transition: Transition.circularReveal,
+            curve: Curves.easeIn);
       },
       child: Container(
         height: 75.h,

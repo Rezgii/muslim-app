@@ -17,6 +17,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeController controller = Get.put(HomeController(), permanent: true);
+
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     return Scaffold(
@@ -76,7 +77,10 @@ class HomeScreen extends StatelessWidget {
                       const Spacer(),
                       IconButton(
                         onPressed: () {
-                          Get.to(() => const LocationPermissionScreen());
+                          Get.to(() => const LocationPermissionScreen(),
+                              duration: const Duration(milliseconds: 650),
+                              transition: Transition.circularReveal,
+                              curve: Curves.easeIn);
                         },
                         icon: Icon(
                           Icons.pin_drop,
@@ -116,6 +120,7 @@ class HomeScreen extends StatelessWidget {
                               5.verticalSpace,
                               Text(
                                 controller.prayerTime,
+                                textDirection: TextDirection.ltr,
                                 style: TextStyle(fontSize: 24.sp),
                               ),
                               5.verticalSpace,
@@ -293,16 +298,29 @@ class HomeItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (title == 'Quran') {
-          Get.to(() => const QuranScreen());
+          Get.to(() => const QuranScreen(),
+              duration: const Duration(milliseconds: 650),
+              transition: Transition.circularReveal,
+              curve: Curves.easeIn);
         } else if (title == 'Thiker') {
-          Get.to(() => const ThikerScreen());
+          Get.to(() => const ThikerScreen(),
+              duration: const Duration(milliseconds: 650),
+              transition: Transition.circularReveal,
+              curve: Curves.easeIn);
         } else if (title == 'Calendar') {
-          Get.to(() => const PrayerTimeCalendarScreen());
+          Get.to(() => const PrayerTimeCalendarScreen(),
+              duration: const Duration(milliseconds: 650),
+              transition: Transition.circularReveal,
+              curve: Curves.easeIn);
         } else {
-          Get.to(() => const PrayerTimeScreen(), arguments: {
-            'isToday': true,
-            'prayersTime': prayerTimeModel,
-          });
+          Get.to(() => const PrayerTimeScreen(),
+              arguments: {
+                'isToday': true,
+                'prayersTime': prayerTimeModel,
+              },
+              duration: const Duration(milliseconds: 650),
+              transition: Transition.circularReveal,
+              curve: Curves.easeIn);
         }
       },
       child: Container(

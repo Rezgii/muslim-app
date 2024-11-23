@@ -19,6 +19,21 @@ class AthkarController extends GetxController {
           .map(
               (item) => item.copyWith(thiker: item.thiker, repeat: item.repeat))
           .toList());
+    } else if (Get.arguments['type'] == 'wakeup') {
+      athkar.addAll(wakeup
+          .map(
+              (item) => item.copyWith(thiker: item.thiker, repeat: item.repeat))
+          .toList());
+    } else if (Get.arguments['type'] == 'sleep') {
+      athkar.addAll(sleep
+          .map(
+              (item) => item.copyWith(thiker: item.thiker, repeat: item.repeat))
+          .toList());
+    } else if (Get.arguments['type'] == 'praying') {
+      athkar.addAll(praying
+          .map(
+              (item) => item.copyWith(thiker: item.thiker, repeat: item.repeat))
+          .toList());
     }
   }
 }

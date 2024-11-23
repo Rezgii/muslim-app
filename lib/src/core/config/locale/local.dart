@@ -41,6 +41,9 @@ class LocalStrings extends Translations {
           'November': 'November',
           'December': 'December',
           'Prayer Time Calender': 'Prayer Time Calender',
+          'Wake up Athkar': 'Wake up Athkar',
+          'Sleep Athkar': 'Sleep Athkar',
+          'After Praying Athkar': 'After Praying Athkar',
         },
         'ar_AE': {
           'Imsak': 'الإمساك',
@@ -65,7 +68,7 @@ class LocalStrings extends Translations {
           'Evening Athkar': 'أذكار المساء',
           'Repeat': 'تكرار',
           'You finished all Athakr.\nYou are good to go.':
-              'لقد أنهيت جميع الأذكار.\nأنت جاهز للانطلاق.',
+              'لقد أنهيت جميع الأذكار.\nيمكنك الذهاب الآن.',
           'Today Prayer Time': 'مواقيت الصلاة اليوم',
           'January': 'يناير',
           'February': 'فبراير',
@@ -79,7 +82,10 @@ class LocalStrings extends Translations {
           'October': 'أكتوبر',
           'November': 'نوفمبر',
           'December': 'ديسمبر',
-          'Prayer Time Calender' : 'تقويم مواقيت الصلاة',
+          'Prayer Time Calender': 'تقويم مواقيت الصلاة',
+          "Wake up Athkar": "أذكار الاستيقاظ",
+          "Sleep Athkar": "أذكار النوم",
+          "After Praying Athkar": "أذكار بعد الصلاة"
         },
         'fr_FR': {
           'Imsak': 'Imsak',
@@ -119,6 +125,9 @@ class LocalStrings extends Translations {
           'November': 'Novembre',
           'December': 'Décembre',
           'Prayer Time Calendar': 'Calendrier des heures de prière',
+          "Wake up Athkar": "Dhikr du réveil",
+          "Sleep Athkar": "Dhikr du sommeil",
+          "After Praying Athkar": "Dhikr après la prière"
         }
       };
 }

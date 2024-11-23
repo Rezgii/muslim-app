@@ -19,6 +19,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final Tween<Offset> _offset =
       Tween(begin: const Offset(1, 0), end: const Offset(0, 0));
+  bool _isRemoving = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,8 @@ class _AthkarScreenState extends State<AthkarScreen> {
                               totalRepeatCount: 1,
                               animatedTexts: [
                                 TyperAnimatedText(
-                                  'You finished all Athakr.\nYou are good to go.'.tr,
+                                  'You finished all Athakr.\nYou are good to go.'
+                                      .tr,
                                   textAlign: TextAlign.center,
                                   textStyle: TextStyle(
                                       fontSize: 22.sp,
@@ -54,13 +56,6 @@ class _AthkarScreenState extends State<AthkarScreen> {
                                 ),
                               ],
                             )
-                            // Text(
-                            //   'You finished all Athakr.\nYou are good to go.',
-                            //   style: TextStyle(
-                            //       fontSize: 22.sp,
-                            //       color: AppColors.primaryColor),
-                            //   textAlign: TextAlign.center,
-                            // ),
                           ],
                         ),
                       )
@@ -89,7 +84,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
       child: Center(
         child: GestureDetector(
           onTap: () async {
-            if (await Vibration.hasVibrator() != null) {
+            if (!_isRemoving && await Vibration.hasVibrator() != null) {
               Vibration.vibrate(duration: 100);
               if (thiker.repeat > 1) {
                 thiker.repeat = thiker.repeat - 1;
@@ -105,7 +100,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
                 alignment: Alignment.center,
                 children: [
                   Container(
-                    padding: REdgeInsets.all(20),
+                    padding: REdgeInsets.all(32),
                     margin: REdgeInsets.only(bottom: 35),
                     width: 400.w,
                     decoration: BoxDecoration(
@@ -115,7 +110,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
                     ),
                     child: Text(
                       thiker.thiker,
-                      style: TextStyle(fontSize: 20.sp),
+                      style: TextStyle(fontSize: 22.sp),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -134,8 +129,8 @@ class _AthkarScreenState extends State<AthkarScreen> {
                         children: [
                           Text('Repeat'.tr),
                           Container(
-                            width: 30.w,
-                            height: 30.h,
+                            width: 35.w,
+                            height: 35.h,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(color: AppColors.primaryColor),
@@ -158,11 +153,16 @@ class _AthkarScreenState extends State<AthkarScreen> {
   }
 
   void removeItem(int index) {
+    _isRemoving = true;
     final itemToRemove = _controller.athkar[index];
     _controller.athkar.removeAt(index);
 
     _listKey.currentState?.removeItem(index, (context, animation) {
       return _buildItem(itemToRemove, index, animation);
     }, duration: const Duration(milliseconds: 350));
+
+    Future.delayed(const Duration(milliseconds: 400), () {
+      _isRemoving = false;
+    });
   }
 }

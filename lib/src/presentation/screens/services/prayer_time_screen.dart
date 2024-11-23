@@ -158,24 +158,6 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
           child: SingleChildScrollView(
         child: Column(
           children: [
-            //The place Widget
-            // Padding(
-            //   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            //   child: Row(
-            //     children: [
-            //       Icon(
-            //         Icons.location_on,
-            //         color: AppColors.primaryColor,
-            //         size: 30.sp,
-            //       ),
-            //       10.horizontalSpace,
-            //       Text(
-            //         'Tebessa, Algeria'.tr,
-            //         style: TextStyle(fontSize: 18.sp),
-            //       )
-            //     ],
-            //   ),
-            // ),
             //The Date Widget
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -192,7 +174,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                       style: TextStyle(fontSize: 18.sp),
                       children: <TextSpan>[
                         TextSpan(
-                          text: '${_controller.day} \n${_controller.dateHijri}',
+                          text: '${_controller.day} ${_controller.dateHijri}',
                         ),
                         TextSpan(
                           text: '\n${_controller.date}',
@@ -219,6 +201,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                         ),
                         Text(
                           _controller.prayerTime,
+                          textDirection: TextDirection.ltr,
                           style: TextStyle(
                               fontSize: 18.sp, color: AppColors.secondaryColor),
                         ),

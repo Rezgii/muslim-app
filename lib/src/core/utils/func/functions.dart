@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/data/apis/current_date_api.dart';
@@ -15,11 +16,22 @@ bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
 void initializeScreen() async {
   if (isLocationGiven) {
     PrayerTimeModel prayersTime = await getDate();
-    Get.offAll(() => const HomeScreen(), arguments: {
-      'prayersTime': prayersTime,
-    });
+    Get.offAll(
+      () => const HomeScreen(),
+      arguments: {
+        'prayersTime': prayersTime,
+      },
+      duration: const Duration(milliseconds: 650),
+      transition: Transition.circularReveal,
+      curve: Curves.easeIn,
+    );
   } else {
-    Get.offAll(() => const LocationPermissionScreen());
+    Get.offAll(
+      () => const LocationPermissionScreen(),
+      duration: const Duration(milliseconds: 650),
+      transition: Transition.circularReveal,
+      curve: Curves.easeIn,
+    );
   }
 }
 

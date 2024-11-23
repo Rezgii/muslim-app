@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
+// import 'package:muslim/main.dart';
+// import 'package:muslim/src/core/config/flutter_local_notification.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/data/apis/prayer_time_calendar_api.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
@@ -14,6 +16,7 @@ class HomeController extends GetxController {
   RxString countdown = '- 00 : 00 : 00'.obs;
   Timer? _timer;
   bool _isPositiveTimer = false;
+  bool isTestMode = false;
 
   @override
   void onInit() {
@@ -90,10 +93,17 @@ class HomeController extends GetxController {
 
   void _startCountDownTimer(DateTime nextPrayerDateTime) {
     Duration remaining = nextPrayerDateTime.difference(DateTime.now());
-    if (remaining.inSeconds > 0) {
+    if (remaining.inSeconds >= 0) {
       countdown.value = _formatDuration(remaining);
-    } else if (remaining.inSeconds == 0) {
-      AudioPlayer().play(AssetSource('sounds/adhan.mp3'));
+      if (remaining.inSeconds == 0) {
+        // Play the Athan sound only after showing "0" seconds
+        AudioPlayer().play(AssetSource('sounds/adhan.mp3'));
+        _isPositiveTimer = true;
+        _timer?.cancel();
+        _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+          _startCountUpTimer(nextPrayerDateTime);
+        });
+      }
     } else {
       _isPositiveTimer = true;
       _timer?.cancel();
@@ -137,46 +147,54 @@ class HomeController extends GetxController {
     DateTime? nextPrayerDateTime;
     String? nextPrayerName;
 
-    todayPrayer.prayersTime.forEach((name, time) {
-      DateTime prayerDateTime = _parsePrayerTime(time);
-      if (prayerDateTime.isBefore(now) &&
-          name != 'Sunset' &&
-          name != 'Imsak' &&
-          name != 'Firstthird' &&
-          name != 'Lastthird' &&
-          name != 'Midnight') {
-        Duration passedDuration = DateTime.now().difference(prayerDateTime);
-        if (passedDuration.inMinutes < 30) {
-          nextPrayerDateTime = prayerDateTime;
-          nextPrayerName = name;
+    if (!isTestMode) {
+      todayPrayer.prayersTime.forEach((name, time) {
+        DateTime prayerDateTime = _parsePrayerTime(time);
+        if (prayerDateTime.isBefore(now) &&
+            name != 'Sunset' &&
+            name != 'Imsak' &&
+            name != 'Firstthird' &&
+            name != 'Lastthird' &&
+            name != 'Midnight') {
+          Duration passedDuration = DateTime.now().difference(prayerDateTime);
+          if (passedDuration.inMinutes < 30) {
+            nextPrayerDateTime = prayerDateTime;
+            nextPrayerName = name;
+          }
+        } else if (prayerDateTime.isAfter(now) &&
+            name != 'Sunset' &&
+            name != 'Imsak' &&
+            name != 'Firstthird' &&
+            name != 'Lastthird' &&
+            name != 'Midnight') {
+          if (nextPrayerDateTime == null ||
+              prayerDateTime.isBefore(nextPrayerDateTime!)) {
+            nextPrayerDateTime = prayerDateTime;
+            nextPrayerName = name;
+          }
         }
-      } else if (prayerDateTime.isAfter(now) &&
-          name != 'Sunset' &&
-          name != 'Imsak' &&
-          name != 'Firstthird' &&
-          name != 'Lastthird' &&
-          name != 'Midnight') {
-        if (nextPrayerDateTime == null ||
-            prayerDateTime.isBefore(nextPrayerDateTime!)) {
-          nextPrayerDateTime = prayerDateTime;
-          nextPrayerName = name;
-        }
+      });
+
+      if (nextPrayerDateTime == null) {
+        now = now.add(const Duration(days: 1));
+        todayPrayer = PrayerTimeModel.fromMap(HiveService.instance
+                .getPrayerTimes('yearlyPrayerTime')[now.month.toString()]
+            [now.day - 1]);
+        nextPrayerName = todayPrayer.prayersTime.keys.first;
+        nextPrayerDateTime =
+            _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);
       }
-    });
 
-    if (nextPrayerDateTime == null) {
-      now = now.add(const Duration(days: 1));
-      todayPrayer = PrayerTimeModel.fromMap(HiveService.instance
-              .getPrayerTimes('yearlyPrayerTime')[now.month.toString()]
-          [now.day - 1]);
-      nextPrayerName = todayPrayer.prayersTime.keys.first;
-      nextPrayerDateTime =
-          _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);
-    }
-
-    if (nextPrayerName != null && nextPrayerDateTime != null) {
-      prayerName = nextPrayerName!;
-      prayerTime = _formatTime(nextPrayerDateTime!);
+      if (nextPrayerName != null && nextPrayerDateTime != null) {
+        prayerName = nextPrayerName!;
+        prayerTime = _formatTime(nextPrayerDateTime!);
+      }
+      // scheduleAdhanNotification(nextPrayerDateTime!, prayerName);
+    } else {
+      prayerName = "testing";
+      prayerTime = _formatTime(_parsePrayerTime("17:04"));
+      // scheduleAdhanNotification(_parsePrayerTime("17:04"), 'test');
+      // scheduleBackgroundTask(); // Ensure tasks run in the background
     }
     update();
   }

@@ -59,7 +59,10 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                       Get.to(() => const PrayerTimeScreen(), arguments: {
                         'isToday': false,
                         'prayersTime': getPrayerTime(date)
-                      });
+                      },
+            duration: const Duration(milliseconds: 650),
+            transition: Transition.circularReveal,
+            curve: Curves.easeIn);
                     },
                     weekendTextStyle: TextStyle(
                       color: AppColors.primaryColor,
