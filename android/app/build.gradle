@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = "com.RzRio.muslim"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -40,6 +40,9 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 flutter {
@@ -48,4 +51,6 @@ flutter {
 
 dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
+    implementation 'androidx.work:work-runtime:2.8.0'
+    implementation 'androidx.work:work-runtime-ktx:2.8.0'
 }

@@ -6,13 +6,12 @@ import 'package:dio/dio.dart';
 class PrayerTimeCalendarApi {
   PrayerTimeCalendarApi._();
 
-  static final PrayerTimeCalendarApi _instance =
-      PrayerTimeCalendarApi._();
+  static final PrayerTimeCalendarApi _instance = PrayerTimeCalendarApi._();
   static PrayerTimeCalendarApi get instance => _instance;
 
-  getPrayerTimeCalendar(String address, String year) async {
+  getPrayerTimeCalendar(String latitude, String longitude, String year) async {
     final uri =
-        'https://api.aladhan.com/v1/calendarByAddress/$year?address=$address&method=19&tune=0,2,1,1,0,5,5,1,0';
+        'https://api.aladhan.com/v1/calendar/$year?latitude=$latitude&longitude=$longitude&method=19&tune=0,2,1,1,0,5,5,1,0';
 
     Response<dynamic> response = await Dio().get(
       uri,

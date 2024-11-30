@@ -36,29 +36,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
               init: AthkarController(),
               builder: (controller) {
                 return _controller.athkar.isEmpty
-                    ? Padding(
-                        padding: REdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            50.verticalSpace,
-                            AnimatedTextKit(
-                              repeatForever: false,
-                              totalRepeatCount: 1,
-                              animatedTexts: [
-                                TyperAnimatedText(
-                                  'You finished all Athakr.\nYou are good to go.'
-                                      .tr,
-                                  textAlign: TextAlign.center,
-                                  textStyle: TextStyle(
-                                      fontSize: 22.sp,
-                                      color: AppColors.primaryColor),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      )
+                    ? _buildFinishedAthkarWidget()
                     : AnimatedList(
                         key: _listKey,
                         physics: const NeverScrollableScrollPhysics(),
@@ -73,6 +51,30 @@ class _AthkarScreenState extends State<AthkarScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFinishedAthkarWidget() {
+    return Padding(
+      padding: REdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          50.verticalSpace,
+          AnimatedTextKit(
+            repeatForever: false,
+            totalRepeatCount: 1,
+            animatedTexts: [
+              TyperAnimatedText(
+                'You finished all Athakr.\nYou are good to go.'.tr,
+                textAlign: TextAlign.center,
+                textStyle:
+                    TextStyle(fontSize: 22.sp, color: AppColors.primaryColor),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

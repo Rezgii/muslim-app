@@ -84,7 +84,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
               ),
               15.verticalSpace,
               Text(
-                'We will need your location to \ngive you better experinece'.tr,
+                'We will need your location to \ngive you better experience'.tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16.sp, color: Colors.grey),
               ),
