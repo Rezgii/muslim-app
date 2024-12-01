@@ -9,7 +9,8 @@ class PrayerTimeCalendarApi {
   static final PrayerTimeCalendarApi _instance = PrayerTimeCalendarApi._();
   static PrayerTimeCalendarApi get instance => _instance;
 
-  getPrayerTimeCalendar(String latitude, String longitude, String year) async {
+  Future<dynamic> getPrayerTimeCalendar(
+      String latitude, String longitude, String year) async {
     final uri =
         'https://api.aladhan.com/v1/calendar/$year?latitude=$latitude&longitude=$longitude&method=19&tune=0,2,1,1,0,5,5,1,0';
 

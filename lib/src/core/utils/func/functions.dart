@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/data/apis/current_date_api.dart';
 import 'package:muslim/src/data/apis/prayer_time_api.dart';
+import 'package:muslim/src/data/apis/prayer_time_calendar_api.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/screens/home_screen.dart';
 import 'package:muslim/src/presentation/screens/location_permission_screen.dart';
@@ -15,6 +16,9 @@ bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
 
 void initializeScreen() async {
   if (isLocationGiven) {
+    if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
+      await _savePrayersInHive(DateTime.now().year.toString());
+    }
     PrayerTimeModel prayersTime = await getDate();
     Get.offAll(
       () => const HomeScreen(),
@@ -33,6 +37,15 @@ void initializeScreen() async {
       curve: Curves.easeIn,
     );
   }
+}
+
+Future<void> _savePrayersInHive(String year) async {
+  Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
+      .getPrayerTimeCalendar(location['latitude'], location['longitude'], year);
+  await HiveService.instance.setPrayerTimes(
+    'yearlyPrayerTime',
+    yearlyPrayerTime,
+  );
 }
 
 Future<PrayerTimeModel> getDate() async {

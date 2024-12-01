@@ -3,8 +3,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
-import 'package:muslim/src/core/utils/func/functions.dart';
-import 'package:muslim/src/data/apis/prayer_time_calendar_api.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 
 class HomeController extends GetxController {
@@ -26,20 +24,12 @@ class HomeController extends GetxController {
       todayPrayer.date['gregorian']['month']['number'],
       int.parse(todayPrayer.date['gregorian']['day']),
     );
+
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
-      _savePrayersInHive(DateTime.now().year.toString());
-    }
     _setupWidgetData();
-
-    super.onReady();
+    super.onInit();
   }
 
   void _setupWidgetData() {
@@ -47,16 +37,6 @@ class HomeController extends GetxController {
     HomeWidget.saveWidgetData("prayerTime", prayerTime);
     HomeWidget.updateWidget(
       androidName: "PrayerWidget",
-    );
-  }
-
-  Future<void> _savePrayersInHive(String year) async {
-    Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
-        .getPrayerTimeCalendar(
-            location['latitude'], location['longitude'], year);
-    await HiveService.instance.setPrayerTimes(
-      'yearlyPrayerTime',
-      yearlyPrayerTime,
     );
   }
 
@@ -180,7 +160,7 @@ class HomeController extends GetxController {
     return "+ 00 : $minutes : $seconds";
   }
 
-  void _updateNextPrayer() async{
+  void _updateNextPrayer() async {
     DateTime now = DateTime.now();
     DateTime? nextPrayerDateTime;
     String? nextPrayerName;
@@ -209,14 +189,12 @@ class HomeController extends GetxController {
               prayerDateTime.isBefore(nextPrayerDateTime!)) {
             nextPrayerDateTime = prayerDateTime;
             nextPrayerName = name;
+            return;
           }
         }
       });
 
       if (nextPrayerDateTime == null) {
-        if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
-          await _savePrayersInHive(DateTime.now().year.toString());
-        }
         now = now.add(const Duration(days: 1));
         todayPrayer = PrayerTimeModel.fromMap(HiveService.instance
                 .getPrayerTimes('yearlyPrayerTime')[now.month.toString()]

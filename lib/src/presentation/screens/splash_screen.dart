@@ -26,6 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Scaffold(
         body: Center(
           child: Column(
+            
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Image.asset(
