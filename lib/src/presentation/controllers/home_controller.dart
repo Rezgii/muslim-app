@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
-import 'package:home_widget/home_widget.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
+import 'package:muslim/src/core/utils/func/functions.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 
 class HomeController extends GetxController {
@@ -28,16 +27,7 @@ class HomeController extends GetxController {
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
-    _setupWidgetData();
     super.onInit();
-  }
-
-  void _setupWidgetData() {
-    HomeWidget.saveWidgetData("prayerName", prayerName.tr);
-    HomeWidget.saveWidgetData("prayerTime", prayerTime);
-    HomeWidget.updateWidget(
-      androidName: "PrayerWidget",
-    );
   }
 
   void _formatPrayerTime() {
@@ -82,40 +72,13 @@ class HomeController extends GetxController {
     });
   }
 
-  void _playAdhan() async {
-    final player = AudioPlayer();
-
-    // Configure the audio context
-    await player.setAudioContext(
-      AudioContext(
-        android: const AudioContextAndroid(
-          isSpeakerphoneOn: true, // Use the speaker for output
-          stayAwake: true,
-          contentType: AndroidContentType.sonification,
-          usageType: AndroidUsageType.alarm, // Forces higher priority playback
-          audioFocus:
-              AndroidAudioFocus.gainTransientExclusive, // Full volume override
-        ),
-        iOS: AudioContextIOS(
-          category: AVAudioSessionCategory
-              .playback, // Allows audio even in silent mode
-          options: const {
-            AVAudioSessionOptions.mixWithOthers,
-            AVAudioSessionOptions.overrideMutedMicrophoneInterruption,
-            AVAudioSessionOptions.duckOthers,
-          }, // Optional: Mix with other sounds
-        ),
-      ),
-    );
-    player.play(AssetSource('sounds/adhan.mp3'));
-  }
 
   void _startCountDownTimer(DateTime nextPrayerDateTime) {
     Duration remaining = nextPrayerDateTime.difference(DateTime.now());
     if (remaining.inSeconds >= 0) {
       countdown.value = _formatDuration(remaining);
       if (remaining.inSeconds == 0) {
-        _playAdhan();
+        playAdhan();
         _isPositiveTimer = true;
         _timer?.cancel();
         _timer = Timer.periodic(const Duration(seconds: 1), (_) {

@@ -6,12 +6,32 @@ import 'package:muslim/src/core/config/theme/theme_config.dart';
 import 'package:muslim/src/core/setting/setting.dart';
 import 'package:muslim/src/presentation/controllers/translations_controller.dart';
 import 'package:muslim/src/presentation/screens/splash_screen.dart';
+// import 'package:workmanager/workmanager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Setting.init();
+  // Workmanager().initialize(
+  //   callbackDispatcher,
+  // );
+  // Workmanager().registerPeriodicTask(
+  //   "prayerTime",
+  //   "setPrayer",
+  //   frequency: const Duration(minutes: 15),
+  //   initialDelay: const Duration(seconds: 40),
+  // );
   runApp(const MyApp());
 }
+
+// @pragma('vm:entry-point')
+// void callbackDispatcher() {
+//   Workmanager().executeTask((task, inputData) async {
+//     //The code goes here
+    
+//     return Future.value(true);
+//   });
+// }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
