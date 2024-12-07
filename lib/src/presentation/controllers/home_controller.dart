@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/core/utils/func/functions.dart';
+import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
+import 'package:shorebird_code_push/shorebird_code_push.dart';
 
 class HomeController extends GetxController {
   late PrayerTimeModel todayPrayer;
@@ -16,7 +19,8 @@ class HomeController extends GetxController {
   bool isTestMode = false;
 
   @override
-  void onInit() {
+  void onInit() async {
+    super.onInit();
     todayPrayer = Get.arguments['prayersTime'];
     prayerDay = DateTime(
       int.parse(todayPrayer.date['gregorian']['year']),
@@ -27,8 +31,39 @@ class HomeController extends GetxController {
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
-    super.onInit();
+    // _listenToNotificationStream();
   }
+
+  @override
+  void onReady() {
+    super.onReady();
+    scheduleWeekPrayers();
+    requestNotificationPermission();
+    _checkForUpdates();
+  }
+
+  Future<void> _checkForUpdates() async {
+    final updater = ShorebirdUpdater();
+    // Check whether a new update is available.
+    final status = await updater.checkForUpdate();
+
+    if (status == UpdateStatus.outdated) {
+      try {
+        // Perform the update
+        await updater.update();
+      } on UpdateException catch (error) {
+        log(error.message);
+      }
+    }
+  }
+
+  // void _listenToNotificationStream() {
+  //   LocalNotificationService.streamController.stream.listen(
+  //     (notificationResponse) {
+  //       Get.to(() => const ThikerScreen());
+  //     },
+  //   );
+  // }
 
   void _formatPrayerTime() {
     prayerTime =
@@ -71,7 +106,6 @@ class HomeController extends GetxController {
       }
     });
   }
-
 
   void _startCountDownTimer(DateTime nextPrayerDateTime) {
     Duration remaining = nextPrayerDateTime.difference(DateTime.now());
@@ -184,6 +218,7 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {
+    LocalNotificationService.streamController.close();
     _timer?.cancel();
     super.onClose();
   }

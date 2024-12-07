@@ -26,13 +26,12 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Scaffold(
         body: Center(
           child: Column(
-            
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image.asset(
-              //   'assets/images/logo.png',
-              //   // scale: 5,
-              // ),
+              // SvgPicture.asset(
+              //     'assets/images/logo.webp',
+              //     height: 350.h,
+              //   ),
               25.verticalSpace,
               Text(
                 'Muslim'.tr,

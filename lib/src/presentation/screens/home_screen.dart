@@ -45,14 +45,11 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  height: 350.h,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: Image.asset(
-                          'assets/images/mosque.png',
-                        ).image,
-                        opacity: .5),
+                Opacity(
+                  opacity: .5,
+                  child: Image.asset(
+                    'assets/images/mosque.webp',
+                    width: 1.sw,
                   ),
                 ),
               ],
@@ -68,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Image.asset(
-                      'assets/images/user.png',
+                      'assets/images/user.webp',
                       height: 60.h,
                     ),
                     12.horizontalSpace,
@@ -130,8 +127,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                             5.verticalSpace,
                             Text(
-                              controller.todayPrayer.date['gregorian']
-                                  ['date'],
+                              controller.todayPrayer.date['gregorian']['date'],
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
                                   fontSize: 16.sp,
@@ -139,8 +135,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                             5.verticalSpace,
                             Center(
-                              child: Obx(() => Text(
-                                  controller.countdown.value,
+                              child: Obx(() => Text(controller.countdown.value,
                                   textDirection: TextDirection.ltr,
                                   style: TextStyle(
                                       fontSize: 24.sp,
@@ -152,7 +147,7 @@ class HomeScreen extends StatelessWidget {
                       Transform.flip(
                         flipX: true,
                         child: Image.asset(
-                          'assets/images/partly-cloudy.png',
+                          'assets/images/partly_cloudy.webp',
                           height: 150.h,
                         ),
                       )
@@ -178,23 +173,23 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     // const HomeItemWidget(
                     //   title: 'Quran',
-                    //   img: 'assets/images/quran.png',
+                    //   img: 'assets/images/quran.webp',
                     //   routeName: '/quran',
                     // ),
                     const HomeItemWidget(
                       title: 'Thiker',
-                      img: 'assets/images/tasbih.png',
+                      img: 'assets/images/tasbih.webp',
                       routeName: '/thiker',
                     ),
                     HomeItemWidget(
                       title: 'Prayer',
-                      img: 'assets/images/time.png',
+                      img: 'assets/images/time.webp',
                       routeName: '/prayer',
                       prayerTimeModel: controller.todayPrayer,
                     ),
                     HomeItemWidget(
                       title: 'Calendar',
-                      img: 'assets/images/calendar_time.png',
+                      img: 'assets/images/calendar_time.webp',
                       routeName: '/prayer',
                       prayerTimeModel: controller.todayPrayer,
                     ),
@@ -265,7 +260,7 @@ class HomeScreen extends StatelessWidget {
                 //             ),
                 //           ),
                 //           Image.asset(
-                //             'assets/images/praying.png',
+                //             'assets/images/praying.webp',
                 //             height: 150.h,
                 //           )
                 //         ],

@@ -1,18 +1,23 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
+import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/apis/current_date_api.dart';
 import 'package:muslim/src/data/apis/prayer_time_api.dart';
 import 'package:muslim/src/data/apis/prayer_time_calendar_api.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/screens/home_screen.dart';
 import 'package:muslim/src/presentation/screens/location_permission_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 bool get isLocationGiven =>
     HiveService.instance.getSetting('location') ?? false;
-Map<String, dynamic> location = HiveService.instance.getSetting('locationData');
+Map<dynamic, dynamic> location =
+    HiveService.instance.getSetting('locationData');
 bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
 PrayerTimeModel? prayersTime;
 
@@ -22,11 +27,11 @@ DateTime prayerDay = DateTime.now();
 
 void initializeScreen() async {
   if (isLocationGiven) {
-    prayersTime = await getDataFromAPI();
-    // setupPrayerDay();
-
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
+      prayersTime = await getDataFromAPI();
       await _savePrayersInHive(DateTime.now().year.toString());
+    } else {
+      prayersTime = getDataFromHive();
     }
     Get.offAll(
       () => const HomeScreen(),
@@ -45,6 +50,69 @@ void initializeScreen() async {
       curve: Curves.easeIn,
     );
   }
+}
+
+void requestNotificationPermission() async {
+  final status = await Permission.notification.request();
+
+  if (status.isGranted) {
+  } else if (status.isDenied) {
+    await Permission.notification.request();
+  } else if (status.isPermanentlyDenied) {
+    openAppSettings();
+  }
+}
+
+Future<void> scheduleWeekPrayers() async {
+  DateTime now = DateTime.now();
+
+// Determine the week's range (start from today to the next 7 days).
+    List<DateTime> weekDays = List.generate(
+      7,
+      (index) => now.add(Duration(days: index)),
+    );
+
+    // Loop through each day of the week and schedule prayers.
+    for (DateTime day in weekDays) {
+      PrayerTimeModel dayPrayers = PrayerTimeModel.fromMap(HiveService.instance
+              .getPrayerTimes('yearlyPrayerTime')[day.month.toString()]
+          [day.day - 1]);
+      dayPrayers.prayersTime.forEach((name, time) {
+        DateTime prayerDateTime = _parsePrayerTime(time, day);
+        if (prayerDateTime.isAfter(now) &&
+            name != 'Sunset' &&
+            name != 'Imsak' &&
+            name != 'Firstthird' &&
+            name != 'Lastthird' &&
+            name != 'Midnight') {
+          log("Scheduled $name at $prayerDateTime");
+          // Schedule the prayer (e.g., notifications).
+          LocalNotificationService.scheduledNotification(
+              title: name.tr,
+              body: formatDateTimeToTimeString(prayerDateTime),
+              time: prayerDateTime);
+        }
+      });
+    }
+  
+}
+
+DateTime _parsePrayerTime(String time, DateTime date) {
+  int hour = int.parse(time.substring(0, 2));
+  int minute = int.parse(time.substring(3, 5));
+  return DateTime(date.year, date.month, date.day, hour, minute);
+}
+
+String formatDateTimeToTimeString(DateTime dateTime) {
+  int hour = dateTime.hour;
+  int minute = dateTime.minute;
+  String period = hour >= 12 ? "PM" : "AM";
+
+  // Convert 24-hour time to 12-hour time
+  hour = hour % 12 == 0 ? 12 : hour % 12;
+
+  // Format the time string
+  return "${hour.toString().padLeft(2, '0')} : ${minute.toString().padLeft(2, '0')} $period";
 }
 
 Future<void> _savePrayersInHive(String year) async {
@@ -68,86 +136,6 @@ PrayerTimeModel getDataFromHive() {
           .getPrayerTimes('yearlyPrayerTime')[today.month.toString()]
       [today.day - 1]);
 }
-
-// DateTime setupPrayerDay() {
-//   prayerDay = DateTime(
-//     int.parse(prayersTime!.date['gregorian']['year']),
-//     prayersTime!.date['gregorian']['month']['number'],
-//     int.parse(prayersTime!.date['gregorian']['day']),
-//   );
-//   return prayerDay;
-// }
-
-// List<dynamic> updateNextPrayer(
-//     {required bool isTestMode, required bool isWidget, Box? prayerBox}) {
-//   DateTime now = DateTime.now();
-//   DateTime? nextPrayerDateTime;
-//   String? nextPrayerName;
-
-//   if (!isTestMode) {
-//     prayersTime!.prayersTime.forEach((name, time) {
-//       DateTime prayerDateTime = parsePrayerTime(time);
-//       if (prayerDateTime.isBefore(now) &&
-//           name != 'Sunset' &&
-//           name != 'Imsak' &&
-//           name != 'Firstthird' &&
-//           name != 'Lastthird' &&
-//           name != 'Midnight') {
-//         Duration passedDuration = DateTime.now().difference(prayerDateTime);
-//         if (!isWidget && passedDuration.inMinutes < 30) {
-//           nextPrayerDateTime = prayerDateTime;
-//           nextPrayerName = name;
-//         }
-//       } else if (prayerDateTime.isAfter(now) &&
-//           name != 'Sunset' &&
-//           name != 'Imsak' &&
-//           name != 'Firstthird' &&
-//           name != 'Lastthird' &&
-//           name != 'Midnight') {
-//         if (nextPrayerDateTime == null ||
-//             prayerDateTime.isBefore(nextPrayerDateTime!)) {
-//           nextPrayerDateTime = prayerDateTime;
-//           nextPrayerName = name;
-//           return;
-//         }
-//       }
-//     });
-
-//     if (nextPrayerDateTime == null) {
-//       now = now.add(const Duration(days: 1));
-//       if (prayerBox == null) {
-//         prayersTime = PrayerTimeModel.fromMap(HiveService.instance
-//                 .getPrayerTimes('yearlyPrayerTime')[now.month.toString()]
-//             [now.day - 1]);
-//       } else {
-//         prayersTime = PrayerTimeModel.fromMap(prayerBox
-//             .get('yearlyPrayerTime')[now.month.toString()][now.day - 1]);
-//       }
-//       nextPrayerName = prayersTime!.prayersTime.keys.first;
-//       nextPrayerDateTime =
-//           parsePrayerTime(prayersTime!.prayersTime[nextPrayerName]!);
-//     }
-
-//     if (nextPrayerName != null && nextPrayerDateTime != null) {
-//       prayerName = nextPrayerName!;
-//       prayerTime = _formatTime(nextPrayerDateTime!);
-//     }
-//   } else {
-//     prayerName = "DHohr";
-//     prayerTime = _formatTime(parsePrayerTime("17:02"));
-//   }
-//   return [prayerName, prayerTime];
-// }
-
-// DateTime parsePrayerTime(String time) {
-//   int hour = int.parse(time.substring(0, 2));
-//   int minute = int.parse(time.substring(3, 5));
-//   return DateTime(prayerDay.year, prayerDay.month, prayerDay.day, hour, minute);
-// }
-
-// String _formatTime(DateTime dateTime) {
-//   return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-// }
 
 void playAdhan() async {
   final player = AudioPlayer();

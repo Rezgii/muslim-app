@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:muslim/src/core/config/locale/local.dart';
 import 'package:muslim/src/core/config/theme/theme_config.dart';
 import 'package:muslim/src/core/setting/setting.dart';
+import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/presentation/controllers/translations_controller.dart';
 import 'package:muslim/src/presentation/screens/splash_screen.dart';
+
 // import 'package:workmanager/workmanager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await LocalNotificationService.init();
   await Setting.init();
   // Workmanager().initialize(
   //   callbackDispatcher,
@@ -27,7 +30,7 @@ void main() async {
 // void callbackDispatcher() {
 //   Workmanager().executeTask((task, inputData) async {
 //     //The code goes here
-    
+
 //     return Future.value(true);
 //   });
 // }
