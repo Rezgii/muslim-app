@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // SvgPicture.asset(
-              //     'assets/images/logo.webp',
+              //     'assets/images/logo.svg',
               //     height: 350.h,
               //   ),
               25.verticalSpace,

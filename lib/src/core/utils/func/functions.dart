@@ -29,10 +29,11 @@ void initializeScreen() async {
   if (isLocationGiven) {
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
       prayersTime = await getDataFromAPI();
-      await _savePrayersInHive(DateTime.now().year.toString());
+      _savePrayersInHive();
     } else {
       prayersTime = getDataFromHive();
     }
+
     Get.offAll(
       () => const HomeScreen(),
       arguments: {
@@ -64,37 +65,37 @@ void requestNotificationPermission() async {
 }
 
 Future<void> scheduleWeekPrayers() async {
+  log('========START Scheduling=======');
   DateTime now = DateTime.now();
 
 // Determine the week's range (start from today to the next 7 days).
-    List<DateTime> weekDays = List.generate(
-      7,
-      (index) => now.add(Duration(days: index)),
-    );
+  List<DateTime> weekDays = List.generate(
+    7,
+    (index) => now.add(Duration(days: index)),
+  );
 
-    // Loop through each day of the week and schedule prayers.
-    for (DateTime day in weekDays) {
-      PrayerTimeModel dayPrayers = PrayerTimeModel.fromMap(HiveService.instance
-              .getPrayerTimes('yearlyPrayerTime')[day.month.toString()]
-          [day.day - 1]);
-      dayPrayers.prayersTime.forEach((name, time) {
-        DateTime prayerDateTime = _parsePrayerTime(time, day);
-        if (prayerDateTime.isAfter(now) &&
-            name != 'Sunset' &&
-            name != 'Imsak' &&
-            name != 'Firstthird' &&
-            name != 'Lastthird' &&
-            name != 'Midnight') {
-          log("Scheduled $name at $prayerDateTime");
-          // Schedule the prayer (e.g., notifications).
-          LocalNotificationService.scheduledNotification(
-              title: name.tr,
-              body: formatDateTimeToTimeString(prayerDateTime),
-              time: prayerDateTime);
-        }
-      });
-    }
-  
+  // Loop through each day of the week and schedule prayers.
+  for (DateTime day in weekDays) {
+    PrayerTimeModel dayPrayers = PrayerTimeModel.fromMap(HiveService.instance
+        .getPrayerTimes('yearlyPrayerTime')[day.month.toString()][day.day - 1]);
+    dayPrayers.prayersTime.forEach((name, time) {
+      DateTime prayerDateTime = _parsePrayerTime(time, day);
+      if (prayerDateTime.isAfter(now) &&
+          name != 'Sunset' &&
+          name != 'Imsak' &&
+          name != 'Sunrise' &&
+          name != 'Firstthird' &&
+          name != 'Lastthird' &&
+          name != 'Midnight') {
+        // Schedule the prayer (e.g., notifications).
+        LocalNotificationService.scheduledNotification(
+            title: name.tr,
+            body: formatDateTimeToTimeString(prayerDateTime),
+            time: prayerDateTime);
+      }
+    });
+  }
+  log('========END Scheduling=======');
 }
 
 DateTime _parsePrayerTime(String time, DateTime date) {
@@ -115,13 +116,19 @@ String formatDateTimeToTimeString(DateTime dateTime) {
   return "${hour.toString().padLeft(2, '0')} : ${minute.toString().padLeft(2, '0')} $period";
 }
 
-Future<void> _savePrayersInHive(String year) async {
+Future<void> _savePrayersInHive() async {
+  log('========START Saving=======');
+
   Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
-      .getPrayerTimeCalendar(location['latitude'], location['longitude'], year);
+      .getPrayerTimeCalendar(location['latitude'], location['longitude'],
+          DateTime.now().year.toString());
   await HiveService.instance.setPrayerTimes(
     'yearlyPrayerTime',
     yearlyPrayerTime,
   );
+  scheduleWeekPrayers();
+
+  log('========END Saving=======');
 }
 
 Future<PrayerTimeModel> getDataFromAPI() async {

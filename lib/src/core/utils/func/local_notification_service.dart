@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -30,7 +31,9 @@ class LocalNotificationService {
   static int generateIdFromDateTime(DateTime dateTime) {
     return int.parse(
       "${dateTime.day.toString().padLeft(2, '0')}"
-      "${dateTime.hour.toString().padLeft(2, '0')}${dateTime.minute.toString().padLeft(2, '0')}",
+      "${dateTime.hour.toString().padLeft(2, '0')}"
+      "${dateTime.minute.toString().padLeft(2, '0')}"
+      "${dateTime.second.toString().padLeft(2, '0')}", // Adding seconds
     );
   }
 
@@ -46,6 +49,7 @@ class LocalNotificationService {
         priority: Priority.max,
         sound: RawResourceAndroidNotificationSound("adhan"),
         category: AndroidNotificationCategory.alarm,
+        playSound: true,
       ),
     );
     await flutterLocalNotificationsPlugin.show(
@@ -99,11 +103,13 @@ class LocalNotificationService {
         priority: Priority.max,
         sound: RawResourceAndroidNotificationSound("adhan"),
         category: AndroidNotificationCategory.alarm,
+        playSound: true,
       ),
     );
     tz.initializeTimeZones();
     final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    log("Scheduled $title at ${tz.TZDateTime(tz.local, time.year, time.month, time.day, time.hour, time.minute)}");
     await flutterLocalNotificationsPlugin.zonedSchedule(
       generateIdFromDateTime(time),
       title,

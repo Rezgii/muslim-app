@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,9 +47,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Opacity(
-                  opacity: .5,
-                  child: Image.asset(
-                    'assets/images/mosque.webp',
+                  opacity: .2,
+                  child: SvgPicture.asset(
+                    'assets/images/mosque.svg',
                     width: 1.sw,
                   ),
                 ),
@@ -64,8 +65,8 @@ class HomeScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'assets/images/user.webp',
+                    SvgPicture.asset(
+                      'assets/images/user.svg',
                       height: 60.h,
                     ),
                     12.horizontalSpace,
@@ -146,8 +147,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                       Transform.flip(
                         flipX: true,
-                        child: Image.asset(
-                          'assets/images/partly_cloudy.webp',
+                        child: SvgPicture.asset(
+                          'assets/images/partly_cloudy.svg',
                           height: 150.h,
                         ),
                       )
@@ -173,23 +174,23 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     // const HomeItemWidget(
                     //   title: 'Quran',
-                    //   img: 'assets/images/quran.webp',
+                    //   img: 'assets/images/quran.svg',
                     //   routeName: '/quran',
                     // ),
                     const HomeItemWidget(
                       title: 'Thiker',
-                      img: 'assets/images/tasbih.webp',
+                      img: 'assets/images/tasbih.svg',
                       routeName: '/thiker',
                     ),
                     HomeItemWidget(
                       title: 'Prayer',
-                      img: 'assets/images/time.webp',
+                      img: 'assets/images/time.svg',
                       routeName: '/prayer',
                       prayerTimeModel: controller.todayPrayer,
                     ),
                     HomeItemWidget(
                       title: 'Calendar',
-                      img: 'assets/images/calendar_time.webp',
+                      img: 'assets/images/calendar.svg',
                       routeName: '/prayer',
                       prayerTimeModel: controller.todayPrayer,
                     ),
@@ -259,8 +260,8 @@ class HomeScreen extends StatelessWidget {
                 //               style: TextStyle(fontSize: 32.sp),
                 //             ),
                 //           ),
-                //           Image.asset(
-                //             'assets/images/praying.webp',
+                //           SvgPicture.asset(
+                //             'assets/images/praying.svg',
                 //             height: 150.h,
                 //           )
                 //         ],
@@ -333,7 +334,7 @@ class HomeItemWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset(
+            SvgPicture.asset(
               img,
               height: 75.h,
             ),

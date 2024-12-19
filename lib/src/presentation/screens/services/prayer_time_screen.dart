@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -244,55 +245,55 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                     TimeLine(prayerName: 'Isha', timestamp: Timestamp.now()),
                   ], [
                     PrayerModel(
-                      timeImage: 'assets/images/midnight.webp',
+                      timeImage: 'assets/images/midnight.svg',
                       prayerName: 'Last Third'.tr,
                       prayerTime:
                           _controller.todayPrayer.prayersTime['Lastthird'],
-                      soundIcon: 'assets/images/mute.webp',
+                      soundIcon: 'assets/images/mute.svg',
                     ),
                     PrayerModel(
-                      timeImage: 'assets/images/midnight.webp',
+                      timeImage: 'assets/images/midnight.svg',
                       prayerName: 'Imsak'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Imsak'],
-                      soundIcon: 'assets/images/mute.webp',
+                      soundIcon: 'assets/images/mute.svg',
                     ),
                     PrayerModel(
-                      timeImage: 'assets/images/sunset.webp',
+                      timeImage: 'assets/images/sunset.svg',
                       prayerName: 'Fajr'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Fajr'],
-                      soundIcon: 'assets/images/volume.webp',
+                      soundIcon: 'assets/images/volume.svg',
                     ),
                     PrayerModel(
-                      timeImage: 'assets/images/sunrise.png',
+                      timeImage: 'assets/images/sunrise.svg',
                       prayerName: 'Sunrise'.tr,
                       prayerTime:
                           _controller.todayPrayer.prayersTime['Sunrise'],
-                      soundIcon: 'assets/images/mute.webp',
+                      soundIcon: 'assets/images/mute.svg',
                     ),
                     PrayerModel(
-                      timeImage: 'assets/images/contrast.webp',
+                      timeImage: 'assets/images/contrast.svg',
                       prayerName: 'Dhuhr'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Dhuhr'],
-                      soundIcon: 'assets/images/volume.webp',
+                      soundIcon: 'assets/images/volume.svg',
                     ),
                     PrayerModel(
-                      timeImage: 'assets/images/partly_cloudy.webp',
+                      timeImage: 'assets/images/partly_cloudy.svg',
                       prayerName: 'Asr'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Asr'],
-                      soundIcon: 'assets/images/volume.webp',
+                      soundIcon: 'assets/images/volume.svg',
                     ),
                     PrayerModel(
-                      timeImage: 'assets/images/sunset.webp',
+                      timeImage: 'assets/images/sunset.svg',
                       prayerName: 'Maghrib'.tr,
                       prayerTime:
                           _controller.todayPrayer.prayersTime['Maghrib'],
-                      soundIcon: 'assets/images/volume.webp',
+                      soundIcon: 'assets/images/volume.svg',
                     ),
                     PrayerModel(
-                      timeImage: 'assets/images/half_moon.webp',
+                      timeImage: 'assets/images/half_moon.svg',
                       prayerName: 'Isha'.tr,
                       prayerTime: _controller.todayPrayer.prayersTime['Isha'],
-                      soundIcon: 'assets/images/volume.webp',
+                      soundIcon: 'assets/images/volume.svg',
                     ),
                   ]),
                   10.verticalSpace,
@@ -336,7 +337,7 @@ class PrayerTimeWidget extends StatelessWidget {
             decoration: BoxDecoration(
                 color: const Color(0xFFF1F1F1),
                 borderRadius: BorderRadius.circular(15)),
-            child: Image.asset(
+            child: SvgPicture.asset(
               timeImage,
               height: 50.h,
             ),
@@ -358,7 +359,7 @@ class PrayerTimeWidget extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Image.asset(
+          SvgPicture.asset(
             soundIcon,
             height: 32.h,
           ),

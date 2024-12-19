@@ -27,17 +27,17 @@ class HomeController extends GetxController {
       todayPrayer.date['gregorian']['month']['number'],
       int.parse(todayPrayer.date['gregorian']['day']),
     );
-
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
+    scheduleWeekPrayers();
+
     // _listenToNotificationStream();
   }
 
   @override
   void onReady() {
     super.onReady();
-    scheduleWeekPrayers();
     requestNotificationPermission();
     _checkForUpdates();
   }
