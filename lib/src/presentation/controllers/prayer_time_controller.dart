@@ -21,9 +21,10 @@ class PrayerTimeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     _setupPrayerDay();
-    _updateNextPrayer(); // Set the initial prayerName and prayerTime based on the next prayer
     if (isToday) {
+      _updateNextPrayer();
       _initializeAndStartCountdown();
     }
     _formatFields();
@@ -75,8 +76,10 @@ class PrayerTimeController extends GetxController {
           todayPrayer.date['hijri']['year'];
       day = todayPrayer.date['hijri']['weekday']['ar'];
     }
-    prayerTime =
-        '${prayerTime.substring(0, 2)} ${prayerTime.substring(2, 3)} ${prayerTime.substring(3)}';
+    if (isToday) {
+      prayerTime =
+          '${prayerTime.substring(0, 2)} ${prayerTime.substring(2, 3)} ${prayerTime.substring(3)}';
+    }
   }
 
   DateTime _parsePrayerTime(String time) {

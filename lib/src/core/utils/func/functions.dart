@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:isolate';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +30,21 @@ void initializeScreen() async {
   if (isLocationGiven) {
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
       prayersTime = await getDataFromAPI();
-      _savePrayersInHive();
+
+      //ISOLATE HERE
+      ReceivePort receivePort = ReceivePort();
+      Isolate.spawn(isolateTask,
+          [receivePort.sendPort, location['latitude'], location['longitude']]);
+
+      receivePort.listen((message) {
+        log("Isolate Listen");
+        _savePrayersInHive(message);
+        receivePort.close();
+      });
+
+      // (wait) Receive the result (data to save in hive)
+      // Map<String, dynamic> resultData = await receivePort.first;
+      // _savePrayersInHive(resultData);
     } else {
       prayersTime = getDataFromHive();
     }
@@ -52,6 +67,20 @@ void initializeScreen() async {
     );
   }
 }
+
+void isolateTask(List<dynamic> args) async {
+  log("Start Isolate Func");
+  SendPort sendPort = args[0];
+  String latitude = args[1];
+  String longitude = args[2];
+  Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
+      .getPrayerTimeCalendar(
+          latitude, longitude, DateTime.now().year.toString());
+  sendPort.send(yearlyPrayerTime);
+  log("End Isolate Func");
+}
+
+void gettingData(String latitude, String longitude) async {}
 
 void requestNotificationPermission() async {
   final status = await Permission.notification.request();
@@ -116,12 +145,9 @@ String formatDateTimeToTimeString(DateTime dateTime) {
   return "${hour.toString().padLeft(2, '0')} : ${minute.toString().padLeft(2, '0')} $period";
 }
 
-Future<void> _savePrayersInHive() async {
+Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
   log('========START Saving=======');
 
-  Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
-      .getPrayerTimeCalendar(location['latitude'], location['longitude'],
-          DateTime.now().year.toString());
   await HiveService.instance.setPrayerTimes(
     'yearlyPrayerTime',
     yearlyPrayerTime,
@@ -130,6 +156,21 @@ Future<void> _savePrayersInHive() async {
 
   log('========END Saving=======');
 }
+
+// Future<void> _savePrayersInHive() async {
+//   log('========START Saving=======');
+
+//   Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
+//       .getPrayerTimeCalendar(location['latitude'], location['longitude'],
+//           DateTime.now().year.toString());
+//   await HiveService.instance.setPrayerTimes(
+//     'yearlyPrayerTime',
+//     yearlyPrayerTime,
+//   );
+//   scheduleWeekPrayers();
+
+//   log('========END Saving=======');
+// }
 
 Future<PrayerTimeModel> getDataFromAPI() async {
   String date = await CurrentDateApi.instance.getDate('Africa/Algiers');

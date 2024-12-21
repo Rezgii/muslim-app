@@ -11,7 +11,7 @@ class HomeController extends GetxController {
   late PrayerTimeModel todayPrayer;
   late String prayerName = 'Loading...';
   late String prayerTime = 'Loading...';
-  late DateTime prayerDay;
+  // late DateTime prayerDay;
 
   RxString countdown = '- 00 : 00 : 00'.obs;
   Timer? _timer;
@@ -22,17 +22,15 @@ class HomeController extends GetxController {
   void onInit() async {
     super.onInit();
     todayPrayer = Get.arguments['prayersTime'];
-    prayerDay = DateTime(
-      int.parse(todayPrayer.date['gregorian']['year']),
-      todayPrayer.date['gregorian']['month']['number'],
-      int.parse(todayPrayer.date['gregorian']['day']),
-    );
+    // prayerDay = DateTime(
+    //   int.parse(todayPrayer.date['gregorian']['year']),
+    //   todayPrayer.date['gregorian']['month']['number'],
+    //   int.parse(todayPrayer.date['gregorian']['day']),
+    // );
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
     scheduleWeekPrayers();
-
-    // _listenToNotificationStream();
   }
 
   @override

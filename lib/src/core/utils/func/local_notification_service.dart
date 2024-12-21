@@ -88,7 +88,7 @@ class LocalNotificationService {
     );
   }
 
-//Show Scheduled Notification
+  //Show Scheduled Notification
   static void scheduledNotification(
       {required String title,
       required String body,
@@ -124,6 +124,50 @@ class LocalNotificationService {
     );
   }
 
+  //Show Daily Scheduled Notification
+  static void scheduledDailyNotification(
+      {required String title,
+      required String body,
+      required DateTime time,
+      required int hour,
+      required int minute,
+      String? payload}) async {
+    NotificationDetails details = const NotificationDetails(
+      android: AndroidNotificationDetails(
+        //Configure notif here
+        "id 4",
+        "Daily Scheduled Notif",
+        importance: Importance.max,
+        priority: Priority.max,
+        sound: RawResourceAndroidNotificationSound("adhan"),
+        category: AndroidNotificationCategory.alarm,
+        playSound: true,
+      ),
+    );
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Africa/Algiers'));
+    var currentTime = tz.TZDateTime.now(tz.local);
+    var scheduleTime = tz.TZDateTime(tz.local, currentTime.year,
+        currentTime.month, currentTime.day, hour, minute);
+    if (scheduleTime.isBefore(currentTime)) {
+      scheduleTime = scheduleTime.add(const Duration(days: 1));
+    }
+    log("The Current Time is : ${currentTime.year}/${currentTime.month}/${currentTime.day} - ${currentTime.hour}:${currentTime.minute}");
+    log("The Schdeuled Time is : ${scheduleTime.year}/${scheduleTime.month}/${scheduleTime.day} - ${scheduleTime.hour}:${scheduleTime.minute}");
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      generateIdFromDateTime(time),
+      title,
+      body,
+      payload: payload,
+      scheduleTime,
+      details,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+  }
+
+  //Cancel All Notifications
   static void cancelNotification(int id) async {
     await flutterLocalNotificationsPlugin.cancel(id);
   }

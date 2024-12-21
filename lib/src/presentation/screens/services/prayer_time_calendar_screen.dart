@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
@@ -56,13 +57,14 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                       fontSize: 18.sp,
                     ),
                     onDayPressed: (DateTime date, List<Event> events) {
-                      Get.to(() => const PrayerTimeScreen(), arguments: {
-                        'isToday': false,
-                        'prayersTime': getPrayerTime(date)
-                      },
-            duration: const Duration(milliseconds: 650),
-            transition: Transition.circularReveal,
-            curve: Curves.easeIn);
+                      Get.to(() => const PrayerTimeScreen(),
+                          arguments: {
+                            'isToday': false,
+                            'prayersTime': getPrayerTime(date)
+                          },
+                          duration: const Duration(milliseconds: 650),
+                          transition: Transition.circularReveal,
+                          curve: Curves.easeIn);
                     },
                     weekendTextStyle: TextStyle(
                       color: AppColors.primaryColor,
