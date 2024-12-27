@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:muslim/src/core/config/hive_service.dart';
+// import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/core/utils/func/functions.dart';
 import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
@@ -9,8 +9,9 @@ import 'package:shorebird_code_push/shorebird_code_push.dart';
 
 class HomeController extends GetxController {
   late PrayerTimeModel todayPrayer;
-  late String prayerName = 'Loading...';
-  late String prayerTime = 'Loading...';
+  List<PrayerTimeModel>? daysPrayers;
+  late String prayerName;
+  late String prayerTime;
   // late DateTime prayerDay;
 
   RxString countdown = '- 00 : 00 : 00'.obs;
@@ -21,7 +22,8 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    todayPrayer = Get.arguments['prayersTime'];
+    daysPrayers = Get.arguments['prayersTime'];
+    todayPrayer = daysPrayers![0];
     // prayerDay = DateTime(
     //   int.parse(todayPrayer.date['gregorian']['year']),
     //   todayPrayer.date['gregorian']['month']['number'],
@@ -190,10 +192,7 @@ class HomeController extends GetxController {
       });
 
       if (nextPrayerDateTime == null) {
-        now = now.add(const Duration(days: 1));
-        todayPrayer = PrayerTimeModel.fromMap(HiveService.instance
-                .getPrayerTimes('yearlyPrayerTime')[now.month.toString()]
-            [now.day - 1]);
+        todayPrayer = daysPrayers![1];
         nextPrayerName = todayPrayer.prayersTime.keys.first;
         nextPrayerDateTime =
             _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);

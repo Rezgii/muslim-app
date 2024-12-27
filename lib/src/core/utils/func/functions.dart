@@ -20,7 +20,7 @@ bool get isLocationGiven =>
 Map<dynamic, dynamic> location =
     HiveService.instance.getSetting('locationData');
 bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
-PrayerTimeModel? prayersTime;
+List<PrayerTimeModel>? prayersTime;
 
 late String prayerName;
 late String prayerTime;
@@ -28,7 +28,8 @@ DateTime prayerDay = DateTime.now();
 
 void initializeScreen() async {
   if (isLocationGiven) {
-    if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null) {
+    if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null &&
+        HiveService.instance.getPrayerTimes('year') != DateTime.now().year) {
       prayersTime = await getDataFromAPI();
 
       //ISOLATE HERE
@@ -80,8 +81,6 @@ void isolateTask(List<dynamic> args) async {
   log("End Isolate Func");
 }
 
-void gettingData(String latitude, String longitude) async {}
-
 void requestNotificationPermission() async {
   final status = await Permission.notification.request();
 
@@ -95,6 +94,7 @@ void requestNotificationPermission() async {
 
 Future<void> scheduleWeekPrayers() async {
   log('========START Scheduling=======');
+  // bool testMode = false;
   DateTime now = DateTime.now();
 
 // Determine the week's range (start from today to the next 7 days).
@@ -102,8 +102,8 @@ Future<void> scheduleWeekPrayers() async {
     7,
     (index) => now.add(Duration(days: index)),
   );
+  log("========Prayers========");
 
-  // Loop through each day of the week and schedule prayers.
   for (DateTime day in weekDays) {
     PrayerTimeModel dayPrayers = PrayerTimeModel.fromMap(HiveService.instance
         .getPrayerTimes('yearlyPrayerTime')[day.month.toString()][day.day - 1]);
@@ -152,37 +152,55 @@ Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
     'yearlyPrayerTime',
     yearlyPrayerTime,
   );
+  await HiveService.instance.setPrayerTimes(
+    'year',
+    DateTime.now().year,
+  );
   scheduleWeekPrayers();
 
   log('========END Saving=======');
 }
 
-// Future<void> _savePrayersInHive() async {
-//   log('========START Saving=======');
-
-//   Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
-//       .getPrayerTimeCalendar(location['latitude'], location['longitude'],
-//           DateTime.now().year.toString());
-//   await HiveService.instance.setPrayerTimes(
-//     'yearlyPrayerTime',
-//     yearlyPrayerTime,
-//   );
-//   scheduleWeekPrayers();
-
-//   log('========END Saving=======');
-// }
-
-Future<PrayerTimeModel> getDataFromAPI() async {
+Future<List<PrayerTimeModel>> getDataFromAPI() async {
+  List<PrayerTimeModel> daysPrayers = [];
   String date = await CurrentDateApi.instance.getDate('Africa/Algiers');
-  return PrayerTimeModel.fromMap(await PrayerTimeApi.instance
-      .getPrayerTime(location['latitude'], location['longitude'], date));
+  daysPrayers.add(PrayerTimeModel.fromMap(await PrayerTimeApi.instance
+      .getPrayerTime(location['latitude'], location['longitude'], date)));
+  date = addOneDayToDate(date);
+  daysPrayers.add(PrayerTimeModel.fromMap(await PrayerTimeApi.instance
+      .getPrayerTime(location['latitude'], location['longitude'], date)));
+
+  return daysPrayers;
 }
 
-PrayerTimeModel getDataFromHive() {
+String addOneDayToDate(String dateString) {
+  // Split the input date string into day, month, and year
+  List<String> parts = dateString.split('-');
+  int day = int.parse(parts[0]);
+  int month = int.parse(parts[1]);
+  int year = int.parse(parts[2]);
+
+  // Create a DateTime object from the parsed values
+  DateTime date = DateTime(year, month, day);
+
+  // Add one day
+  DateTime newDate = date.add(const Duration(days: 1));
+
+  // Return the new date in the same format "DD-MM-YYYY"
+  return "${newDate.day.toString().padLeft(2, '0')}-${newDate.month.toString().padLeft(2, '0')}-${newDate.year}";
+}
+
+List<PrayerTimeModel> getDataFromHive() {
+  List<PrayerTimeModel> daysPrayers = [];
   DateTime today = DateTime.now();
-  return PrayerTimeModel.fromMap(HiveService.instance
+  daysPrayers.add(PrayerTimeModel.fromMap(HiveService.instance
           .getPrayerTimes('yearlyPrayerTime')[today.month.toString()]
-      [today.day - 1]);
+      [today.day - 1]));
+  today = today.add(const Duration(days: 1));
+  daysPrayers.add(PrayerTimeModel.fromMap(HiveService.instance
+          .getPrayerTimes('yearlyPrayerTime')[today.month.toString()]
+      [today.day - 1]));
+  return daysPrayers;
 }
 
 void playAdhan() async {

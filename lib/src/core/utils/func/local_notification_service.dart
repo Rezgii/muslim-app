@@ -14,18 +14,29 @@ class LocalNotificationService {
   static StreamController<NotificationResponse> streamController =
       StreamController();
 
-  static onTap(NotificationResponse notificationResponse) {
-    //onTap Notif (forground & background only)
-  }
+  // AndroidNotificationChannel channel = const AndroidNotificationChannel(
+  //   'high_importance_channel', // id
+  //   'High Importance Notifications', // title
+  //   description: 'This channel is used for important notifications.',
+  //   importance: Importance.high,
+  // );
 
   static Future init() async {
     InitializationSettings settings = const InitializationSettings(
         android: AndroidInitializationSettings("@mipmap/ic_launcher"),
         iOS: DarwinInitializationSettings());
 
-    flutterLocalNotificationsPlugin.initialize(settings,
-        onDidReceiveBackgroundNotificationResponse: onTap,
-        onDidReceiveNotificationResponse: onTap);
+    flutterLocalNotificationsPlugin.initialize(
+      settings,
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) async {
+        log("==================");
+        log("Notification tapped: ${notificationResponse.payload}");
+        log(notificationResponse.toString());
+        log("==================");
+      },
+    );
   }
 
   static int generateIdFromDateTime(DateTime dateTime) {
@@ -139,7 +150,7 @@ class LocalNotificationService {
         "Daily Scheduled Notif",
         importance: Importance.max,
         priority: Priority.max,
-        sound: RawResourceAndroidNotificationSound("adhan"),
+        // sound: RawResourceAndroidNotificationSound("adhan"),
         category: AndroidNotificationCategory.alarm,
         playSound: true,
       ),
@@ -153,7 +164,7 @@ class LocalNotificationService {
       scheduleTime = scheduleTime.add(const Duration(days: 1));
     }
     log("The Current Time is : ${currentTime.year}/${currentTime.month}/${currentTime.day} - ${currentTime.hour}:${currentTime.minute}");
-    log("The Schdeuled Time is : ${scheduleTime.year}/${scheduleTime.month}/${scheduleTime.day} - ${scheduleTime.hour}:${scheduleTime.minute}");
+    log("The Schdeuled Time of is : ${scheduleTime.year}/${scheduleTime.month}/${scheduleTime.day} - ${scheduleTime.hour}:${scheduleTime.minute}");
     await flutterLocalNotificationsPlugin.zonedSchedule(
       generateIdFromDateTime(time),
       title,
@@ -171,6 +182,11 @@ class LocalNotificationService {
   static void cancelNotification(int id) async {
     await flutterLocalNotificationsPlugin.cancel(id);
   }
+}
+
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  //onTap Notif (forground & background only)
 }
 
   // 0. Ask Permission 
