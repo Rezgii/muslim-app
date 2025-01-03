@@ -12,7 +12,6 @@ class HomeController extends GetxController {
   List<PrayerTimeModel>? daysPrayers;
   late String prayerName;
   late String prayerTime;
-  // late DateTime prayerDay;
 
   RxString countdown = '- 00 : 00 : 00'.obs;
   Timer? _timer;
@@ -24,11 +23,6 @@ class HomeController extends GetxController {
     super.onInit();
     daysPrayers = Get.arguments['prayersTime'];
     todayPrayer = daysPrayers![0];
-    // prayerDay = DateTime(
-    //   int.parse(todayPrayer.date['gregorian']['year']),
-    //   todayPrayer.date['gregorian']['month']['number'],
-    //   int.parse(todayPrayer.date['gregorian']['day']),
-    // );
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
@@ -56,14 +50,6 @@ class HomeController extends GetxController {
       }
     }
   }
-
-  // void _listenToNotificationStream() {
-  //   LocalNotificationService.streamController.stream.listen(
-  //     (notificationResponse) {
-  //       Get.to(() => const ThikerScreen());
-  //     },
-  //   );
-  // }
 
   void _formatPrayerTime() {
     prayerTime =

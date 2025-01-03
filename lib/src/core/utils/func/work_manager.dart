@@ -8,7 +8,7 @@ class WorkManagerService {
     await Workmanager().registerPeriodicTask(
       "id1",
       "adhkar reminder",
-      frequency: const Duration(days: 1),
+      frequency: const Duration(hours: 23),
       initialDelay: const Duration(minutes: 1),
     );
   }

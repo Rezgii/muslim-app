@@ -14,6 +14,8 @@ import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/screens/home_screen.dart';
 import 'package:muslim/src/presentation/screens/location_permission_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as notif;
 
 bool get isLocationGiven =>
     HiveService.instance.getSetting('location') ?? false;
@@ -27,6 +29,7 @@ late String prayerTime;
 DateTime prayerDay = DateTime.now();
 
 void initializeScreen() async {
+  
   if (isLocationGiven) {
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null &&
         HiveService.instance.getPrayerTimes('year') != DateTime.now().year) {
@@ -83,6 +86,7 @@ void isolateTask(List<dynamic> args) async {
 
 void requestNotificationPermission() async {
   final status = await Permission.notification.request();
+  notif.AndroidFlutterLocalNotificationsPlugin().requestExactAlarmsPermission();
 
   if (status.isGranted) {
   } else if (status.isDenied) {
@@ -90,10 +94,22 @@ void requestNotificationPermission() async {
   } else if (status.isPermanentlyDenied) {
     openAppSettings();
   }
+  requestDndPermission();
+}
+
+void requestDndPermission() async {
+  if (await Permission.ignoreBatteryOptimizations.request().isGranted &&
+      await Permission.notification.request().isGranted) {
+    log("All required permissions granted.");
+  } else {
+    log("DND or Notification Permission not granted.");
+  }
 }
 
 Future<void> scheduleWeekPrayers() async {
   log('========START Scheduling=======');
+  await LocalNotificationService.cancelAllNotifications();
+
   // bool testMode = false;
   DateTime now = DateTime.now();
 
@@ -102,12 +118,11 @@ Future<void> scheduleWeekPrayers() async {
     7,
     (index) => now.add(Duration(days: index)),
   );
-  log("========Prayers========");
 
   for (DateTime day in weekDays) {
     PrayerTimeModel dayPrayers = PrayerTimeModel.fromMap(HiveService.instance
         .getPrayerTimes('yearlyPrayerTime')[day.month.toString()][day.day - 1]);
-    dayPrayers.prayersTime.forEach((name, time) {
+    dayPrayers.prayersTime.forEach((name, time) async {
       DateTime prayerDateTime = _parsePrayerTime(time, day);
       if (prayerDateTime.isAfter(now) &&
           name != 'Sunset' &&
@@ -117,7 +132,7 @@ Future<void> scheduleWeekPrayers() async {
           name != 'Lastthird' &&
           name != 'Midnight') {
         // Schedule the prayer (e.g., notifications).
-        LocalNotificationService.scheduledNotification(
+        await LocalNotificationService.scheduledNotification(
             title: name.tr,
             body: formatDateTimeToTimeString(prayerDateTime),
             time: prayerDateTime);
@@ -156,7 +171,7 @@ Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
     'year',
     DateTime.now().year,
   );
-  scheduleWeekPrayers();
+  await scheduleWeekPrayers();
 
   log('========END Saving=======');
 }

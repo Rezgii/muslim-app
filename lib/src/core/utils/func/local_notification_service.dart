@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -13,13 +14,6 @@ class LocalNotificationService {
 
   static StreamController<NotificationResponse> streamController =
       StreamController();
-
-  // AndroidNotificationChannel channel = const AndroidNotificationChannel(
-  //   'high_importance_channel', // id
-  //   'High Importance Notifications', // title
-  //   description: 'This channel is used for important notifications.',
-  //   importance: Importance.high,
-  // );
 
   static Future init() async {
     InitializationSettings settings = const InitializationSettings(
@@ -37,6 +31,15 @@ class LocalNotificationService {
         log("==================");
       },
     );
+
+    if (Platform.isAndroid) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission();
+      await AndroidFlutterLocalNotificationsPlugin()
+          .requestExactAlarmsPermission();
+    }
   }
 
   static int generateIdFromDateTime(DateTime dateTime) {
@@ -49,7 +52,7 @@ class LocalNotificationService {
   }
 
   //Show Basic Notification
-  static void basicNotification(
+  static Future<void> basicNotification(
       {required String title, required String body, String? payload}) async {
     NotificationDetails details = const NotificationDetails(
       android: AndroidNotificationDetails(
@@ -74,7 +77,7 @@ class LocalNotificationService {
   }
 
   //Show Repeated Notification
-  static void repeatedNotification(
+  static Future<void> repeatedNotification(
       {required String title, required String body, String? payload}) async {
     NotificationDetails details = const NotificationDetails(
       android: AndroidNotificationDetails(
@@ -100,7 +103,7 @@ class LocalNotificationService {
   }
 
   //Show Scheduled Notification
-  static void scheduledNotification(
+  static Future<void> scheduledNotification(
       {required String title,
       required String body,
       required DateTime time,
@@ -136,7 +139,7 @@ class LocalNotificationService {
   }
 
   //Show Daily Scheduled Notification
-  static void scheduledDailyNotification(
+  static Future<void> scheduledDailyNotification(
       {required String title,
       required String body,
       required DateTime time,
@@ -178,9 +181,33 @@ class LocalNotificationService {
     );
   }
 
-  //Cancel All Notifications
-  static void cancelNotification(int id) async {
+  //Cancel Notification
+  static Future<void> cancelNotification(int id) async {
     await flutterLocalNotificationsPlugin.cancel(id);
+  }
+
+  //Cancel All Notifications
+  static Future<void> cancelAllNotifications() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  static Future<void> retrievPendingNotif() async {
+    final List<PendingNotificationRequest> pendingNotificationRequests =
+        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    log("Pending Notif Are");
+    for (PendingNotificationRequest pendingNotif
+        in pendingNotificationRequests) {
+      log(pendingNotif.title.toString());
+      log(pendingNotif.body.toString());
+      log(pendingNotif.id.toString());
+    }
+  }
+
+  static void retrieveActiveNotif() async {
+    final List<ActiveNotification> activeNotifications =
+        await flutterLocalNotificationsPlugin.getActiveNotifications();
+    log("Active Notif Are");
+    log(activeNotifications.toString());
   }
 }
 
@@ -189,12 +216,12 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
   //onTap Notif (forground & background only)
 }
 
-  // 0. Ask Permission 
+  // 0. Ask Permission [Done]
   // 1. Setup [Done]
   // 2. Basic Notification [Done]
   // 3. Repeated Notification [Done]
   // 4. Scheduled Notification [Done]
   // 5. Custom Sound [Done]
   // 6. on Tap Notif [Done]
-  // 7. Daily NOtif at Specific Time
-  // 8. Real Example
+  // 7. Daily NOtif at Specific Time [Done]
+  // 8. Real Example [Done]

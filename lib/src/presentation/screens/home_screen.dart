@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
                 Container(
                   height: 250.h,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryColor.withOpacity(.35),
+                    color: AppColors.primaryColor.withValues(alpha: .35),
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(50),
                       bottomRight: Radius.circular(50),

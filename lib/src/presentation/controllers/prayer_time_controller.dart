@@ -51,29 +51,19 @@ class PrayerTimeController extends GetxController {
     // Format all Fields
     if (Get.locale == const Locale('ar_AE')) {
       //Getting English date data
-      date = todayPrayer.date['gregorian']['day'] +
-          ' ' +
-          todayPrayer.date['gregorian']['month']['en'] +
-          ' ' +
-          todayPrayer.date['gregorian']['year'];
-      dateHijri = todayPrayer.date['hijri']['day'] +
-          ' ' +
-          todayPrayer.date['hijri']['month']['en'] +
-          ' ' +
-          todayPrayer.date['hijri']['year'];
+      date =
+          "${todayPrayer.date['gregorian']['day']} ${todayPrayer.date['gregorian']['month']['en']} ${todayPrayer.date['gregorian']['year']}";
+
+      dateHijri =
+          "${todayPrayer.date['hijri']['day']} ${todayPrayer.date['hijri']['month']['en']} ${todayPrayer.date['hijri']['year']}";
+
       day = todayPrayer.date['gregorian']['weekday']['en'];
     } else {
-      //Getting Arabic date data
-      date = todayPrayer.date['gregorian']['day'] +
-          ' ' +
-          todayPrayer.date['gregorian']['month']['en'].toString().tr +
-          ' ' +
-          todayPrayer.date['gregorian']['year'];
-      dateHijri = todayPrayer.date['hijri']['day'] +
-          ' ' +
-          todayPrayer.date['hijri']['month']['ar'] +
-          ' ' +
-          todayPrayer.date['hijri']['year'];
+      date =
+          "${todayPrayer.date['gregorian']['day']} ${todayPrayer.date['gregorian']['month']['en'].toString().tr} ${todayPrayer.date['gregorian']['year']}";
+      dateHijri =
+          "${todayPrayer.date['hijri']['day']} ${todayPrayer.date['hijri']['month']['ar']} ${todayPrayer.date['hijri']['year']}";
+
       day = todayPrayer.date['hijri']['weekday']['ar'];
     }
     if (isToday) {
