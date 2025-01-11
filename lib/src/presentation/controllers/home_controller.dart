@@ -27,8 +27,6 @@ class HomeController extends GetxController {
     _initializeAndStartCountdown();
     _formatPrayerTime();
     scheduleWeekPrayers();
-    await LocalNotificationService.basicNotification(
-        title: "New App Update", body: "ken khrjtlk notif ab3thli msj goli");
   }
 
   @override

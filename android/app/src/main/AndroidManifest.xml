@@ -23,7 +23,7 @@
       <data android:mimeType="text/plain"/>
     </intent>
   </queries>
-  <application android:name="${applicationName}" android:enableOnBackInvokedCallback="true" android:icon="@mipmap/ic_launcher" android:label="muslim">
+  <application android:name="${applicationName}" android:enableOnBackInvokedCallback="true" android:icon="@mipmap/ic_launcher" android:label="Muslim">
     <!--Notification Code-->
     <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"/>
     <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
