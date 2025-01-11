@@ -40,8 +40,8 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: CalendarCarousel<Event>(
                     locale: Get.locale!.languageCode,
-                    minSelectedDate: DateTime(2024, 1, 1),
-                    maxSelectedDate: DateTime(2024, 12, 31),
+                    minSelectedDate: DateTime(_currentDate.year, 1, 1),
+                    maxSelectedDate: DateTime(_currentDate.year, 12, 31),
                     pageSnapping: true,
                     selectedDayButtonColor: AppColors.primaryColor,
                     selectedDayBorderColor: AppColors.primaryColor,

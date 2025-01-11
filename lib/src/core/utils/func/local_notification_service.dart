@@ -1,11 +1,18 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
+AndroidNotificationChannel channel = const AndroidNotificationChannel(
+  'high_importance_channel', // id
+  'High Importance Notifications', // title
+  description:
+      'This channel is used for important notifications.', // description
+  importance: Importance.high,
+);
 
 class LocalNotificationService {
   //Setup Notification
@@ -24,22 +31,24 @@ class LocalNotificationService {
       settings,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
       onDidReceiveNotificationResponse:
-          (NotificationResponse notificationResponse) async {
-        log("==================");
-        log("Notification tapped: ${notificationResponse.payload}");
-        log(notificationResponse.toString());
-        log("==================");
-      },
+          (NotificationResponse notificationResponse) async {},
     );
 
-    if (Platform.isAndroid) {
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestNotificationsPermission();
-      await AndroidFlutterLocalNotificationsPlugin()
-          .requestExactAlarmsPermission();
-    }
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(alert: true, badge: true);
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+    await AndroidFlutterLocalNotificationsPlugin()
+        .requestExactAlarmsPermission();
   }
 
   static int generateIdFromDateTime(DateTime dateTime) {
@@ -61,14 +70,14 @@ class LocalNotificationService {
         "Basic Notif",
         importance: Importance.max,
         priority: Priority.max,
-        sound: RawResourceAndroidNotificationSound("adhan"),
+        // sound: RawResourceAndroidNotificationSound("adhan"),
         category: AndroidNotificationCategory.alarm,
         playSound: true,
       ),
     );
     await flutterLocalNotificationsPlugin.show(
-      // getPrayerNotificationId(DateTime.now()),
-      0,
+      generateIdFromDateTime(DateTime.now()),
+      // 0,
       title,
       body,
       details,

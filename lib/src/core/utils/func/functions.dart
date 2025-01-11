@@ -29,7 +29,7 @@ late String prayerTime;
 DateTime prayerDay = DateTime.now();
 
 void initializeScreen() async {
-  
+
   if (isLocationGiven) {
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null &&
         HiveService.instance.getPrayerTimes('year') != DateTime.now().year) {
