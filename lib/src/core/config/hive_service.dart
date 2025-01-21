@@ -55,4 +55,8 @@ class HiveService {
   Future<void> removePrayers(String key) async {
     await _prayerBox.delete(key);
   }
+
+  Map<dynamic, dynamic>? getPrayers() {
+    return _prayerBox.get('yearlyPrayerTime') as Map<dynamic, dynamic>?;
+  }
 }

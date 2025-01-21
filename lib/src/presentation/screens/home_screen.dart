@@ -196,6 +196,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                ElevatedButton(onPressed: () {}, child: const Text('Testing')),
                 // Row(
                 //   children: [
                 //     Text(

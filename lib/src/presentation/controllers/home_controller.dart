@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:get/get.dart';
-// import 'package:muslim/src/core/config/hive_service.dart';
+import 'package:muslim/src/core/utils/func/forground_service.dart';
 import 'package:muslim/src/core/utils/func/functions.dart';
 import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
@@ -26,7 +26,7 @@ class HomeController extends GetxController {
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
-    scheduleWeekPrayers();
+    // scheduleWeekPrayers();
   }
 
   @override
@@ -34,6 +34,7 @@ class HomeController extends GetxController {
     super.onReady();
     requestNotificationPermission();
     _checkForUpdates();
+    ForeGroundService.instance.startService();
   }
 
   Future<void> _checkForUpdates() async {

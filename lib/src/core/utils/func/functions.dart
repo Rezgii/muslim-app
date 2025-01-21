@@ -171,7 +171,7 @@ Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
     'year',
     DateTime.now().year,
   );
-  await scheduleWeekPrayers();
+  // await scheduleWeekPrayers();
 
   log('========END Saving=======');
 }
