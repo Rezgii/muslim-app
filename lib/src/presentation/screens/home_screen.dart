@@ -122,7 +122,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                             5.verticalSpace,
                             Text(
-                              controller.prayerTime,
+                              controller.convertTimeFormat(controller.prayerTime),
                               textDirection: TextDirection.ltr,
                               style: TextStyle(fontSize: 24.sp),
                             ),
@@ -196,7 +196,6 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                ElevatedButton(onPressed: () {}, child: const Text('Testing')),
                 // Row(
                 //   children: [
                 //     Text(

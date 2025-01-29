@@ -84,7 +84,7 @@ void isolateTask(List<dynamic> args) async {
   log("End Isolate Func");
 }
 
-void requestNotificationPermission() async {
+Future<void> requestNotificationPermission() async {
   final status = await Permission.notification.request();
   notif.AndroidFlutterLocalNotificationsPlugin().requestExactAlarmsPermission();
 

@@ -6,6 +6,8 @@ import 'package:muslim/src/core/utils/func/functions.dart';
 import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart';
 
 class HomeController extends GetxController {
   late PrayerTimeModel todayPrayer;
@@ -30,11 +32,28 @@ class HomeController extends GetxController {
   }
 
   @override
-  void onReady() {
+  void onReady() async {
     super.onReady();
-    requestNotificationPermission();
+    await requestNotificationPermission().then(
+      (value) {
+        ForeGroundService.instance
+            .startService(prayerName.tr, prayerTime, countdown.value);
+      },
+    );
     _checkForUpdates();
-    ForeGroundService.instance.startService();
+  }
+
+  String convertTimeFormat(String inputTime) {
+    // // Remove spaces around the colon
+    String cleanedTime = inputTime.replaceAll(' ', '');
+
+    // Parse the input string as a DateTime object
+    final parsedTime = DateTime.parse('1970-01-01 $cleanedTime');
+
+    // Format the time using the intl package
+    final formattedTime = DateFormat('hh:mm a').format(parsedTime);
+
+    return formattedTime;
   }
 
   Future<void> _checkForUpdates() async {

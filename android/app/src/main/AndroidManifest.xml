@@ -11,6 +11,7 @@
   <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
   <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
   <!--
@@ -57,7 +58,10 @@
         -->
     <meta-data android:name="flutterEmbedding" android:value="2"/>
     <service android:name="be.tramckrijte.workmanager.BackgroundWorker" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
-    <service android:name="com.pravera.flutter_foreground_task.service.ForegroundService" android:foregroundServiceType="dataSync|remoteMessaging" android:exported="false" />
+    <service android:name="com.pravera.flutter_foreground_task.service.ForegroundService" android:foregroundServiceType="dataSync|remoteMessaging|specialUse">
+      <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="explanation_for_special_use"/>
+    </service>
+
   </application>
   <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

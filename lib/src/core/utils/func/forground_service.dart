@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:muslim/src/core/utils/func/salat_task_handler.dart';
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart';
 
 class ForeGroundService {
   ForeGroundService._();
@@ -58,23 +60,40 @@ class ForeGroundService {
     }
   }
 
-  Future<ServiceRequestResult> startService() async {
+  Future<ServiceRequestResult> startService(
+      String prayerName, String prayerTime, String countdown) async {
     if (await FlutterForegroundTask.isRunningService) {
       return FlutterForegroundTask.restartService();
     } else {
       return await FlutterForegroundTask.startService(
         serviceId: 256,
-        //
-        notificationTitle: '17 رجب 1446',
-        notificationText: 'العشاء 07:05 م',
+        notificationTitle: prayerName,
+        notificationText: '${_convertTimeFormat(prayerTime)} | $countdown',
         notificationInitialRoute: '/home',
-        // notificationButtons: [
-        //   const NotificationButton(id: 'btn_stop', text: 'إيقاف', textColor: Colors.red),
-        // ],
+        notificationButtons: [
+          const NotificationButton(
+            id: 'btn_stop',
+            text: 'إغلاق الإشعار',
+            textColor: Colors.red,
+          )
+        ],
         //
         callback: startCallback,
       );
     }
+  }
+
+  String _convertTimeFormat(String inputTime) {
+    // Remove spaces around the colon
+    String cleanedTime = inputTime.replaceAll(' ', '');
+
+    // Parse the input string as a DateTime object
+    final parsedTime = DateTime.parse('1970-01-01 $cleanedTime');
+
+    // Format the time using the intl package
+    final formattedTime = DateFormat('hh:mm a').format(parsedTime);
+
+    return formattedTime;
   }
 
   Future<ServiceRequestResult> stopService() async {

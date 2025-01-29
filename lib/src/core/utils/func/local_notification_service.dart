@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:audioplayers/audioplayers.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 AndroidNotificationChannel channel = const AndroidNotificationChannel(
@@ -13,6 +16,9 @@ AndroidNotificationChannel channel = const AndroidNotificationChannel(
       'This channel is used for important notifications.', // description
   importance: Importance.high,
 );
+
+// Instance for controlling the sound
+final AudioPlayer audioPlayer = AudioPlayer();
 
 class LocalNotificationService {
   //Setup Notification
@@ -31,7 +37,10 @@ class LocalNotificationService {
       settings,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
       onDidReceiveNotificationResponse:
-          (NotificationResponse notificationResponse) async {},
+          (NotificationResponse notificationResponse) async {
+        log('--------onDidReceiveNotificationResponse--------');
+        FlutterForegroundTask.sendDataToTask("Stop");
+      },
     );
 
     await flutterLocalNotificationsPlugin
@@ -83,6 +92,49 @@ class LocalNotificationService {
       details,
       payload: payload,
     );
+  }
+
+  static Future<void> adhanNotification({
+    required String adhanName,
+    required String adhanTime,
+    String? payload,
+  }) async {
+    NotificationDetails details = const NotificationDetails(
+      android: AndroidNotificationDetails(
+        "notification_for_adhan_only",
+        "Adhan Time Notif",
+        importance: Importance.max,
+        priority: Priority.max,
+        category: AndroidNotificationCategory.call,
+        playSound: false,
+        fullScreenIntent: true,
+        autoCancel: false,
+        ongoing: true,
+        enableVibration: true,
+        actions: [
+          AndroidNotificationAction(
+            'btn_stop_adhan',
+            'إيقاف',
+            titleColor: Colors.red,
+          ),
+        ],
+      ),
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      12345, // Static ID for consistent reference
+      adhanName,
+      adhanTime,
+      details,
+      payload: payload,
+    );
+  }
+
+// Function to stop the sound
+  static Future<void> stopAdhanSound() async {
+    await audioPlayer.stop();
+    await flutterLocalNotificationsPlugin.cancel(12345);
+    log('STOPPED');
   }
 
   //Show Repeated Notification
@@ -221,8 +273,12 @@ class LocalNotificationService {
 }
 
 @pragma('vm:entry-point')
-void notificationTapBackground(NotificationResponse notificationResponse) {
-  //onTap Notif (forground & background only)
+void notificationTapBackground(
+    NotificationResponse notificationResponse) async {
+  if (notificationResponse.actionId == 'btn_stop_adhan') {
+    log('Pressed btn Stop Adhan');
+    FlutterForegroundTask.sendDataToTask("Stop");
+  }
 }
 
   // 0. Ask Permission [Done]

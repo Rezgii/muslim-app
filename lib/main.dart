@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/locale/local.dart';
@@ -32,13 +33,15 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return GetMaterialApp(
-          translations: LocalStrings(),
-          debugShowCheckedModeBanner: false,
-          theme: ThemeConfig.darkTheme,
-          title: 'Muslim',
-          locale: controller.mylocale,
-          home: child,
+        return WithForegroundTask(
+          child: GetMaterialApp(
+            translations: LocalStrings(),
+            debugShowCheckedModeBanner: false,
+            theme: ThemeConfig.darkTheme,
+            title: 'Muslim',
+            locale: controller.mylocale,
+            home: child,
+          ),
         );
       },
       child: const SplashScreen(),

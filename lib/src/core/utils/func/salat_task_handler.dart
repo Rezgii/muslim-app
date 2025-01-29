@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,74 +11,53 @@ import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/core/utils/func/forground_Service.dart';
 import 'package:muslim/src/core/utils/func/functions.dart';
+import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart';
+import 'package:muslim/src/presentation/controllers/translations_controller.dart';
 
 final player = AudioPlayer();
+
+Future<void> playAdhan() async {
+  return player.play(AssetSource('sounds/adhan.mp3'));
+}
+
+Future<void> stopAdhan() async {
+  return player.stop();
+}
 
 class SalatTaskHandler extends TaskHandler {
   SalatTaskHandler._();
   static final instance = SalatTaskHandler._();
 
   bool isSoundPlaying = false;
-  late String prayerName;
-  late String prayerTime;
+  String prayerName = '';
+  String prayerTime = '';
+  Map<dynamic, dynamic>? yearPrayers;
   final StreamController<String> streamController = StreamController<String>();
+  TranslationsController translationsController =
+      Get.put(TranslationsController(), permanent: true);
+  String countdown = '- 00 : 00 : 00';
+  Timer? _timer;
+  bool _isPositiveTimer = false;
 
   /// Initializes  Hive, Get Data, and Open Listening.
   void _listenToPrayer() async {
     log('Listen To Prayer');
-    streamController.add('test');
     try {
       await HiveService.instance.init();
+      DartPluginRegistrant.ensureInitialized();
 
       // Get prayer data
-      final Map<dynamic, dynamic>? yearPrayers =
-          HiveService.instance.getPrayers();
+      yearPrayers = HiveService.instance.getPrayers();
 
       if (yearPrayers == null) {
         log('No prayer data found.');
         return;
       }
 
-      // Initialize the stream and start listening
-      streamController.stream.listen(
-        (currentTime) {
-          log('Stream triggered at $currentTime');
-
-          _getNextPrayer(yearPrayers);
-
-          if (!isSoundPlaying) {
-            isSoundPlaying = true;
-
-            FlutterForegroundTask.updateService(
-              notificationTitle: prayerName.tr,
-              notificationText: prayerTime,
-              notificationButtons: [
-                const NotificationButton(
-                  id: 'btn_stop_sound',
-                  text: 'إيقاف الصوت',
-                  textColor: Colors.red,
-                ),
-              ],
-            );
-
-            player.play(AssetSource('sounds/adhan.mp3')).then((_) {
-              isSoundPlaying = false;
-
-              FlutterForegroundTask.updateService(
-                notificationTitle: prayerName.tr,
-                notificationText: prayerTime,
-              );
-            }).catchError((error) {
-              log('Error playing sound: $error');
-              isSoundPlaying = false;
-            });
-          }
-        },
-        onError: (error) {
-          log('Stream error: $error');
-        },
-      );
+      _getNextPrayer(yearPrayers!, false);
     } on FirebaseException catch (e, st) {
       log('Firebase error: ${e.message} \n $st');
     } catch (e, st) {
@@ -85,55 +65,188 @@ class SalatTaskHandler extends TaskHandler {
     }
   }
 
-  void _getNextPrayer(Map<dynamic, dynamic> yearPrayers) {
+  void _initializeAndStartCountdown() {
+    DateTime nextPrayerDateTime = _parsePrayerTime(prayerTime);
+
+    if (nextPrayerDateTime.isBefore(DateTime.now())) {
+      Duration passedDuration = DateTime.now().difference(nextPrayerDateTime);
+
+      if (passedDuration.inMinutes < 30) {
+        countdown = _formatPositiveDuration(passedDuration);
+        _isPositiveTimer = true;
+      } else {
+        nextPrayerDateTime = nextPrayerDateTime.add(const Duration(days: 1));
+        countdown =
+            _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+        _isPositiveTimer = false;
+      }
+    } else {
+      countdown =
+          _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+      _isPositiveTimer = false;
+    }
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (_isPositiveTimer) {
+        _startCountUpTimer(nextPrayerDateTime);
+      } else {
+        _startCountDownTimer(nextPrayerDateTime);
+      }
+    });
+  }
+
+  void _startCountDownTimer(DateTime nextPrayerDateTime) {
+    Duration remaining = nextPrayerDateTime.difference(DateTime.now());
+    if (remaining.inSeconds >= 0) {
+      countdown = _formatDuration(remaining);
+      FlutterForegroundTask.updateService(
+        notificationTitle: prayerName.tr,
+        notificationText: '${_convertTimeFormat(prayerTime)} | $countdown',
+        notificationButtons: [
+          const NotificationButton(
+            id: 'btn_stop',
+            text: 'إغلاق الإشعار',
+            textColor: Colors.red,
+          ),
+        ],
+      );
+      if (remaining.inSeconds == 0) {
+        if (!isSoundPlaying) {
+          isSoundPlaying = true;
+
+          player.play(AssetSource('sounds/adhan.mp3')).then((_) {
+            LocalNotificationService.adhanNotification(
+                adhanName: 'حان الآن موعد آذان ${prayerName.tr}',
+                adhanTime: _convertTimeFormat(prayerTime));
+          }).catchError((error) {
+            log('Error playing sound: $error');
+            isSoundPlaying = false;
+          });
+        }
+        _isPositiveTimer = true;
+        _timer?.cancel();
+        _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+          _startCountUpTimer(nextPrayerDateTime);
+        });
+      }
+    } else {
+      _isPositiveTimer = true;
+      _timer?.cancel();
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        _startCountUpTimer(nextPrayerDateTime);
+      });
+    }
+  }
+
+  void _startCountUpTimer(DateTime initialPrayerEndTime) {
+    Duration positiveRemaining =
+        DateTime.now().difference(initialPrayerEndTime);
+    if (positiveRemaining.inMinutes < 30) {
+      countdown = _formatPositiveDuration(positiveRemaining);
+      FlutterForegroundTask.updateService(
+        notificationTitle: prayerName.tr,
+        notificationText: '${_convertTimeFormat(prayerTime)} | $countdown',
+        notificationButtons: [
+          const NotificationButton(
+            id: 'btn_stop',
+            text: 'إغلاق الإشعار',
+            textColor: Colors.red,
+          ),
+        ],
+      );
+    } else {
+      _isPositiveTimer = false;
+      _getNextPrayer(yearPrayers!, false);
+      _initializeAndStartCountdown();
+    }
+  }
+
+  String _formatDuration(Duration duration) {
+    String hours = duration.inHours.remainder(24).toString().padLeft(2, '0');
+    String minutes =
+        duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    String seconds =
+        duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "- $hours : $minutes : $seconds";
+  }
+
+  String _formatPositiveDuration(Duration duration) {
+    String minutes =
+        duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    String seconds =
+        duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "+ 00 : $minutes : $seconds";
+  }
+
+  String _convertTimeFormat(String inputTime) {
+    // // Remove spaces around the colon
+    // String cleanedTime = inputTime.replaceAll(' ', '');
+
+    // Parse the input string as a DateTime object
+    final parsedTime = DateTime.parse('1970-01-01 $inputTime');
+
+    // Format the time using the intl package
+    final formattedTime = DateFormat('hh:mm a').format(parsedTime);
+
+    return formattedTime;
+  }
+
+  void _getNextPrayer(Map<dynamic, dynamic> yearPrayers, bool testMode) {
     DateTime now = DateTime.now();
     DateTime? nextPrayerDateTime;
     String? nextPrayerName;
 
-    now.add(const Duration(days: 1));
-    List<PrayerTimeModel> daysPrayers = [
-      PrayerTimeModel.fromMap(yearPrayers[now.month.toString()][now.day - 1])
-    ];
-    now.subtract(const Duration(days: 1));
-    daysPrayers.add(PrayerTimeModel.fromMap(
-        yearPrayers[now.month.toString()][now.day - 1]));
+    if (!testMode) {
+      now.add(const Duration(days: 1));
+      List<PrayerTimeModel> daysPrayers = [
+        PrayerTimeModel.fromMap(yearPrayers[now.month.toString()][now.day - 1])
+      ];
+      now.subtract(const Duration(days: 1));
+      daysPrayers.add(PrayerTimeModel.fromMap(
+          yearPrayers[now.month.toString()][now.day - 1]));
 
-    PrayerTimeModel todayPrayer = daysPrayers[0];
+      PrayerTimeModel todayPrayer = daysPrayers[0];
 
-    todayPrayer.prayersTime.forEach((name, time) {
-      DateTime prayerDateTime = _parsePrayerTime(time);
-      if (prayerDateTime.isBefore(now) &&
-          name != 'Sunset' &&
-          name != 'Imsak' &&
-          name != 'Firstthird' &&
-          name != 'Lastthird' &&
-          name != 'Midnight') {
-      } else if (prayerDateTime.isAfter(now) &&
-          name != 'Sunset' &&
-          name != 'Imsak' &&
-          name != 'Firstthird' &&
-          name != 'Lastthird' &&
-          name != 'Midnight') {
-        if (nextPrayerDateTime == null ||
-            prayerDateTime.isBefore(nextPrayerDateTime!)) {
-          nextPrayerDateTime = prayerDateTime;
-          nextPrayerName = name;
-          return;
+      todayPrayer.prayersTime.forEach((name, time) {
+        DateTime prayerDateTime = _parsePrayerTime(time);
+        if (prayerDateTime.isBefore(now) &&
+            name != 'Sunset' &&
+            name != 'Imsak' &&
+            name != 'Firstthird' &&
+            name != 'Lastthird' &&
+            name != 'Midnight') {
+        } else if (prayerDateTime.isAfter(now) &&
+            name != 'Sunset' &&
+            name != 'Imsak' &&
+            name != 'Firstthird' &&
+            name != 'Lastthird' &&
+            name != 'Midnight') {
+          if (nextPrayerDateTime == null ||
+              prayerDateTime.isBefore(nextPrayerDateTime!)) {
+            nextPrayerDateTime = prayerDateTime;
+            nextPrayerName = name;
+            return;
+          }
         }
+      });
+
+      if (nextPrayerDateTime == null) {
+        todayPrayer = daysPrayers[1];
+        nextPrayerName = todayPrayer.prayersTime.keys.first;
+        nextPrayerDateTime =
+            _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);
       }
-    });
 
-    if (nextPrayerDateTime == null) {
-      todayPrayer = daysPrayers[1];
-      nextPrayerName = todayPrayer.prayersTime.keys.first;
-      nextPrayerDateTime =
-          _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);
+      if (nextPrayerName != null && nextPrayerDateTime != null) {
+        prayerName = nextPrayerName!;
+        prayerTime = _formatTime(nextPrayerDateTime!);
+      }
+    } else {
+      prayerName = "MOGHRIIIIIB";
+      prayerTime = _formatTime(_parsePrayerTime("15:05"));
     }
 
-    if (nextPrayerName != null && nextPrayerDateTime != null) {
-      prayerName = nextPrayerName!;
-      prayerTime = _formatTime(nextPrayerDateTime!);
-    }
+    _initializeAndStartCountdown();
   }
 
   String _formatTime(DateTime dateTime) {
@@ -161,18 +274,31 @@ class SalatTaskHandler extends TaskHandler {
   @override
   void onReceiveData(Object data) {
     log('=> Data received: $data');
+    if (data == 'Stop') {
+      player.stop();
+    }
   }
 
-//////////////////
   @override
   void onNotificationButtonPressed(String id) {
     if (id == 'btn_stop_sound') {
       log('=> Stop sound button pressed');
-      player.stop();
-      isSoundPlaying = false;
-      FlutterForegroundTask.updateService(
-        notificationTitle: prayerName.tr,
-        notificationText: prayerTime,
+      player.stop().then(
+        (value) {
+          log('=> Sound stopped successfuly');
+          isSoundPlaying = false;
+          FlutterForegroundTask.updateService(
+            notificationTitle: prayerName.tr,
+            notificationText: '${_convertTimeFormat(prayerTime)} | $countdown',
+            notificationButtons: [
+              const NotificationButton(
+                id: 'btn_stop',
+                text: 'إغلاق الإشعار',
+                textColor: Colors.red,
+              ),
+            ],
+          );
+        },
       );
     }
 
@@ -184,7 +310,6 @@ class SalatTaskHandler extends TaskHandler {
       log('=> Open app button pressed');
     }
   }
-  //////////
 
   @override
   void onNotificationPressed() {
@@ -200,10 +325,13 @@ class SalatTaskHandler extends TaskHandler {
     isSoundPlaying = false;
     FlutterForegroundTask.updateService(
       notificationTitle: prayerName.tr,
-      notificationText: prayerTime,
+      notificationText: '${_convertTimeFormat(prayerTime)} | $countdown',
       notificationButtons: [
         const NotificationButton(
-            id: 'btn_stop_sound', text: 'إيقاف الصوت', textColor: Colors.red),
+          id: 'btn_stop',
+          text: 'إغلاق الإشعار',
+          textColor: Colors.red,
+        ),
       ],
     );
   }
