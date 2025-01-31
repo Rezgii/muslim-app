@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,17 +14,6 @@ import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
-import 'package:muslim/src/presentation/controllers/translations_controller.dart';
-
-final player = AudioPlayer();
-
-Future<void> playAdhan() async {
-  return player.play(AssetSource('sounds/adhan.mp3'));
-}
-
-Future<void> stopAdhan() async {
-  return player.stop();
-}
 
 class SalatTaskHandler extends TaskHandler {
   SalatTaskHandler._();
@@ -36,18 +24,17 @@ class SalatTaskHandler extends TaskHandler {
   String prayerTime = '';
   Map<dynamic, dynamic>? yearPrayers;
   final StreamController<String> streamController = StreamController<String>();
-  TranslationsController translationsController =
-      Get.put(TranslationsController(), permanent: true);
   String countdown = '- 00 : 00 : 00';
   Timer? _timer;
   bool _isPositiveTimer = false;
+  late AudioPlayer player;
 
   /// Initializes  Hive, Get Data, and Open Listening.
   void _listenToPrayer() async {
     log('Listen To Prayer');
+    // log(' ${}');
     try {
       await HiveService.instance.init();
-      DartPluginRegistrant.ensureInitialized();
 
       // Get prayer data
       yearPrayers = HiveService.instance.getPrayers();
@@ -57,7 +44,7 @@ class SalatTaskHandler extends TaskHandler {
         return;
       }
 
-      _getNextPrayer(yearPrayers!, false);
+      _getNextPrayer(yearPrayers!, true);
     } on FirebaseException catch (e, st) {
       log('Firebase error: ${e.message} \n $st');
     } catch (e, st) {
@@ -243,7 +230,7 @@ class SalatTaskHandler extends TaskHandler {
       }
     } else {
       prayerName = "MOGHRIIIIIB";
-      prayerTime = _formatTime(_parsePrayerTime("15:05"));
+      prayerTime = _formatTime(_parsePrayerTime("12:33"));
     }
 
     _initializeAndStartCountdown();
@@ -260,14 +247,24 @@ class SalatTaskHandler extends TaskHandler {
         prayerDay.year, prayerDay.month, prayerDay.day, hour, minute);
   }
 
+  Future<void> playAdhan() async {
+    return player.play(AssetSource('sounds/adhan.mp3'));
+  }
+
+  Future<void> stopAdhan() async {
+    return player.stop();
+  }
+
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
+    player = AudioPlayer();
     _listenToPrayer();
   }
 
   @override
   Future<void> onDestroy(DateTime timestamp) async {
     log('=> Foreground service stopped');
+    await player.dispose();
     streamController.close();
   }
 
