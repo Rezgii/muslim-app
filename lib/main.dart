@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:muslim/src/core/config/locale/local.dart';
 import 'package:muslim/src/core/config/theme/theme_config.dart';
 import 'package:muslim/src/core/setting/setting.dart';
-import 'package:muslim/src/core/utils/func/forground_service.dart';
 import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/core/utils/func/work_manager.dart';
 import 'package:muslim/src/presentation/controllers/translations_controller.dart';
@@ -15,8 +14,10 @@ void main() async {
   await LocalNotificationService.init();
   await Setting.init();
   await WorkManagerService().init();
-  ForeGroundService.instance.initCommunicationPort();
-  ForeGroundService.instance.initService();
+  //TODO: Foreground Service
+
+  // ForeGroundService.instance.initCommunicationPort();
+  // ForeGroundService.instance.initService();
   runApp(const MyApp());
 }
 

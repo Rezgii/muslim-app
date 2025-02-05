@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:muslim/src/core/utils/func/forground_service.dart';
 import 'package:muslim/src/core/utils/func/functions.dart';
 import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 class HomeController extends GetxController {
@@ -36,8 +34,10 @@ class HomeController extends GetxController {
     super.onReady();
     await requestNotificationPermission().then(
       (value) {
-        ForeGroundService.instance
-            .startService(prayerName.tr, prayerTime, countdown.value);
+        //TODO: Foreground Service
+        
+        // ForeGroundService.instance
+        //     .startService();
       },
     );
     _checkForUpdates();

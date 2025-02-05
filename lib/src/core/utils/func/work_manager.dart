@@ -6,8 +6,8 @@ import 'package:workmanager/workmanager.dart';
 class WorkManagerService {
   void registerMyTask() async {
     await Workmanager().registerPeriodicTask(
-      "id1",
-      "adhkar reminder",
+      "athkar_reminder",
+      "scheduleAthkarReminder",
       frequency: const Duration(hours: 23),
       initialDelay: const Duration(minutes: 1),
     );
@@ -33,21 +33,23 @@ void actionTask() {
   //Show Reminder
   Workmanager().executeTask((task, inputData) async {
     //The background task code goes here
-    log("========Reminders========");
-    LocalNotificationService.scheduledDailyNotification(
-        title: 'تذكير',
-        body: 'حان وقت أذكار الصباح',
-        time: DateTime.now(),
-        hour: 06,
-        minute: 00);
-    log("Scheduled Reminder At 06:00 AM");
-    LocalNotificationService.scheduledDailyNotification(
-        title: 'تذكير',
-        body: 'حان وقت أذكار المساء',
-        time: DateTime.now(),
-        hour: 18,
-        minute: 00);
-    log("Scheduled Reminder At 06:00 PM");
+    if (task == "scheduleAthkarReminder") {
+      log("========Reminders========");
+      LocalNotificationService.scheduledDailyNotification(
+          title: 'تذكير',
+          body: 'حان وقت أذكار الصباح',
+          time: DateTime.now(),
+          hour: 06,
+          minute: 00);
+      log("Scheduled Reminder At 06:00 AM");
+      LocalNotificationService.scheduledDailyNotification(
+          title: 'تذكير',
+          body: 'حان وقت أذكار المساء',
+          time: DateTime.now(),
+          hour: 18,
+          minute: 00);
+      log("Scheduled Reminder At 06:00 PM");
+    }
     return Future.value(true);
   });
 }

@@ -29,7 +29,6 @@ late String prayerTime;
 DateTime prayerDay = DateTime.now();
 
 void initializeScreen() async {
-
   if (isLocationGiven) {
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null &&
         HiveService.instance.getPrayerTimes('year') != DateTime.now().year) {
@@ -52,7 +51,6 @@ void initializeScreen() async {
     } else {
       prayersTime = getDataFromHive();
     }
-
     Get.offAll(
       () => const HomeScreen(),
       arguments: {
@@ -171,7 +169,7 @@ Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
     'year',
     DateTime.now().year,
   );
-  // await scheduleWeekPrayers();
+  await scheduleWeekPrayers();
 
   log('========END Saving=======');
 }
