@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/utils/func/functions.dart';
 import 'package:muslim/src/core/utils/func/local_notification_service.dart';
@@ -26,7 +27,7 @@ class HomeController extends GetxController {
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
-    // scheduleWeekPrayers();
+    scheduleWeekPrayers();
   }
 
   @override
@@ -35,11 +36,13 @@ class HomeController extends GetxController {
     await requestNotificationPermission().then(
       (value) {
         //TODO: Foreground Service
-        
+
         // ForeGroundService.instance
         //     .startService();
       },
     );
+    await FirebaseMessaging.instance.subscribeToTopic("updates");
+
     _checkForUpdates();
   }
 

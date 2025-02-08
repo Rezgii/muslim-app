@@ -6,6 +6,7 @@ import 'package:muslim/src/core/utils/const/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/controllers/home_controller.dart';
+import 'package:muslim/src/presentation/screens/feedback_screen.dart';
 import 'package:muslim/src/presentation/screens/location_permission_screen.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_calendar_screen.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_screen.dart';
@@ -91,6 +92,19 @@ class HomeScreen extends StatelessWidget {
                         color: AppColors.primaryColor,
                       ),
                     ),
+                    IconButton(
+                      onPressed: () {
+                        Get.to(() => const FeedbackScreen(),
+                            duration: const Duration(milliseconds: 650),
+                            transition: Transition.circularReveal,
+                            curve: Curves.easeIn);
+                      },
+                      icon: Icon(
+                        Icons.feedback,
+                        size: 32.sp,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
                   ],
                 ),
                 20.verticalSpace,
@@ -122,7 +136,8 @@ class HomeScreen extends StatelessWidget {
                             ),
                             5.verticalSpace,
                             Text(
-                              controller.convertTimeFormat(controller.prayerTime),
+                              controller
+                                  .convertTimeFormat(controller.prayerTime),
                               textDirection: TextDirection.ltr,
                               style: TextStyle(fontSize: 24.sp),
                             ),

@@ -1,6 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:muslim/src/core/config/firebase/firebase_notification.dart';
+import 'package:muslim/src/core/config/firebase/firebase_options.dart';
 import 'package:muslim/src/core/config/locale/local.dart';
 import 'package:muslim/src/core/config/theme/theme_config.dart';
 import 'package:muslim/src/core/setting/setting.dart';
@@ -11,6 +14,10 @@ import 'package:muslim/src/presentation/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await FirebaseNotification.instance.initNotifications();
   await LocalNotificationService.init();
   await Setting.init();
   await WorkManagerService().init();

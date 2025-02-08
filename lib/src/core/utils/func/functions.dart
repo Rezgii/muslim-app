@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
@@ -33,6 +34,7 @@ void initializeScreen() async {
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null &&
         HiveService.instance.getPrayerTimes('year') != DateTime.now().year) {
       prayersTime = await getDataFromAPI();
+      await FirebaseMessaging.instance.subscribeToTopic("updates");
 
       //ISOLATE HERE
       ReceivePort receivePort = ReceivePort();

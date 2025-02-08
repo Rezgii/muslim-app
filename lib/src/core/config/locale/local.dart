@@ -44,6 +44,13 @@ class LocalStrings extends Translations {
           'Wake up Athkar': 'Wake up Athkar',
           'Sleep Athkar': 'Sleep Athkar',
           'After Praying Athkar': 'After Praying Athkar',
+          'Updates': 'Updates',
+          "feedback": "feedback",
+          'Some Error Occured. Try Again Later':
+              'Some Error Occured. Try Again Later',
+          'Your Opinion': 'Your Opinion',
+          'Send': 'Send',
+          'Enter Text First': 'Enter Text First',
         },
         'ar_AE': {
           'Imsak': 'الإمساك',
@@ -85,7 +92,14 @@ class LocalStrings extends Translations {
           'Prayer Time Calender': 'تقويم مواقيت الصلاة',
           "Wake up Athkar": "أذكار الاستيقاظ",
           "Sleep Athkar": "أذكار النوم",
-          "After Praying Athkar": "أذكار بعد الصلاة"
+          "After Praying Athkar": "أذكار بعد الصلاة",
+          "Updates": "تحديثات",
+          "feedback": "آراء",
+          'Some Error Occured. Try Again Later':
+              'حدث خطأ ما. حاول مرة أخرى لاحقًا',
+          'Your Opinion': "رأيك",
+          'Send': "إرسال",
+          'Enter Text First' : "أدخل النص أولاً",
         },
         'fr_FR': {
           'Imsak': 'Imsak',
@@ -127,7 +141,14 @@ class LocalStrings extends Translations {
           'Prayer Time Calendar': 'Calendrier des heures de prière',
           "Wake up Athkar": "Dhikr du réveil",
           "Sleep Athkar": "Dhikr du sommeil",
-          "After Praying Athkar": "Dhikr après la prière"
+          "After Praying Athkar": "Dhikr après la prière",
+          "Updates": "Mises à jour",
+          "feedback": "avis",
+          'Some Error Occured. Try Again Later':
+              "Une erreur s'est produite. Veuillez réessayer plus tard",
+          'Your Opinion': "Votre opinion",
+          'Send': "Envoyer",
+          'Enter Text First' : "Entrez d'abord le texte",
         }
       };
 }
