@@ -229,8 +229,8 @@ class LocalNotificationService {
     if (scheduleTime.isBefore(currentTime)) {
       scheduleTime = scheduleTime.add(const Duration(days: 1));
     }
-    log("The Current Time is : ${currentTime.year}/${currentTime.month}/${currentTime.day} - ${currentTime.hour}:${currentTime.minute}");
-    log("The Schdeuled Time of is : ${scheduleTime.year}/${scheduleTime.month}/${scheduleTime.day} - ${scheduleTime.hour}:${scheduleTime.minute}");
+    // log("The Current Time is : ${currentTime.year}/${currentTime.month}/${currentTime.day} - ${currentTime.hour}:${currentTime.minute}");
+    // log("The Schdeuled Time of is : ${scheduleTime.year}/${scheduleTime.month}/${scheduleTime.day} - ${scheduleTime.hour}:${scheduleTime.minute}");
     await flutterLocalNotificationsPlugin.zonedSchedule(
       generateIdFromDateTime(time),
       title,

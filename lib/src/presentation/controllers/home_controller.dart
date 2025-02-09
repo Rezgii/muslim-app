@@ -27,7 +27,6 @@ class HomeController extends GetxController {
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
-    scheduleWeekPrayers();
   }
 
   @override
@@ -35,6 +34,8 @@ class HomeController extends GetxController {
     super.onReady();
     await requestNotificationPermission().then(
       (value) {
+        scheduleWeekPrayers();
+
         //TODO: Foreground Service
 
         // ForeGroundService.instance
