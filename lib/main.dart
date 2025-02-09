@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:muslim/src/core/config/firebase/firebase_notification.dart';
 import 'package:muslim/src/core/config/firebase/firebase_options.dart';
 import 'package:muslim/src/core/config/locale/local.dart';
@@ -63,8 +62,6 @@ void main() async {
     frequency: const Duration(hours: 23),
     initialDelay: const Duration(minutes: 1),
   );
-
-  MobileAds.instance.initialize();
   //TODO: Foreground Service
 
   // ForeGroundService.instance.initCommunicationPort();
