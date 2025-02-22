@@ -32,16 +32,14 @@ class HomeController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
-    await requestNotificationPermission().then(
-      (value) {
-        scheduleWeekPrayers();
+    await requestNotificationPermission().then((value) {
+      scheduleWeekPrayers();
 
-        //TODO: Foreground Service
+      //TODO: Foreground Service
 
-        // ForeGroundService.instance
-        //     .startService();
-      },
-    );
+      // ForeGroundService.instance
+      //     .startService();
+    });
     await FirebaseMessaging.instance.subscribeToTopic("updates");
 
     _checkForUpdates();
@@ -84,7 +82,12 @@ class HomeController extends GetxController {
     int hour = int.parse(time.substring(0, 2));
     int minute = int.parse(time.substring(3, 5));
     return DateTime(
-        prayerDay.year, prayerDay.month, prayerDay.day, hour, minute);
+      prayerDay.year,
+      prayerDay.month,
+      prayerDay.day,
+      hour,
+      minute,
+    );
   }
 
   void _initializeAndStartCountdown() {
@@ -98,13 +101,15 @@ class HomeController extends GetxController {
         _isPositiveTimer = true;
       } else {
         nextPrayerDateTime = nextPrayerDateTime.add(const Duration(days: 1));
-        countdown.value =
-            _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+        countdown.value = _formatDuration(
+          nextPrayerDateTime.difference(DateTime.now()),
+        );
         _isPositiveTimer = false;
       }
     } else {
-      countdown.value =
-          _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+      countdown.value = _formatDuration(
+        nextPrayerDateTime.difference(DateTime.now()),
+      );
       _isPositiveTimer = false;
     }
 
@@ -139,8 +144,9 @@ class HomeController extends GetxController {
   }
 
   void _startCountUpTimer(DateTime initialPrayerEndTime) {
-    Duration positiveRemaining =
-        DateTime.now().difference(initialPrayerEndTime);
+    Duration positiveRemaining = DateTime.now().difference(
+      initialPrayerEndTime,
+    );
     if (positiveRemaining.inMinutes < 30) {
       countdown.value = _formatPositiveDuration(positiveRemaining);
     } else {
@@ -152,18 +158,26 @@ class HomeController extends GetxController {
 
   String _formatDuration(Duration duration) {
     String hours = duration.inHours.remainder(24).toString().padLeft(2, '0');
-    String minutes =
-        duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    String seconds =
-        duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    String minutes = duration.inMinutes
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
+    String seconds = duration.inSeconds
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
     return "- $hours : $minutes : $seconds";
   }
 
   String _formatPositiveDuration(Duration duration) {
-    String minutes =
-        duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    String seconds =
-        duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    String minutes = duration.inMinutes
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
+    String seconds = duration.inSeconds
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
     return "+ 00 : $minutes : $seconds";
   }
 
@@ -204,8 +218,9 @@ class HomeController extends GetxController {
       if (nextPrayerDateTime == null) {
         todayPrayer = daysPrayers![1];
         nextPrayerName = todayPrayer.prayersTime.keys.first;
-        nextPrayerDateTime =
-            _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);
+        nextPrayerDateTime = _parsePrayerTime(
+          todayPrayer.prayersTime[nextPrayerName]!,
+        );
       }
 
       if (nextPrayerName != null && nextPrayerDateTime != null) {

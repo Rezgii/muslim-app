@@ -4,15 +4,16 @@
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32"/>
   <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
   <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
   <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
   <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-  <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />  -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_TYPE_SPECIAL_USE" />
+  <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />  -->
 
   <queries>
     <intent>
@@ -35,15 +36,15 @@
     </intent>
 
   </queries>
-  <application android:name="${applicationName}" android:enableOnBackInvokedCallback="true" android:icon="@mipmap/ic_launcher" android:label="Muslim">
+  <application android:name="${applicationName}" android:enableOnBackInvokedCallback="true" android:icon="@mipmap/ic_launcher" android:label="Muslim" android:extractNativeLibs="true">
     <!--Notification Code-->
     <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"/>
-    <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
+    <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
     <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED"/>
         <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
-        <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
         <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
       </intent-filter>
     </receiver>
@@ -66,8 +67,12 @@
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
         -->
     <meta-data android:name="flutterEmbedding" android:value="2"/>
-    <service android:name="be.tramckrijte.workmanager.BackgroundWorker" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
-    <!-- <service android:name="com.pravera.flutter_foreground_task.service.ForegroundService" android:foregroundServiceType="dataSync|remoteMessaging" android:enabled="true" android:exported="true" /> -->
+    <!-- <service android:name="be.tramckrijte.workmanager.BackgroundWorker" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/> -->
+     <service
+        android:name="com.dexterous.flutterlocalnotifications.ForegroundService"        
+        android:exported="false"
+        android:stopWithTask="false"
+        android:foregroundServiceType="specialUse"/>
   </application>
   <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

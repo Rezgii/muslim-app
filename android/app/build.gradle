@@ -10,13 +10,19 @@ plugins {
 
 android {
     namespace = "com.RzRio.muslim"
-    compileSdk = 34
+    compileSdk = 35
     ndkVersion = "27.0.12077973"
 
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions{
+     jniLibs{
+         useLegacyPackaging true
+        }
     }
 
     kotlinOptions {

@@ -20,8 +20,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
 
 bool get isLocationGiven =>
     HiveService.instance.getSetting('location') ?? false;
-Map<dynamic, dynamic> location =
-    HiveService.instance.getSetting('locationData');
+Map<dynamic, dynamic> location = HiveService.instance.getSetting(
+  'locationData',
+);
 bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
 List<PrayerTimeModel>? prayersTime;
 
@@ -38,8 +39,11 @@ void initializeScreen() async {
 
       //ISOLATE HERE
       ReceivePort receivePort = ReceivePort();
-      Isolate.spawn(isolateTask,
-          [receivePort.sendPort, location['latitude'], location['longitude']]);
+      Isolate.spawn(isolateTask, [
+        receivePort.sendPort,
+        location['latitude'],
+        location['longitude'],
+      ]);
 
       receivePort.listen((message) {
         log("Isolate Listen");
@@ -55,9 +59,7 @@ void initializeScreen() async {
     }
     Get.offAll(
       () => const HomeScreen(),
-      arguments: {
-        'prayersTime': prayersTime,
-      },
+      arguments: {'prayersTime': prayersTime},
       duration: const Duration(milliseconds: 650),
       transition: Transition.circularReveal,
       curve: Curves.easeIn,
@@ -79,7 +81,10 @@ void isolateTask(List<dynamic> args) async {
   String longitude = args[2];
   Map<String, dynamic> yearlyPrayerTime = await PrayerTimeCalendarApi.instance
       .getPrayerTimeCalendar(
-          latitude, longitude, DateTime.now().year.toString());
+        latitude,
+        longitude,
+        DateTime.now().year.toString(),
+      );
   sendPort.send(yearlyPrayerTime);
   log("End Isolate Func");
 }
@@ -113,15 +118,17 @@ Future<void> scheduleWeekPrayers() async {
   // bool testMode = false;
   DateTime now = DateTime.now();
 
-// Determine the week's range (start from today to the next 7 days).
+  // Determine the week's range (start from today to the next 7 days).
   List<DateTime> weekDays = List.generate(
     7,
     (index) => now.add(Duration(days: index)),
   );
 
   for (DateTime day in weekDays) {
-    PrayerTimeModel dayPrayers = PrayerTimeModel.fromMap(HiveService.instance
-        .getPrayerTimes('yearlyPrayerTime')[day.month.toString()][day.day - 1]);
+    PrayerTimeModel dayPrayers = PrayerTimeModel.fromMap(
+      HiveService.instance.getPrayerTimes('yearlyPrayerTime')[day.month
+          .toString()][day.day - 1],
+    );
     dayPrayers.prayersTime.forEach((name, time) async {
       DateTime prayerDateTime = _parsePrayerTime(time, day);
       if (prayerDateTime.isAfter(now) &&
@@ -133,13 +140,29 @@ Future<void> scheduleWeekPrayers() async {
           name != 'Midnight') {
         // Schedule the prayer (e.g., notifications).
         await LocalNotificationService.scheduledNotification(
-            title: name.tr,
-            body: formatDateTimeToTimeString(prayerDateTime),
-            time: prayerDateTime);
+          title: name.tr,
+          body: formatDateTimeToTimeString(prayerDateTime),
+          time: prayerDateTime,
+        );
       }
     });
   }
   log('========END Scheduling=======');
+  log("========Reminders========");
+  LocalNotificationService.scheduledDailyNotification(
+    title: 'تذكير',
+    body: 'حان وقت أذكار الصباح',
+    hour: 06,
+    minute: 00,
+  );
+  log("Scheduled Reminder At 06:00 AM");
+  LocalNotificationService.scheduledDailyNotification(
+    title: 'تذكير',
+    body: 'حان وقت أذكار المساء',
+    hour: 18,
+    minute: 00,
+  );
+  log("Scheduled Reminder At 06:00 PM");
 }
 
 DateTime _parsePrayerTime(String time, DateTime date) {
@@ -167,10 +190,7 @@ Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
     'yearlyPrayerTime',
     yearlyPrayerTime,
   );
-  await HiveService.instance.setPrayerTimes(
-    'year',
-    DateTime.now().year,
-  );
+  await HiveService.instance.setPrayerTimes('year', DateTime.now().year);
   await scheduleWeekPrayers();
 
   log('========END Saving=======');
@@ -179,11 +199,25 @@ Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
 Future<List<PrayerTimeModel>> getDataFromAPI() async {
   List<PrayerTimeModel> daysPrayers = [];
   String date = await CurrentDateApi.instance.getDate('Africa/Algiers');
-  daysPrayers.add(PrayerTimeModel.fromMap(await PrayerTimeApi.instance
-      .getPrayerTime(location['latitude'], location['longitude'], date)));
+  daysPrayers.add(
+    PrayerTimeModel.fromMap(
+      await PrayerTimeApi.instance.getPrayerTime(
+        location['latitude'],
+        location['longitude'],
+        date,
+      ),
+    ),
+  );
   date = addOneDayToDate(date);
-  daysPrayers.add(PrayerTimeModel.fromMap(await PrayerTimeApi.instance
-      .getPrayerTime(location['latitude'], location['longitude'], date)));
+  daysPrayers.add(
+    PrayerTimeModel.fromMap(
+      await PrayerTimeApi.instance.getPrayerTime(
+        location['latitude'],
+        location['longitude'],
+        date,
+      ),
+    ),
+  );
 
   return daysPrayers;
 }
@@ -208,13 +242,19 @@ String addOneDayToDate(String dateString) {
 List<PrayerTimeModel> getDataFromHive() {
   List<PrayerTimeModel> daysPrayers = [];
   DateTime today = DateTime.now();
-  daysPrayers.add(PrayerTimeModel.fromMap(HiveService.instance
-          .getPrayerTimes('yearlyPrayerTime')[today.month.toString()]
-      [today.day - 1]));
+  daysPrayers.add(
+    PrayerTimeModel.fromMap(
+      HiveService.instance.getPrayerTimes('yearlyPrayerTime')[today.month
+          .toString()][today.day - 1],
+    ),
+  );
   today = today.add(const Duration(days: 1));
-  daysPrayers.add(PrayerTimeModel.fromMap(HiveService.instance
-          .getPrayerTimes('yearlyPrayerTime')[today.month.toString()]
-      [today.day - 1]));
+  daysPrayers.add(
+    PrayerTimeModel.fromMap(
+      HiveService.instance.getPrayerTimes('yearlyPrayerTime')[today.month
+          .toString()][today.day - 1],
+    ),
+  );
   return daysPrayers;
 }
 
