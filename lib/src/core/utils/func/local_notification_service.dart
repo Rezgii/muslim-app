@@ -1,35 +1,20 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:muslim/main.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 AndroidNotificationChannel channel = const AndroidNotificationChannel(
-  'prayer_channel', // id
-  'Prayer Notification Channel', // title
+  'channel_for_prayer', // id
+  'Channel For Prayer', // title
   description:
       'This channel is used for important notifications.', // description
   importance: Importance.high,
 );
 
-// Instance for controlling the sound
-final AudioPlayer audioPlayer = AudioPlayer();
-
-// Function to stop the sound
-Future<void> stopAdhanSound() async {
-  await audioPlayer.stop();
-  log('ADHAN STOPPED');
-}
-
-Future<void> playAdhanSound() async {
-  await audioPlayer.play(AssetSource('sounds/adhan.mp3'));
-  log('ADHAN PLAYED');
-}
 
 class LocalNotificationService {
   //Setup Notification
@@ -50,9 +35,7 @@ class LocalNotificationService {
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
       onDidReceiveNotificationResponse: (
         NotificationResponse notificationResponse,
-      ) async {
-        await stopAdhanSound();
-      },
+      ) async {},
     );
 
     await flutterLocalNotificationsPlugin
@@ -182,20 +165,14 @@ class LocalNotificationService {
     NotificationDetails details = const NotificationDetails(
       android: AndroidNotificationDetails(
         //Configure notif here
-        "channel_id_schedule_notification",
-        "Scheduled Notification",
+        "prayer_time_channel",
+        "Channel For Prayer Time",
         importance: Importance.high,
         priority: Priority.high,
-        // sound: RawResourceAndroidNotificationSound("adhan"),
+        sound: RawResourceAndroidNotificationSound("adhan"),
         category: AndroidNotificationCategory.alarm,
-        playSound: false,
-        actions: [
-          AndroidNotificationAction(
-            'btn_stop_adhan',
-            'إيقاف',
-            titleColor: Colors.red,
-          ),
-        ],
+        playSound: true,
+        audioAttributesUsage: AudioAttributesUsage.alarm,
       ),
     );
     tz.initializeTimeZones();
@@ -234,12 +211,13 @@ class LocalNotificationService {
   }) async {
     NotificationDetails details = const NotificationDetails(
       android: AndroidNotificationDetails(
-        "channel_id_schedule_daily_notification",
-        "Daily Scheduled Notification",
+        "channel_schedule_daily_notification",
+        "Channel for Daily Scheduled Notification",
         importance: Importance.high,
         priority: Priority.high,
         category: AndroidNotificationCategory.alarm,
         playSound: true,
+        audioAttributesUsage: AudioAttributesUsage.alarm,
       ),
     );
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 
@@ -76,7 +77,12 @@ class PrayerTimeController extends GetxController {
     int hour = int.parse(time.substring(0, 2));
     int minute = int.parse(time.substring(3, 5));
     return DateTime(
-        prayerDay.year, prayerDay.month, prayerDay.day, hour, minute);
+      prayerDay.year,
+      prayerDay.month,
+      prayerDay.day,
+      hour,
+      minute,
+    );
   }
 
   void _initializeAndStartCountdown() {
@@ -90,13 +96,15 @@ class PrayerTimeController extends GetxController {
         _isPositiveTimer = true;
       } else {
         nextPrayerDateTime = nextPrayerDateTime.add(const Duration(days: 1));
-        countdown.value =
-            _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+        countdown.value = _formatDuration(
+          nextPrayerDateTime.difference(DateTime.now()),
+        );
         _isPositiveTimer = false;
       }
     } else {
-      countdown.value =
-          _formatDuration(nextPrayerDateTime.difference(DateTime.now()));
+      countdown.value = _formatDuration(
+        nextPrayerDateTime.difference(DateTime.now()),
+      );
       _isPositiveTimer = false;
     }
 
@@ -123,8 +131,9 @@ class PrayerTimeController extends GetxController {
   }
 
   void _startCountUpTimer(DateTime initialPrayerEndTime) {
-    Duration positiveRemaining =
-        DateTime.now().difference(initialPrayerEndTime);
+    Duration positiveRemaining = DateTime.now().difference(
+      initialPrayerEndTime,
+    );
     if (positiveRemaining.inMinutes < 30) {
       countdown.value = _formatPositiveDuration(positiveRemaining);
     } else {
@@ -136,18 +145,26 @@ class PrayerTimeController extends GetxController {
 
   String _formatDuration(Duration duration) {
     String hours = duration.inHours.remainder(24).toString().padLeft(2, '0');
-    String minutes =
-        duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    String seconds =
-        duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    String minutes = duration.inMinutes
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
+    String seconds = duration.inSeconds
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
     return "- $hours : $minutes : $seconds";
   }
 
   String _formatPositiveDuration(Duration duration) {
-    String minutes =
-        duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    String seconds =
-        duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    String minutes = duration.inMinutes
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
+    String seconds = duration.inSeconds
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
     return "+ 00 : $minutes : $seconds";
   }
 
@@ -181,12 +198,14 @@ class PrayerTimeController extends GetxController {
 
     if (nextPrayerDateTime == null) {
       now = now.add(const Duration(days: 1));
-      todayPrayer = PrayerTimeModel.fromMap(HiveService.instance
-              .getPrayerTimes('yearlyPrayerTime')[now.month.toString()]
-          [now.day - 1]);
+      todayPrayer = PrayerTimeModel.fromMap(
+        HiveService.instance.getPrayerTimes('yearlyPrayerTime')[now.month
+            .toString()][now.day - 1],
+      );
       nextPrayerName = todayPrayer.prayersTime.keys.first;
-      nextPrayerDateTime =
-          _parsePrayerTime(todayPrayer.prayersTime[nextPrayerName]!);
+      nextPrayerDateTime = _parsePrayerTime(
+        todayPrayer.prayersTime[nextPrayerName]!,
+      );
     }
 
     if (nextPrayerName != null && nextPrayerDateTime != null) {
@@ -198,6 +217,18 @@ class PrayerTimeController extends GetxController {
 
   String _formatTime(DateTime dateTime) {
     return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  String convertTimeFormat(String inputTime) {
+    String cleanedTime = inputTime.split(' ')[0];
+
+    // Parse the input string as a DateTime object
+    final parsedTime = DateTime.parse('1970-01-01 $cleanedTime');
+
+    // Format the time using the intl package
+    final formattedTime = DateFormat('hh:mm a').format(parsedTime);
+
+    return formattedTime;
   }
 
   @override

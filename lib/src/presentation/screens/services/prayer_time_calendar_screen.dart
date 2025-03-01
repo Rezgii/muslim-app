@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
@@ -19,6 +18,24 @@ class PrayerTimeCalendarScreen extends StatefulWidget {
 
 class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
   final DateTime _currentDate = DateTime.now();
+  DateTime _selectedDate = DateTime.now();
+  String getArabicMonthName(int month) {
+    List<String> arabicMonths = [
+      "جانفي",
+      "فيفري",
+      "مارس",
+      "أفريل",
+      "ماي",
+      "جوان",
+      "جويلية",
+      "أوت",
+      "سبتمبر",
+      "أكتوبر",
+      "نوفمبر",
+      "ديسمبر",
+    ];
+    return arabicMonths[month - 1]; // month is 1-based index
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +62,16 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                     pageSnapping: true,
                     selectedDayButtonColor: AppColors.primaryColor,
                     selectedDayBorderColor: AppColors.primaryColor,
-                    selectedDayTextStyle:
-                        const TextStyle(color: AppColors.boxBlackBg),
+                    selectedDayTextStyle: const TextStyle(
+                      color: AppColors.boxBlackBg,
+                    ),
                     weekdayTextStyle: const TextStyle(color: Colors.white),
-                    headerTextStyle:
-                        TextStyle(color: Colors.white, fontSize: 24.sp),
+                    headerText:
+                        "${getArabicMonthName(_selectedDate.month)} ${_selectedDate.year}",
+                    headerTextStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.sp,
+                    ),
                     iconColor: AppColors.primaryColor,
                     daysTextStyle: TextStyle(
                       color: AppColors.primaryColor,
@@ -57,14 +79,16 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                       fontSize: 18.sp,
                     ),
                     onDayPressed: (DateTime date, List<Event> events) {
-                      Get.to(() => const PrayerTimeScreen(),
-                          arguments: {
-                            'isToday': false,
-                            'prayersTime': getPrayerTime(date)
-                          },
-                          duration: const Duration(milliseconds: 650),
-                          transition: Transition.circularReveal,
-                          curve: Curves.easeIn);
+                      Get.to(
+                        () => const PrayerTimeScreen(),
+                        arguments: {
+                          'isToday': false,
+                          'prayersTime': getPrayerTime(date),
+                        },
+                        duration: const Duration(milliseconds: 650),
+                        transition: Transition.circularReveal,
+                        curve: Curves.easeIn,
+                      );
                     },
                     weekendTextStyle: TextStyle(
                       color: AppColors.primaryColor,
@@ -92,6 +116,11 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
                       // } else {
                       //   return null;
                       // }
+                    },
+                    onCalendarChanged: (DateTime newDate) {
+                      setState(() {
+                        _selectedDate = newDate;
+                      });
                     },
                     weekFormat: false,
                     height: 420.h,
@@ -121,9 +150,10 @@ class _PrayerTimeCalendarScreenState extends State<PrayerTimeCalendarScreen> {
   }
 
   PrayerTimeModel getPrayerTime(DateTime date) {
-    return PrayerTimeModel.fromMap(HiveService.instance
-            .getPrayerTimes('yearlyPrayerTime')[date.month.toString()]
-        [date.day - 1]);
+    return PrayerTimeModel.fromMap(
+      HiveService.instance.getPrayerTimes('yearlyPrayerTime')[date.month
+          .toString()][date.day - 1],
+    );
   }
 }
 

@@ -86,7 +86,7 @@ class _AthkarScreenState extends State<AthkarScreen> {
       child: Center(
         child: GestureDetector(
           onTap: () async {
-            if (!_isRemoving && await Vibration.hasVibrator() != null) {
+            if (!_isRemoving && await Vibration.hasVibrator()) {
               Vibration.vibrate(duration: 100);
               if (thiker.repeat > 1) {
                 thiker.repeat = thiker.repeat - 1;

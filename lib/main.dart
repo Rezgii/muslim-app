@@ -78,7 +78,7 @@ void notificationTapBackground(
 ) async {
   if (notificationResponse.actionId == 'btn_stop_adhan') {
     log('Pressed btn Stop Adhan');
-    await stopAdhanSound();
+    // await stopAdhanSound();
   }
 }
 
