@@ -220,7 +220,13 @@ class PrayerTimeController extends GetxController {
   }
 
   String convertTimeFormat(String inputTime) {
-    String cleanedTime = inputTime.split(' ')[0];
+    String cleanedTime;
+
+    if (inputTime.contains('CET')) {
+      cleanedTime = inputTime.split(' ')[0];
+    } else {
+      cleanedTime = inputTime.replaceAll(' ', '');
+    }
 
     // Parse the input string as a DateTime object
     final parsedTime = DateTime.parse('1970-01-01 $cleanedTime');
