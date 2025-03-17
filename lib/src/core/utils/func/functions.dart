@@ -34,7 +34,7 @@ void initializeScreen() async {
   if (isLocationGiven) {
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null &&
         HiveService.instance.getPrayerTimes('year') != DateTime.now().year) {
-      prayersTime = await getDataFromAPI();
+      await getDataFromAPI();
       await FirebaseMessaging.instance.subscribeToTopic("updates");
 
       //ISOLATE HERE
@@ -55,7 +55,7 @@ void initializeScreen() async {
       // Map<String, dynamic> resultData = await receivePort.first;
       // _savePrayersInHive(resultData);
     } else {
-      prayersTime = getDataFromHive();
+      getDataFromHive();
     }
     Get.offAll(
       () => const HomeScreen(),
@@ -184,7 +184,7 @@ String formatDateTimeToTimeString(DateTime dateTime) {
 }
 
 Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
-  log('========START Saving=======');
+  log('========START Saving Yearly Prayers=======');
 
   await HiveService.instance.setPrayerTimes(
     'yearlyPrayerTime',
@@ -193,10 +193,11 @@ Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
   await HiveService.instance.setPrayerTimes('year', DateTime.now().year);
   await scheduleWeekPrayers();
 
-  log('========END Saving=======');
+  log('========END Saving Yearly Prayers=======');
 }
 
-Future<List<PrayerTimeModel>> getDataFromAPI() async {
+
+Future<void> getDataFromAPI() async {
   List<PrayerTimeModel> daysPrayers = [];
   String date = await CurrentDateApi.instance.getDate('Africa/Algiers');
   daysPrayers.add(
@@ -219,7 +220,7 @@ Future<List<PrayerTimeModel>> getDataFromAPI() async {
     ),
   );
 
-  return daysPrayers;
+  prayersTime = daysPrayers;
 }
 
 String addOneDayToDate(String dateString) {
@@ -239,7 +240,7 @@ String addOneDayToDate(String dateString) {
   return "${newDate.day.toString().padLeft(2, '0')}-${newDate.month.toString().padLeft(2, '0')}-${newDate.year}";
 }
 
-List<PrayerTimeModel> getDataFromHive() {
+void getDataFromHive() {
   List<PrayerTimeModel> daysPrayers = [];
   DateTime today = DateTime.now();
   daysPrayers.add(
@@ -255,7 +256,8 @@ List<PrayerTimeModel> getDataFromHive() {
           .toString()][today.day - 1],
     ),
   );
-  return daysPrayers;
+
+  prayersTime = daysPrayers;
 }
 
 void playAdhan() async {

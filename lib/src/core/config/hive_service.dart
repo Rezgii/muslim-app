@@ -2,8 +2,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 // import '../../data/models/user_model.dart';
 
-
-
 class HiveService {
   HiveService._();
   static HiveService instance = HiveService._();
@@ -42,8 +40,7 @@ class HiveService {
   }
 
   Future<void> setPrayerTimes(String key, dynamic value) async {
-    await _prayerBox.put(key, value).then((value) {
-    },);
+    await _prayerBox.put(key, value);
   }
 
   // Remove a setting
@@ -56,7 +53,9 @@ class HiveService {
     await _prayerBox.delete(key);
   }
 
+
   Map<dynamic, dynamic>? getPrayers() {
     return _prayerBox.get('yearlyPrayerTime') as Map<dynamic, dynamic>?;
   }
+
 }

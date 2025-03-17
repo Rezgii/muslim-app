@@ -8,6 +8,7 @@ import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/controllers/home_controller.dart';
 import 'package:muslim/src/presentation/screens/feedback_screen.dart';
 import 'package:muslim/src/presentation/screens/location_permission_screen.dart';
+import 'package:muslim/src/presentation/screens/services/islamic_events_screen.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_calendar_screen.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_screen.dart';
 import 'package:muslim/src/presentation/screens/services/quran_screen.dart';
@@ -22,9 +23,7 @@ class HomeScreen extends StatelessWidget {
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-    return Scaffold(
-      body: _buildHomeScreen(controller),
-    );
+    return Scaffold(body: _buildHomeScreen(controller));
   }
 
   SingleChildScrollView _buildHomeScreen(HomeController controller) {
@@ -66,10 +65,7 @@ class HomeScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SvgPicture.asset(
-                      'assets/images/user.svg',
-                      height: 60.h,
-                    ),
+                    SvgPicture.asset('assets/images/user.svg', height: 60.h),
                     12.horizontalSpace,
                     Text(
                       'أهلا و سهلا',
@@ -81,10 +77,12 @@ class HomeScreen extends StatelessWidget {
                     const Spacer(),
                     IconButton(
                       onPressed: () {
-                        Get.to(() => const LocationPermissionScreen(),
-                            duration: const Duration(milliseconds: 650),
-                            transition: Transition.circularReveal,
-                            curve: Curves.easeIn);
+                        Get.to(
+                          () => const LocationPermissionScreen(),
+                          duration: const Duration(milliseconds: 650),
+                          transition: Transition.circularReveal,
+                          curve: Curves.easeIn,
+                        );
                       },
                       icon: Icon(
                         Icons.pin_drop,
@@ -94,10 +92,12 @@ class HomeScreen extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        Get.to(() => const FeedbackScreen(),
-                            duration: const Duration(milliseconds: 650),
-                            transition: Transition.circularReveal,
-                            curve: Curves.easeIn);
+                        Get.to(
+                          () => const FeedbackScreen(),
+                          duration: const Duration(milliseconds: 650),
+                          transition: Transition.circularReveal,
+                          curve: Curves.easeIn,
+                        );
                       },
                       icon: Icon(
                         Icons.feedback,
@@ -136,8 +136,9 @@ class HomeScreen extends StatelessWidget {
                             ),
                             5.verticalSpace,
                             Text(
-                              controller
-                                  .convertTimeFormat(controller.prayerTime),
+                              controller.convertTimeFormat(
+                                controller.prayerTime,
+                              ),
                               textDirection: TextDirection.ltr,
                               style: TextStyle(fontSize: 24.sp),
                             ),
@@ -146,17 +147,23 @@ class HomeScreen extends StatelessWidget {
                               controller.todayPrayer.date['gregorian']['date'],
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
-                                  fontSize: 16.sp,
-                                  color: AppColors.secondaryColor),
+                                fontSize: 16.sp,
+                                color: AppColors.secondaryColor,
+                              ),
                             ),
                             5.verticalSpace,
                             Center(
-                              child: Obx(() => Text(controller.countdown.value,
+                              child: Obx(
+                                () => Text(
+                                  controller.countdown.value,
                                   textDirection: TextDirection.ltr,
                                   style: TextStyle(
-                                      fontSize: 24.sp,
-                                      color: AppColors.primaryColor))),
-                            )
+                                    fontSize: 24.sp,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -166,7 +173,7 @@ class HomeScreen extends StatelessWidget {
                           'assets/images/partly_cloudy.svg',
                           height: 150.h,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -207,6 +214,12 @@ class HomeScreen extends StatelessWidget {
                       title: 'Calendar',
                       img: 'assets/images/calendar.svg',
                       routeName: '/prayer',
+                      prayerTimeModel: controller.todayPrayer,
+                    ),
+                    HomeItemWidget(
+                      title: 'Events',
+                      img: 'assets/images/calendar.svg',
+                      routeName: '/events',
                       prayerTimeModel: controller.todayPrayer,
                     ),
                   ],
@@ -313,29 +326,41 @@ class HomeItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (title == 'Quran') {
-          Get.to(() => const QuranScreen(),
-              duration: const Duration(milliseconds: 650),
-              transition: Transition.circularReveal,
-              curve: Curves.easeIn);
+          Get.to(
+            () => const QuranScreen(),
+            duration: const Duration(milliseconds: 650),
+            transition: Transition.circularReveal,
+            curve: Curves.easeIn,
+          );
         } else if (title == 'Thiker') {
-          Get.to(() => const ThikerScreen(),
-              duration: const Duration(milliseconds: 650),
-              transition: Transition.circularReveal,
-              curve: Curves.easeIn);
+          Get.to(
+            () => const ThikerScreen(),
+            duration: const Duration(milliseconds: 650),
+            transition: Transition.circularReveal,
+            curve: Curves.easeIn,
+          );
         } else if (title == 'Calendar') {
-          Get.to(() => const PrayerTimeCalendarScreen(),
-              duration: const Duration(milliseconds: 650),
-              transition: Transition.circularReveal,
-              curve: Curves.easeIn);
+          Get.to(
+            () => const PrayerTimeCalendarScreen(),
+            duration: const Duration(milliseconds: 650),
+            transition: Transition.circularReveal,
+            curve: Curves.easeIn,
+          );
+        } else if (title == 'Events') {
+          Get.to(
+            () => const IslamicEventsScreen(),
+            duration: const Duration(milliseconds: 650),
+            transition: Transition.circularReveal,
+            curve: Curves.easeIn,
+          );
         } else {
-          Get.to(() => const PrayerTimeScreen(),
-              arguments: {
-                'isToday': true,
-                'prayersTime': prayerTimeModel,
-              },
-              duration: const Duration(milliseconds: 650),
-              transition: Transition.circularReveal,
-              curve: Curves.easeIn);
+          Get.to(
+            () => const PrayerTimeScreen(),
+            arguments: {'isToday': true, 'prayersTime': prayerTimeModel},
+            duration: const Duration(milliseconds: 650),
+            transition: Transition.circularReveal,
+            curve: Curves.easeIn,
+          );
         }
       },
       child: Container(
@@ -349,14 +374,8 @@ class HomeItemWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SvgPicture.asset(
-              img,
-              height: 75.h,
-            ),
-            Text(
-              title.tr,
-              style: TextStyle(fontSize: 20.sp),
-            )
+            SvgPicture.asset(img, height: 75.h),
+            Text(title.tr, style: TextStyle(fontSize: 20.sp)),
           ],
         ),
       ),
