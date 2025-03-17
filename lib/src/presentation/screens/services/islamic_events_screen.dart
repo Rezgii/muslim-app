@@ -101,8 +101,8 @@ class EventItem extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(event.event),
-        subtitle: Text('${event.hijriDay} ${event.monthName}'),
+        title: Text(event.event.tr),
+        subtitle: Text('${event.hijriDay} ${event.monthName.tr}'),
         trailing: Text(daysLeft, style: const TextStyle(color: Colors.grey)),
       ),
     );

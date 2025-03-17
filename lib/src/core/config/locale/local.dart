@@ -54,6 +54,41 @@ class LocalStrings extends Translations {
       "Days Left": " Days Left",
       'Islamic Events': 'Islamic Events',
       "Passed": "Passed",
+      "islamic_events": "Islamic Events",
+      "Events": "Events",
+      "Islamic New Year": "Islamic New Year",
+      "Ashura": "Ashura",
+      "Mawlid": "Mawlid",
+      "Isra and Miraj": "Isra and Miraj",
+      "Mid-Sha'ban": "Mid-Sha'ban",
+      "Start of Ramadan": "Start of Ramadan",
+      "Laylat al-Qadr": "Laylat al-Qadr",
+      "Eid al-Fitr": "Eid al-Fitr",
+      "Day of Arafah": "Day of Arafah",
+      "Eid al-Adha": "Eid al-Adha",
+      "Muharram": "Muharram",
+      "Rabi' al-Awwal": "Rabi' al-Awwal",
+      "Rajab": "Rajab",
+      "Sha'ban": "Sha'ban",
+      "Ramadan": "Ramadan",
+      "Shawwal": "Shawwal",
+      "Dhul-Hijjah": "Dhul-Hijjah",
+      "Beginning of the Islamic year.": "Beginning of the Islamic year.",
+      "Recommended fasting day, marks the salvation of Prophet Musa (Moses).":
+          "Recommended fasting day, marks the salvation of Prophet Musa (Moses).",
+      "Birth of Prophet Muhammad (PBUH).": "Birth of Prophet Muhammad (PBUH).",
+      "The Prophet's journey to Al-Aqsa Mosque and ascension to the heavens.":
+          "The Prophet's journey to Al-Aqsa Mosque and ascension to the heavens.",
+      "A night of increased supplication and forgiveness.":
+          "A night of increased supplication and forgiveness.",
+      "Start of the fasting month.": "Start of the fasting month.",
+      "The best night of the year when the Quran was revealed.":
+          "The best night of the year when the Quran was revealed.",
+      "Festival at the end of Ramadan.": "Festival at the end of Ramadan.",
+      "The greatest day of Hajj, fasting expiates sins of two years.":
+          "The greatest day of Hajj, fasting expiates sins of two years.",
+      "Festival of Sacrifice, marking the act of Qurbani.":
+          "Festival of Sacrifice, marking the act of Qurbani.",
     },
     'ar_AE': {
       'Imsak': 'الإمساك',
@@ -105,6 +140,41 @@ class LocalStrings extends Translations {
       "Days Left": " أيام المتبقية",
       'Islamic Events': "المناسبات الإسلامية",
       "Passed": "منقضية",
+      "islamic_events": "المناسبات الإسلامية",
+      "Events": "المناسبات",
+      "Islamic New Year": "رأس السنة الهجرية",
+      "Ashura": "يوم عاشوراء",
+      "Mawlid": "المولد النبوي الشريف",
+      "Isra and Miraj": "ليلة الإسراء والمعراج",
+      "Mid-Sha'ban": "النصف من شعبان",
+      "Start of Ramadan": "بداية رمضان",
+      "Laylat al-Qadr": "ليلة القدر",
+      "Eid al-Fitr": "عيد الفطر",
+      "Day of Arafah": "يوم عرفة",
+      "Eid al-Adha": "عيد الأضحى",
+      "Muharram": "محرم",
+      "Rabi' al-Awwal": "ربيع الأول",
+      "Rajab": "رجب",
+      "Sha'ban": "شعبان",
+      "Ramadan": "رمضان",
+      "Shawwal": "شوال",
+      "Dhul-Hijjah": "ذو الحجة",
+      "Beginning of the Islamic year.": "بداية العام الهجري.",
+      "Recommended fasting day, marks the salvation of Prophet Musa (Moses).":
+          "يوم صيام مستحب ويصادف نجاة سيدنا موسى عليه السلام.",
+      "Birth of Prophet Muhammad (PBUH).": "مولد النبي محمد ﷺ.",
+      "The Prophet's journey to Al-Aqsa Mosque and ascension to the heavens.":
+          "رحلة النبي ﷺ إلى المسجد الأقصى والمعراج إلى السماء.",
+      "A night of increased supplication and forgiveness.":
+          "ليلة يكثر فيها الدعاء والاستغفار.",
+      "Start of the fasting month.": "بداية شهر الصيام.",
+      "The best night of the year when the Quran was revealed.":
+          "أفضل ليلة في السنة، حيث نزل القرآن الكريم.",
+      "Festival at the end of Ramadan.": "عيد الفطر بعد انتهاء رمضان.",
+      "The greatest day of Hajj, fasting expiates sins of two years.":
+          "أعظم أيام الحج، صيامه يكفر سنتين.",
+      "Festival of Sacrifice, marking the act of Qurbani.":
+          "عيد النحر والتضحية بالأضاحي.",
     },
     'fr_FR': {
       'Imsak': 'Imsak',
@@ -157,6 +227,42 @@ class LocalStrings extends Translations {
       "Days Left": " Jours Restants",
       'Islamic Events': "Événements Islamiques",
       "Passed": "Passé",
+      "islamic_events": "Événements Islamiques",
+      "Events": "Événements",
+      "Islamic New Year": "Nouvel An Hijri",
+      "Ashura": "Achoura",
+      "Mawlid": "Mawlid",
+      "Isra and Miraj": "Isra et Miraj",
+      "Mid-Sha'ban": "Mi-Cha'ban",
+      "Start of Ramadan": "Début du Ramadan",
+      "Laylat al-Qadr": "Laylat al-Qadr",
+      "Eid al-Fitr": "Aïd al-Fitr",
+      "Day of Arafah": "Jour de Arafat",
+      "Eid al-Adha": "Aïd al-Adha",
+      "Muharram": "Mouharram",
+      "Rabi' al-Awwal": "Rabi' al-Awwal",
+      "Rajab": "Rajab",
+      "Sha'ban": "Cha'ban",
+      "Ramadan": "Ramadan",
+      "Shawwal": "Chawwal",
+      "Dhul-Hijjah": "Dhou al-Hijja",
+      "Beginning of the Islamic year.": "Début de l'année hijri.",
+      "Recommended fasting day, marks the salvation of Prophet Musa (Moses).":
+          "Jour de jeûne recommandé, marque le salut du prophète Moussa (Moïse).",
+      "Birth of Prophet Muhammad (PBUH).":
+          "Naissance du prophète Mohammed (PSL).",
+      "The Prophet's journey to Al-Aqsa Mosque and ascension to the heavens.":
+          "Voyage du prophète à la mosquée Al-Aqsa et ascension aux cieux.",
+      "A night of increased supplication and forgiveness.":
+          "Une nuit de prières et de pardon accru.",
+      "Start of the fasting month.": "Début du mois de jeûne.",
+      "The best night of the year when the Quran was revealed.":
+          "La meilleure nuit de l'année où le Coran a été révélé.",
+      "Festival at the end of Ramadan.": "Fête marquant la fin du Ramadan.",
+      "The greatest day of Hajj, fasting expiates sins of two years.":
+          "Le plus grand jour du Hajj, le jeûne expie deux ans de péchés.",
+      "Festival of Sacrifice, marking the act of Qurbani.":
+          "Fête du sacrifice, marquant l'acte de Qurbani.",
     },
   };
 }

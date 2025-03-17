@@ -218,7 +218,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     HomeItemWidget(
                       title: 'Events',
-                      img: 'assets/images/calendar.svg',
+                      img: 'assets/images/event.svg',
                       routeName: '/events',
                       prayerTimeModel: controller.todayPrayer,
                     ),
