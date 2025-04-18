@@ -17,8 +17,10 @@ class AthkarScreen extends StatefulWidget {
 class _AthkarScreenState extends State<AthkarScreen> {
   final AthkarController _controller = Get.put(AthkarController());
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  final Tween<Offset> _offset =
-      Tween(begin: const Offset(1, 0), end: const Offset(0, 0));
+  final Tween<Offset> _offset = Tween(
+    begin: const Offset(1, 0),
+    end: const Offset(0, 0),
+  );
   bool _isRemoving = false;
 
   @override
@@ -36,17 +38,20 @@ class _AthkarScreenState extends State<AthkarScreen> {
               init: AthkarController(),
               builder: (controller) {
                 return _controller.athkar.isEmpty
-                    ? _buildFinishedAthkarWidget()
+                    ? const FinishAthkaWidget()
                     : AnimatedList(
-                        key: _listKey,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        initialItemCount: controller.athkar.length,
-                        itemBuilder: (context, index, animation) {
-                          return _buildItem(
-                              controller.athkar[index], index, animation);
-                        },
-                      );
+                      key: _listKey,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      initialItemCount: controller.athkar.length,
+                      itemBuilder: (context, index, animation) {
+                        return _buildThikerItemWidget(
+                          controller.athkar[index],
+                          index,
+                          animation,
+                        );
+                      },
+                    );
               },
             ),
           ),
@@ -55,32 +60,11 @@ class _AthkarScreenState extends State<AthkarScreen> {
     );
   }
 
-  Widget _buildFinishedAthkarWidget() {
-    return Padding(
-      padding: REdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          50.verticalSpace,
-          AnimatedTextKit(
-            repeatForever: false,
-            totalRepeatCount: 1,
-            animatedTexts: [
-              TyperAnimatedText(
-                'You finished all Athakr.\nYou are good to go.'.tr,
-                textAlign: TextAlign.center,
-                textStyle:
-                    TextStyle(fontSize: 22.sp, color: AppColors.primaryColor),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildItem(
-      ThikerModel thiker, int index, Animation<double> animation) {
+  Widget _buildThikerItemWidget(
+    ThikerModel thiker,
+    int index,
+    Animation<double> animation,
+  ) {
     return SlideTransition(
       position: animation.drive(_offset),
       child: Center(
@@ -137,13 +121,14 @@ class _AthkarScreenState extends State<AthkarScreen> {
                               shape: BoxShape.circle,
                               border: Border.all(color: AppColors.primaryColor),
                             ),
-                            child:
-                                Center(child: Text(thiker.repeat.toString())),
-                          )
+                            child: Center(
+                              child: Text(thiker.repeat.toString()),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
               20.verticalSpace,
@@ -160,11 +145,42 @@ class _AthkarScreenState extends State<AthkarScreen> {
     _controller.athkar.removeAt(index);
 
     _listKey.currentState?.removeItem(index, (context, animation) {
-      return _buildItem(itemToRemove, index, animation);
+      return _buildThikerItemWidget(itemToRemove, index, animation);
     }, duration: const Duration(milliseconds: 350));
 
     Future.delayed(const Duration(milliseconds: 400), () {
       _isRemoving = false;
     });
+  }
+}
+
+class FinishAthkaWidget extends StatelessWidget {
+  const FinishAthkaWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: REdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          50.verticalSpace,
+          AnimatedTextKit(
+            repeatForever: false,
+            totalRepeatCount: 1,
+            animatedTexts: [
+              TyperAnimatedText(
+                'You finished all Athakr.\nYou are good to go.'.tr,
+                textAlign: TextAlign.center,
+                textStyle: TextStyle(
+                  fontSize: 22.sp,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -19,57 +19,142 @@ class PrayerTimeScreen extends StatefulWidget {
 class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   final PrayerTimeController _controller = Get.put(PrayerTimeController());
 
-  Widget _buildTimeline(List<TimeLine> statusList, List<PrayerModel> prayers) {
-    return Row(
-      children: [
-        22.horizontalSpace,
-        Expanded(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Today Prayer Time'.tr),
+        backgroundColor: AppColors.backgroundColor,
+        surfaceTintColor: Colors.transparent,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
-            crossAxisAlignment:
-                CrossAxisAlignment.center, // Center horizontally
-            children: List.generate(statusList.length, (index) {
-              return TimelineTile(
-                alignment: TimelineAlign.start,
-                endChild: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Column(
-                    children: [
-                      PrayerTimeWidget(
-                        timeImage: prayers[index].timeImage,
-                        prayerName: prayers[index].prayerName,
-                        prayerTime: _controller.convertTimeFormat(
-                          prayers[index].prayerTime,
-                        ),
-                        // prayerTime: prayers[index].prayerTime.substring(0, 5),
-                        soundIcon: prayers[index].soundIcon,
+            children: [
+              //The Date Widget
+              DateWidget(controller: _controller),
+              10.verticalSpace,
+              //The next prayer + timer
+              NextPrayerWidget(controller: _controller),
+              //Today Prayer Time
+              _buildTodayPrayerWidget(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTodayPrayerWidget() {
+    return Container(
+              width: 430.w,
+              alignment: Alignment.center,
+              // padding: REdgeInsets.fromLTRB(16),
+              decoration: const BoxDecoration(
+                color: AppColors.boxBlackBg,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50),
+                  topRight: Radius.circular(50),
+                ),
+              ),
+              child: Column(
+                children: [
+                  25.verticalSpace,
+                  _buildTimeline(
+                    [
+                      TimeLine(
+                        prayerName: 'Lastthird',
+                        timestamp: Timestamp.now(),
+                      ),
+                      TimeLine(
+                        prayerName: 'Imsak',
+                        timestamp: Timestamp.now(),
+                      ),
+                      TimeLine(
+                        prayerName: 'Fajr',
+                        timestamp: Timestamp.now(),
+                      ),
+                      TimeLine(
+                        prayerName: 'Sunrise',
+                        timestamp: Timestamp.now(),
+                      ),
+                      TimeLine(
+                        prayerName: 'Dhuhr',
+                        timestamp: Timestamp.now(),
+                      ),
+                      TimeLine(prayerName: 'Asr', timestamp: Timestamp.now()),
+                      TimeLine(
+                        prayerName: 'Maghrib',
+                        timestamp: Timestamp.now(),
+                      ),
+                      TimeLine(
+                        prayerName: 'Isha',
+                        timestamp: Timestamp.now(),
+                      ),
+                    ],
+                    [
+                      PrayerModel(
+                        timeImage: 'assets/images/midnight.svg',
+                        prayerName: 'Last Third'.tr,
+                        prayerTime:
+                            _controller.todayPrayer.prayersTime['Lastthird'],
+                        soundIcon: 'assets/images/mute.svg',
+                      ),
+                      PrayerModel(
+                        timeImage: 'assets/images/midnight.svg',
+                        prayerName: 'Imsak'.tr,
+                        prayerTime:
+                            _controller.todayPrayer.prayersTime['Imsak'],
+                        soundIcon: 'assets/images/mute.svg',
+                      ),
+                      PrayerModel(
+                        timeImage: 'assets/images/sunset.svg',
+                        prayerName: 'Fajr'.tr,
+                        prayerTime:
+                            _controller.todayPrayer.prayersTime['Fajr'],
+                        soundIcon: 'assets/images/volume.svg',
+                      ),
+                      PrayerModel(
+                        timeImage: 'assets/images/sunrise.svg',
+                        prayerName: 'Sunrise'.tr,
+                        prayerTime:
+                            _controller.todayPrayer.prayersTime['Sunrise'],
+                        soundIcon: 'assets/images/mute.svg',
+                      ),
+                      PrayerModel(
+                        timeImage: 'assets/images/contrast.svg',
+                        prayerName: 'Dhuhr'.tr,
+                        prayerTime:
+                            _controller.todayPrayer.prayersTime['Dhuhr'],
+                        soundIcon: 'assets/images/volume.svg',
+                      ),
+                      PrayerModel(
+                        timeImage: 'assets/images/partly_cloudy.svg',
+                        prayerName: 'Asr'.tr,
+                        prayerTime:
+                            _controller.todayPrayer.prayersTime['Asr'],
+                        soundIcon: 'assets/images/volume.svg',
+                      ),
+                      PrayerModel(
+                        timeImage: 'assets/images/sunset.svg',
+                        prayerName: 'Maghrib'.tr,
+                        prayerTime:
+                            _controller.todayPrayer.prayersTime['Maghrib'],
+                        soundIcon: 'assets/images/volume.svg',
+                      ),
+                      PrayerModel(
+                        timeImage: 'assets/images/half_moon.svg',
+                        prayerName: 'Isha'.tr,
+                        prayerTime:
+                            _controller.todayPrayer.prayersTime['Isha'],
+                        soundIcon: 'assets/images/volume.svg',
                       ),
                     ],
                   ),
-                ),
-                isFirst: index == 0,
-                isLast: index == statusList.length - 1,
-                beforeLineStyle: const LineStyle(
-                  color: AppColors.primaryColor,
-                  thickness: 3,
-                ),
-                afterLineStyle: const LineStyle(
-                  color: AppColors.primaryColor,
-                  thickness: 3,
-                ),
-                indicatorStyle: IndicatorStyle(
-                  width: 25.r,
-                  height: 25.r,
-                  indicator: _checkTimeForTimeLine(
-                    statusList[index].prayerName,
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
-      ],
-    );
+                  10.verticalSpace,
+                ],
+              ),
+            );
   }
 
   Widget _checkTimeForTimeLine(String prayerName) {
@@ -130,200 +215,147 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Today Prayer Time'.tr),
-        backgroundColor: AppColors.backgroundColor,
-        surfaceTintColor: Colors.transparent,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
+  Widget _buildTimeline(List<TimeLine> statusList, List<PrayerModel> prayers) {
+    return Row(
+      children: [
+        22.horizontalSpace,
+        Expanded(
           child: Column(
-            children: [
-              //The Date Widget
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_month,
-                      color: AppColors.primaryColor,
-                      size: 30.sp,
-                    ),
-                    10.horizontalSpace,
-                    Text.rich(
-                      TextSpan(
-                        style: TextStyle(fontSize: 18.sp),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: '${_controller.day} ${_controller.dateHijri}',
-                          ),
-                          TextSpan(
-                            text: '\n${_controller.date}',
-                            style: const TextStyle(
-                              color: AppColors.secondaryColor,
-                            ),
-                          ),
-                        ],
+            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+            crossAxisAlignment:
+                CrossAxisAlignment.center, // Center horizontally
+            children: List.generate(statusList.length, (index) {
+              return TimelineTile(
+                alignment: TimelineAlign.start,
+                endChild: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Column(
+                    children: [
+                      PrayerTimeWidget(
+                        timeImage: prayers[index].timeImage,
+                        prayerName: prayers[index].prayerName,
+                        prayerTime: _controller.convertTimeFormat(
+                          prayers[index].prayerTime,
+                        ),
+                        // prayerTime: prayers[index].prayerTime.substring(0, 5),
+                        soundIcon: prayers[index].soundIcon,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              10.verticalSpace,
-              //The next prayer + timer
-              Builder(
-                builder: (context) {
-                  return _controller.isToday
-                      ? Column(
-                        children: [
-                          Text(
-                            _controller.prayerName == 'Lastthird'
-                                ? 'Last Third'.tr
-                                : _controller.prayerName.tr,
-                            style: TextStyle(fontSize: 24.sp),
-                          ),
-                          Text(
-                            _controller.convertTimeFormat(
-                              _controller.prayerTime,
-                            ),
-                            textDirection: TextDirection.ltr,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              color: AppColors.secondaryColor,
-                            ),
-                          ),
-                          Obx(
-                            () => Text(
-                              _controller.countdown.toString(),
-                              textDirection: TextDirection.ltr,
-                              style: TextStyle(
-                                fontSize: 32.sp,
-                                color: AppColors.primaryColor,
-                              ),
-                            ),
-                          ),
-                          10.verticalSpace,
-                        ],
-                      )
-                      : const SizedBox();
-                },
-              ),
-              //Today Prayer Time
-              Container(
-                width: 430.w,
-                alignment: Alignment.center,
-                // padding: REdgeInsets.fromLTRB(16),
-                decoration: const BoxDecoration(
-                  color: AppColors.boxBlackBg,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
+                    ],
                   ),
                 ),
-                child: Column(
-                  children: [
-                    25.verticalSpace,
-                    _buildTimeline(
-                      [
-                        TimeLine(
-                          prayerName: 'Lastthird',
-                          timestamp: Timestamp.now(),
-                        ),
-                        TimeLine(
-                          prayerName: 'Imsak',
-                          timestamp: Timestamp.now(),
-                        ),
-                        TimeLine(
-                          prayerName: 'Fajr',
-                          timestamp: Timestamp.now(),
-                        ),
-                        TimeLine(
-                          prayerName: 'Sunrise',
-                          timestamp: Timestamp.now(),
-                        ),
-                        TimeLine(
-                          prayerName: 'Dhuhr',
-                          timestamp: Timestamp.now(),
-                        ),
-                        TimeLine(prayerName: 'Asr', timestamp: Timestamp.now()),
-                        TimeLine(
-                          prayerName: 'Maghrib',
-                          timestamp: Timestamp.now(),
-                        ),
-                        TimeLine(
-                          prayerName: 'Isha',
-                          timestamp: Timestamp.now(),
-                        ),
-                      ],
-                      [
-                        PrayerModel(
-                          timeImage: 'assets/images/midnight.svg',
-                          prayerName: 'Last Third'.tr,
-                          prayerTime:
-                              _controller.todayPrayer.prayersTime['Lastthird'],
-                          soundIcon: 'assets/images/mute.svg',
-                        ),
-                        PrayerModel(
-                          timeImage: 'assets/images/midnight.svg',
-                          prayerName: 'Imsak'.tr,
-                          prayerTime:
-                              _controller.todayPrayer.prayersTime['Imsak'],
-                          soundIcon: 'assets/images/mute.svg',
-                        ),
-                        PrayerModel(
-                          timeImage: 'assets/images/sunset.svg',
-                          prayerName: 'Fajr'.tr,
-                          prayerTime:
-                              _controller.todayPrayer.prayersTime['Fajr'],
-                          soundIcon: 'assets/images/volume.svg',
-                        ),
-                        PrayerModel(
-                          timeImage: 'assets/images/sunrise.svg',
-                          prayerName: 'Sunrise'.tr,
-                          prayerTime:
-                              _controller.todayPrayer.prayersTime['Sunrise'],
-                          soundIcon: 'assets/images/mute.svg',
-                        ),
-                        PrayerModel(
-                          timeImage: 'assets/images/contrast.svg',
-                          prayerName: 'Dhuhr'.tr,
-                          prayerTime:
-                              _controller.todayPrayer.prayersTime['Dhuhr'],
-                          soundIcon: 'assets/images/volume.svg',
-                        ),
-                        PrayerModel(
-                          timeImage: 'assets/images/partly_cloudy.svg',
-                          prayerName: 'Asr'.tr,
-                          prayerTime:
-                              _controller.todayPrayer.prayersTime['Asr'],
-                          soundIcon: 'assets/images/volume.svg',
-                        ),
-                        PrayerModel(
-                          timeImage: 'assets/images/sunset.svg',
-                          prayerName: 'Maghrib'.tr,
-                          prayerTime:
-                              _controller.todayPrayer.prayersTime['Maghrib'],
-                          soundIcon: 'assets/images/volume.svg',
-                        ),
-                        PrayerModel(
-                          timeImage: 'assets/images/half_moon.svg',
-                          prayerName: 'Isha'.tr,
-                          prayerTime:
-                              _controller.todayPrayer.prayersTime['Isha'],
-                          soundIcon: 'assets/images/volume.svg',
-                        ),
-                      ],
-                    ),
-                    10.verticalSpace,
-                  ],
+                isFirst: index == 0,
+                isLast: index == statusList.length - 1,
+                beforeLineStyle: const LineStyle(
+                  color: AppColors.primaryColor,
+                  thickness: 3,
                 ),
-              ),
-            ],
+                afterLineStyle: const LineStyle(
+                  color: AppColors.primaryColor,
+                  thickness: 3,
+                ),
+                indicatorStyle: IndicatorStyle(
+                  width: 25.r,
+                  height: 25.r,
+                  indicator: _checkTimeForTimeLine(
+                    statusList[index].prayerName,
+                  ),
+                ),
+              );
+            }),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class NextPrayerWidget extends StatelessWidget {
+  const NextPrayerWidget({
+    super.key,
+    required PrayerTimeController controller,
+  }) : _controller = controller;
+
+  final PrayerTimeController _controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        return _controller.isToday
+            ? Column(
+              children: [
+                Text(
+                  _controller.prayerName == 'Lastthird'
+                      ? 'Last Third'.tr
+                      : _controller.prayerName.tr,
+                  style: TextStyle(fontSize: 24.sp),
+                ),
+                Text(
+                  _controller.convertTimeFormat(
+                    _controller.prayerTime,
+                  ),
+                  textDirection: TextDirection.ltr,
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: AppColors.secondaryColor,
+                  ),
+                ),
+                Obx(
+                  () => Text(
+                    _controller.countdown.toString(),
+                    textDirection: TextDirection.ltr,
+                    style: TextStyle(
+                      fontSize: 32.sp,
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                ),
+                10.verticalSpace,
+              ],
+            )
+            : const SizedBox();
+      },
+    );
+  }
+}
+
+class DateWidget extends StatelessWidget {
+  const DateWidget({
+    super.key,
+    required PrayerTimeController controller,
+  }) : _controller = controller;
+
+  final PrayerTimeController _controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      child: Row(
+        children: [
+          Icon(
+            Icons.calendar_month,
+            color: AppColors.primaryColor,
+            size: 30.sp,
+          ),
+          10.horizontalSpace,
+          Text.rich(
+            TextSpan(
+              style: TextStyle(fontSize: 18.sp),
+              children: <TextSpan>[
+                TextSpan(
+                  text: '${_controller.day} ${_controller.dateHijri}',
+                ),
+                TextSpan(
+                  text: '\n${_controller.date}',
+                  style: const TextStyle(
+                    color: AppColors.secondaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -365,7 +397,7 @@ class PrayerTimeWidget extends StatelessWidget {
           10.horizontalSpace,
           Text.rich(
             TextSpan(
-              style: TextStyle(fontSize: 18.sp, color: Colors.black,),
+              style: TextStyle(fontSize: 18.sp, color: Colors.black),
               children: <TextSpan>[
                 TextSpan(text: prayerName),
                 TextSpan(
@@ -373,7 +405,6 @@ class PrayerTimeWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16.sp,
                     color: const Color(0xFFADABAB),
-                    
                   ),
                 ),
               ],

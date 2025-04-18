@@ -36,7 +36,6 @@ class IslamicEventsScreenState extends State<IslamicEventsScreen> {
                 event.hijriMonth,
                 event.hijriDay,
               );
-              // Ensure we get the correct Gregorian date (next year if passed)
 
               if (gregorianDate.isBefore(DateTime.now())) {
                 gregorianDate = _controller.hijriToGregorian(
@@ -47,9 +46,9 @@ class IslamicEventsScreenState extends State<IslamicEventsScreen> {
                     .hijriToGregorian(event.hijriMonth, event.hijriDay)
                     .add(
                       const Duration(days: 354),
-                    ); // Approximate Hijri year shift
+                    );
               }
-              return EventItem(
+              return EventItemWidget(
                 event: event,
                 gregorianDate: _controller.formateGregorianDate(gregorianDate),
                 daysLeft: _controller.getDaysLeft(
@@ -67,8 +66,8 @@ class IslamicEventsScreenState extends State<IslamicEventsScreen> {
   }
 }
 
-class EventItem extends StatelessWidget {
-  const EventItem({
+class EventItemWidget extends StatelessWidget {
+  const EventItemWidget({
     super.key,
     required this.event,
     required this.gregorianDate,
