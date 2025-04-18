@@ -7,8 +7,9 @@ class IslamicEventsController extends GetxController {
   List<IslamicEventModel> events = [];
   HijriCalendar todayHijri = HijriCalendar.now();
 
+  // Get Events and Order Them
   @override
-  void onInit() {
+  void onInit() { 
     for (var event in islamicEvents) {
       events.add(IslamicEventModel.fromMap(event));
     }
@@ -43,7 +44,7 @@ class IslamicEventsController extends GetxController {
     );
   }
 
-  // Return formatted date (e.g., "25 March")
+  // Format date (ex: "25 March")
   String formateGregorianDate(DateTime gregorianDate) {
     const List<String> months = [
       "January",

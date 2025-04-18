@@ -19,6 +19,7 @@ class HomeController extends GetxController {
   bool _isPositiveTimer = false;
   bool isTestMode = false;
 
+  // Get Next Prayer TIme and Setup Counter
   @override
   void onInit() async {
     super.onInit();
@@ -29,30 +30,24 @@ class HomeController extends GetxController {
     _formatPrayerTime();
   }
 
+  // Notification + Shorebird Updates Check
   @override
   void onReady() async {
     super.onReady();
     await requestNotificationPermission().then((value) {
       scheduleWeekPrayers();
-
-      //TODO: Foreground Service
-
-      // ForeGroundService.instance
-      //     .startService();
     });
     await FirebaseMessaging.instance.subscribeToTopic("updates");
 
     _checkForUpdates();
   }
 
+  //Format Time (ex: from "12 : 28" to "12:28 PM")
   String convertTimeFormat(String inputTime) {
-    // // Remove spaces around the colon
     String cleanedTime = inputTime.replaceAll(' ', '');
 
-    // Parse the input string as a DateTime object
     final parsedTime = DateTime.parse('1970-01-01 $cleanedTime');
 
-    // Format the time using the intl package
     final formattedTime = DateFormat('hh:mm a').format(parsedTime);
 
     return formattedTime;
@@ -73,11 +68,13 @@ class HomeController extends GetxController {
     }
   }
 
+  // Format Time (ex: from "12:28" to "12:28 PM")
   void _formatPrayerTime() {
     prayerTime =
         '${prayerTime.substring(0, 2)} ${prayerTime.substring(2, 3)} ${prayerTime.substring(3)}';
   }
 
+  // Format Prayer Time to DateTime for Counter
   DateTime _parsePrayerTime(String time) {
     int hour = int.parse(time.substring(0, 2));
     int minute = int.parse(time.substring(3, 5));
@@ -156,6 +153,7 @@ class HomeController extends GetxController {
     }
   }
 
+  // To Display Remaining Time (ex: "- 00 : 43 : 12")
   String _formatDuration(Duration duration) {
     String hours = duration.inHours.remainder(24).toString().padLeft(2, '0');
     String minutes = duration.inMinutes
@@ -169,6 +167,7 @@ class HomeController extends GetxController {
     return "- $hours : $minutes : $seconds";
   }
 
+  // To Display Passed Time (ex: "+ 00 : 10 : 15")
   String _formatPositiveDuration(Duration duration) {
     String minutes = duration.inMinutes
         .remainder(60)
@@ -234,6 +233,7 @@ class HomeController extends GetxController {
     update();
   }
 
+  // Format Time (ex: from "12 : 28" to "12:28")
   String _formatTime(DateTime dateTime) {
     return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }

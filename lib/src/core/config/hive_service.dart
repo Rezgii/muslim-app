@@ -1,6 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-// import '../../data/models/user_model.dart';
 
 class HiveService {
   HiveService._();
@@ -11,7 +10,6 @@ class HiveService {
   Future<void> init() async {
     try {
       await Hive.initFlutter();
-      // Hive.registerAdapter(UserModelAdapter());
       _settingsBox = await Hive.openBox('settings');
       _prayerBox = await Hive.openBox('prayer');
 

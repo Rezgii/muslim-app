@@ -23,42 +23,41 @@ class HomeScreen extends StatelessWidget {
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-    return Scaffold(body: _buildHomeScreen(controller));
-  }
-
-  SingleChildScrollView _buildHomeScreen(HomeController controller) {
-    return SingleChildScrollView(
-      child: Stack(
-        children: [
-          const BackgroundWidget(),
-          Padding(
-            padding: REdgeInsets.all(25),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                25.verticalSpace,
-                const HeaderWidget(),
-                20.verticalSpace,
-                PrayerTimeWidget(controller: controller),
-                25.verticalSpace,
-                Text(
-                  'Features'.tr,
-                  style: TextStyle(
-                    fontSize: 22.sp,
-                    color: AppColors.primaryColor,
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            const BackgroundWidget(),
+            Padding(
+              padding: REdgeInsets.all(25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  25.verticalSpace,
+                  const HeaderWidget(),
+                  20.verticalSpace,
+                  PrayerTimeWidget(controller: controller),
+                  25.verticalSpace,
+                  Text(
+                    'Features'.tr,
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      color: AppColors.primaryColor,
+                    ),
                   ),
-                ),
-                FeaturesGridWidget(controller: controller),
-                // const CarouselFeatureWidget(),
-                50.verticalSpace,
-              ],
+                  FeaturesGridWidget(controller: controller),
+                  // const CarouselFeatureWidget(),
+                  50.verticalSpace,
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+
 // a carousel widget for aya or douaa (like ads and promotions)
 class CarouselFeatureWidget extends StatelessWidget {
   const CarouselFeatureWidget({super.key});
@@ -233,12 +232,14 @@ class PrayerTimeWidget extends StatelessWidget {
                 5.verticalSpace,
                 Center(
                   child: Obx(
-                    () => Text(
-                      controller.countdown.value,
-                      textDirection: TextDirection.ltr,
-                      style: TextStyle(
-                        fontSize: 24.sp,
-                        color: AppColors.primaryColor,
+                    () => FittedBox(
+                      child: Text(
+                        controller.countdown.value,
+                        textDirection: TextDirection.ltr,
+                        style: TextStyle(
+                          fontSize: 100.sp,
+                          color: AppColors.primaryColor,
+                        ),
                       ),
                     ),
                   ),

@@ -15,10 +15,11 @@ class PrayerTimeController extends GetxController {
   late String dateHijri = '';
   late String day = '';
 
-  RxString countdown = '- 00 : 00 : 00'.obs; // Observable for countdown display
-  Timer? _timer; // Timer for the countdown
+  RxString countdown = '- 00 : 00 : 00'.obs;
+  Timer? _timer;
   bool _isPositiveTimer = false;
 
+  // Get next prayer time and setup the counter
   @override
   void onInit() {
     super.onInit();
@@ -31,6 +32,7 @@ class PrayerTimeController extends GetxController {
     _formatFields();
   }
 
+  // Converting The Prayer Day to DateTime
   void _setupPrayerDay() {
     prayerDay = DateTime(
       int.parse(todayPrayer.date['gregorian']['year']),
@@ -39,6 +41,7 @@ class PrayerTimeController extends GetxController {
     );
   }
 
+  // Checking the prayer time to setup the time line
   bool isPrayerBefore(String name) {
     DateTime prayerDateTime = _parsePrayerTime(todayPrayer.prayersTime[name]);
     if (prayerDateTime.isBefore(DateTime.now())) {
@@ -48,10 +51,9 @@ class PrayerTimeController extends GetxController {
     }
   }
 
+  // Date translation (from api)
   void _formatFields() {
-    // Format all Fields
     if (Get.locale == const Locale('ar_AE')) {
-      //Getting English date data
       date =
           "${todayPrayer.date['gregorian']['day']} ${todayPrayer.date['gregorian']['month']['en']} ${todayPrayer.date['gregorian']['year']}";
 
@@ -73,6 +75,7 @@ class PrayerTimeController extends GetxController {
     }
   }
 
+  // Convert Prayer Time to DateTime for Counter
   DateTime _parsePrayerTime(String time) {
     int hour = int.parse(time.substring(0, 2));
     int minute = int.parse(time.substring(3, 5));
@@ -143,6 +146,7 @@ class PrayerTimeController extends GetxController {
     }
   }
 
+  // To Display Remaining Time (ex: "- 00 : 43 : 12")
   String _formatDuration(Duration duration) {
     String hours = duration.inHours.remainder(24).toString().padLeft(2, '0');
     String minutes = duration.inMinutes
@@ -156,6 +160,7 @@ class PrayerTimeController extends GetxController {
     return "- $hours : $minutes : $seconds";
   }
 
+  // To Display Passed Time (ex: "+ 00 : 10 : 15")
   String _formatPositiveDuration(Duration duration) {
     String minutes = duration.inMinutes
         .remainder(60)
@@ -215,10 +220,12 @@ class PrayerTimeController extends GetxController {
     update();
   }
 
+  // Format Time (ex: from "12 : 28" to "12:28")
   String _formatTime(DateTime dateTime) {
     return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
+  // Format Time with AM or PM (ex: from "12:28 (CET)" to "12:28 PM")
   String convertTimeFormat(String inputTime) {
     String cleanedTime;
 
@@ -228,10 +235,8 @@ class PrayerTimeController extends GetxController {
       cleanedTime = inputTime.replaceAll(' ', '');
     }
 
-    // Parse the input string as a DateTime object
     final parsedTime = DateTime.parse('1970-01-01 $cleanedTime');
 
-    // Format the time using the intl package
     final formattedTime = DateFormat('hh:mm a').format(parsedTime);
 
     return formattedTime;
@@ -239,7 +244,7 @@ class PrayerTimeController extends GetxController {
 
   @override
   void onClose() {
-    _timer?.cancel(); // Cancel the timer when the controller is disposed
+    _timer?.cancel();
     super.onClose();
   }
 }

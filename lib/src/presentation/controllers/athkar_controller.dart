@@ -6,6 +6,7 @@ class AthkarController extends GetxController {
   List<ThikerModel> athkar = [];
   String title = Get.arguments['title'];
 
+  // Get the Right Athkar List
   @override
   void onInit() {
     super.onInit();

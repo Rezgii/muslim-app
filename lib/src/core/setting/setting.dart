@@ -11,7 +11,6 @@ class Setting {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     await HiveService.instance.init();
-    // settingBox = await Hive.openBox('setting');
     TranslationsController translationsController =
         Get.put(TranslationsController(), permanent: true);
     await translationsController.initLanguage();
