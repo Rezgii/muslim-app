@@ -6,13 +6,12 @@ import 'package:muslim/src/core/config/theme/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/controllers/home_controller.dart';
-import 'package:muslim/src/presentation/screens/feedback_screen.dart';
-import 'package:muslim/src/presentation/screens/location_permission_screen.dart';
 import 'package:muslim/src/presentation/screens/services/islamic_events_screen.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_calendar_screen.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_screen.dart';
 import 'package:muslim/src/presentation/screens/services/quran_screen.dart';
 import 'package:muslim/src/presentation/screens/services/thiker_screen.dart';
+import 'package:muslim/src/presentation/screens/settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -278,29 +277,14 @@ class HeaderWidget extends StatelessWidget {
         IconButton(
           onPressed: () {
             Get.to(
-              () => const LocationPermissionScreen(),
+              () => const SettingsScreen(),
               duration: const Duration(milliseconds: 650),
               transition: Transition.circularReveal,
               curve: Curves.easeIn,
             );
           },
           icon: Icon(
-            Icons.pin_drop,
-            size: 32.sp,
-            color: AppColors.primaryColor,
-          ),
-        ),
-        IconButton(
-          onPressed: () {
-            Get.to(
-              () => const FeedbackScreen(),
-              duration: const Duration(milliseconds: 650),
-              transition: Transition.circularReveal,
-              curve: Curves.easeIn,
-            );
-          },
-          icon: Icon(
-            Icons.feedback,
+            Icons.settings,
             size: 32.sp,
             color: AppColors.primaryColor,
           ),

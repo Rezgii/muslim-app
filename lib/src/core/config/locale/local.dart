@@ -89,6 +89,12 @@ class LocalStrings extends Translations {
           "The greatest day of Hajj, fasting expiates sins of two years.",
       "Festival of Sacrifice, marking the act of Qurbani.":
           "Festival of Sacrifice, marking the act of Qurbani.",
+      'Settings': 'Settings',
+      'Change Location': 'Change Location',
+      'Change Theme': 'Change Theme',
+      'Report a Problem': 'Report a Problem',
+      'Send Feedback': 'Send Feedback',
+      'Describe the Problem': 'Describe the Problem',
     },
     'ar_AE': {
       'Imsak': 'الإمساك',
@@ -175,6 +181,12 @@ class LocalStrings extends Translations {
           "أعظم أيام الحج، صيامه يكفر سنتين.",
       "Festival of Sacrifice, marking the act of Qurbani.":
           "عيد النحر والتضحية بالأضاحي.",
+      'Settings': 'الإعدادات',
+      'Change Location': 'تغيير الموقع',
+      'Change Theme': 'تغيير المظهر',
+      'Report a Problem': 'الإبلاغ عن مشكلة',
+      'Send Feedback': 'إرسال ملاحظات',
+      'Describe the Problem': 'اشرح المشكلة',
     },
     'fr_FR': {
       'Imsak': 'Imsak',
@@ -263,6 +275,12 @@ class LocalStrings extends Translations {
           "Le plus grand jour du Hajj, le jeûne expie deux ans de péchés.",
       "Festival of Sacrifice, marking the act of Qurbani.":
           "Fête du sacrifice, marquant l'acte de Qurbani.",
+      'Settings': 'Paramètres',
+      'Change Location': 'Changer de position',
+      'Change Theme': 'Changer le thème',
+      'Report a Problem': 'Signaler un problème',
+      'Send Feedback': 'Envoyer un retour',
+      'Describe the Problem': 'Décrivez le problème',
     },
   };
 }

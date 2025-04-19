@@ -5,7 +5,9 @@ import 'package:muslim/src/core/config/theme/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FeedbackScreen extends StatefulWidget {
-  const FeedbackScreen({super.key});
+  final bool isFeedback;
+
+  const FeedbackScreen({super.key, required this.isFeedback});
 
   @override
   State<FeedbackScreen> createState() => _FeedbackScreenState();
@@ -14,44 +16,44 @@ class FeedbackScreen extends StatefulWidget {
 class _FeedbackScreenState extends State<FeedbackScreen> {
   final TextEditingController _feedbackController = TextEditingController();
 
-  Future<void> _sendFeedback() async {
-    final String feedbackText = _feedbackController.text.trim();
-    if (feedbackText.isNotEmpty) {
-      final Uri emailUri = Uri(
-        scheme: 'mailto',
-        path:
-            'abderrazzakkbelghite@gmail.com', // Replace with your email address
-        query: encodeQueryParameters(
-            <String, String>{'subject': 'User Feedback', 'body': feedbackText}),
-      );
-
-      try {
-        await launchUrl(emailUri);
-      } catch (e) {
-        // Handle error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Some Error Occured. Try Again Later'.tr)),
-        );
-      }
-    }else{
+  Future<void> _sendMessage() async {
+    final String text = _feedbackController.text.trim();
+    if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Enter Text First'.tr)),
-        );
+        SnackBar(content: Text('Enter Text First'.tr)),
+      );
+      return;
+    }
+
+    final subject = widget.isFeedback ? 'User Feedback' : 'Problem Report';
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'abderrazzakkbelghite@gmail.com', // your email
+      query: encodeQueryParameters({'subject': subject, 'body': text}),
+    );
+
+    try {
+      await launchUrl(emailUri);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Some Error Occurred. Try Again Later'.tr)),
+      );
     }
   }
 
   String? encodeQueryParameters(Map<String, String> params) {
     return params.entries
-        .map((MapEntry<String, String> e) =>
+        .map((e) =>
             '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
         .join('&');
   }
 
   @override
   Widget build(BuildContext context) {
+    final isFeedback = widget.isFeedback;
     return Scaffold(
       appBar: AppBar(
-        title: Text('feedback'.tr),
+        title: Text(isFeedback ? 'Send Feedback'.tr : 'Report a Problem'.tr),
         surfaceTintColor: Colors.transparent,
         backgroundColor: AppColors.backgroundColor,
       ),
@@ -64,13 +66,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 TextField(
                   controller: _feedbackController,
                   decoration: InputDecoration(
-                    labelText: 'Your Opinion'.tr,
+                    labelText: isFeedback
+                        ? 'Your Opinion'.tr
+                        : 'Describe the Problem'.tr,
                     border: const OutlineInputBorder(),
                   ),
                 ),
                 16.verticalSpace,
                 ElevatedButton(
-                  onPressed: _sendFeedback,
+                  onPressed: _sendMessage,
                   child: Text('Send'.tr),
                 ),
               ],
