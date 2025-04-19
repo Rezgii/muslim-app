@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:muslim/src/core/utils/const/app_colors.dart';
+import 'package:muslim/src/core/config/theme/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/src/data/models/prayer_model.dart';
 import 'package:muslim/src/data/models/time_line_model.dart';

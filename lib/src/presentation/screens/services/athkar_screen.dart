@@ -1,7 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:muslim/src/core/utils/const/app_colors.dart';
+import 'package:muslim/src/core/config/theme/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/src/data/models/thiker_model.dart';
 import 'package:muslim/src/presentation/controllers/athkar_controller.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:muslim/src/core/utils/const/app_colors.dart';
+import 'package:muslim/src/core/config/theme/app_colors.dart';
 import 'package:muslim/src/data/models/islamic_event_model.dart';
 import 'package:muslim/src/presentation/controllers/islamic_events_controller.dart';
 

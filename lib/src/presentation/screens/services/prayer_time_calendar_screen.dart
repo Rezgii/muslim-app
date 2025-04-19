@@ -4,7 +4,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
-import 'package:muslim/src/core/utils/const/app_colors.dart';
+import 'package:muslim/src/core/config/theme/app_colors.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/screens/services/prayer_time_screen.dart';
 

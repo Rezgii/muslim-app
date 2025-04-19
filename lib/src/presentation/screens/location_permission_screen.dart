@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
-import 'package:muslim/src/core/utils/const/app_colors.dart';
+import 'package:muslim/src/core/config/theme/app_colors.dart';
 import 'package:muslim/src/core/utils/func/functions.dart';
 
 class LocationPermissionScreen extends StatefulWidget {

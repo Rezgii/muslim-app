@@ -22,7 +22,6 @@ void main() async {
   await Setting.init();
 
   runApp(const MyApp());
-
 }
 
 @pragma('vm:entry-point')
@@ -40,6 +39,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TranslationsController controller = Get.find<TranslationsController>();
+    ThemeController themeController = Get.find<ThemeController>();
 
     return ScreenUtilInit(
       designSize: const Size(430, 932),
@@ -47,13 +47,16 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return GetMaterialApp(
-          translations: LocalStrings(),
-          debugShowCheckedModeBanner: false,
-          theme: ThemeConfig.darkTheme,
-          title: 'Muslim',
-          locale: controller.mylocale,
-          home: child,
-        );
+            translations: LocalStrings(),
+            debugShowCheckedModeBanner: false,
+            theme: themeController.lightTheme,
+            darkTheme: themeController.darkTheme,
+            themeMode: themeController.themeMode,
+            title: 'Muslim',
+            locale: controller.mylocale,
+            home: child,
+          )
+        ;
       },
       child: const SplashScreen(),
     );
