@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -36,7 +37,7 @@ class HomeScreen extends StatelessWidget {
                   const HeaderWidget(),
                   20.verticalSpace,
                   PrayerTimeWidget(controller: controller),
-                  25.verticalSpace,
+                  10.verticalSpace,
                   Text(
                     'Features'.tr,
                     style: TextStyle(
@@ -45,8 +46,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   FeaturesGridWidget(controller: controller),
-                  // const CarouselFeatureWidget(),
-                  50.verticalSpace,
+                  const CarouselFeatureWidget(),
                 ],
               ),
             ),
@@ -63,70 +63,131 @@ class CarouselFeatureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text('Features', style: TextStyle(fontSize: 20.sp)),
-            const Spacer(),
-            Text(
-              'View All',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: AppColors.primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+    return CarouselSlider(
+      items: const [AyaWidget()],
+      options: CarouselOptions(
+        autoPlay: false,
+        autoPlayInterval: const Duration(seconds: 3),
+        enlargeCenterPage: true,
+        viewportFraction: 1.0,
+        enableInfiniteScroll: false,
+        pauseAutoPlayOnTouch: true,
+      ),
+    );
+  }
+}
+
+class AyaWidget extends StatelessWidget {
+  const AyaWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    HomeController controller = Get.find<HomeController>();
+    return Container(
+      height: 210.h,
+      width: 400.w,
+      padding: REdgeInsets.all(15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+        gradient: const LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFFF6D27A), Color(0xFF907B47), Color(0xFF494232)],
+          stops: [0, 76, 100],
         ),
-        25.verticalSpace,
-        Container(
-          height: 210.h,
-          width: 400.w,
-          padding: REdgeInsets.all(15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            gradient: const LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [Color(0xFFF6D27A), Color(0xFF907B47), Color(0xFF494232)],
-              stops: [0, 76, 100],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 30.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(22),
+              color: Colors.black.withAlpha((0.5 * 255).toInt()),
+            ),
+            child: Center(
+              child: Text(
+                'Aya of The Day'.tr,
+                style: const TextStyle(color: AppColors.primaryColor),
+              ),
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          const Spacer(),
+          Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text(
+                controller.surah!.verses[controller.ayaNumber!]['text']['ar'],
+                style: TextStyle(fontSize: 20.sp, color: Colors.black),
+                textAlign: TextAlign.center,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+              ),
+            ),
+          ),
+          const Spacer(),
+    
+          Text(
+            "${controller.surah!.name['ar']} (السورة رقم ${controller.surah!.number} - ${controller.surah!.place['ar']} - الآية ${controller.ayaNumber!.toString()})",
+            style: const TextStyle(color: Colors.black),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DuaaWidget extends StatelessWidget {
+  const DuaaWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 210.h,
+      width: 400.w,
+      padding: REdgeInsets.all(15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+        gradient: const LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFFF6D27A), Color(0xFF907B47), Color(0xFF494232)],
+          stops: [0, 76, 100],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 30.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(22),
+              color: Colors.black.withAlpha((0.5 * 255).toInt()),
+            ),
+            child: const Center(
+              child: Text(
+                'Duaa of The Day',
+                style: TextStyle(color: AppColors.primaryColor),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                height: 30.h,
-                width: 100.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22),
-                  color: Colors.black.withAlpha((0.5 * 255).toInt()),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Daily Doua',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  ),
+              Flexible(
+                child: Text(
+                  "ٱلۡحَمۡدُ لِلَّهِ رَبِّ ٱلۡعَٰلَمِينَ",
+                  style: TextStyle(fontSize: 32.sp),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      'Doua For Ahel Gazza',
-                      style: TextStyle(fontSize: 32.sp),
-                    ),
-                  ),
-                  SvgPicture.asset('assets/images/praying.svg', height: 150.h),
-                ],
-              ),
+              SvgPicture.asset('assets/images/praying.svg', height: 120.h),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -141,10 +202,11 @@ class FeaturesGridWidget extends StatelessWidget {
     return GridView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 10,
-        mainAxisExtent: 140.h,
+        mainAxisExtent: 120.h,
       ),
       children: [
         // const HomeItemWidget(
@@ -382,8 +444,8 @@ class HomeItemWidget extends StatelessWidget {
         }
       },
       child: Container(
-        height: 140.h,
-        width: 113.w,
+        height: 120.h,
+        width: 93.w,
         margin: REdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
           color: AppColors.boxGreykBg,
@@ -392,7 +454,7 @@ class HomeItemWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SvgPicture.asset(img, height: 75.h),
+            SvgPicture.asset(img, height: 65.h),
             Text(title.tr, style: TextStyle(fontSize: 20.sp)),
           ],
         ),

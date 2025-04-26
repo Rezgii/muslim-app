@@ -95,6 +95,7 @@ class LocalStrings extends Translations {
       'Report a Problem': 'Report a Problem',
       'Send Feedback': 'Send Feedback',
       'Describe the Problem': 'Describe the Problem',
+      'Aya of The Day': 'Verse of The Day',
     },
     'ar_AE': {
       'Imsak': 'الإمساك',
@@ -187,6 +188,7 @@ class LocalStrings extends Translations {
       'Report a Problem': 'الإبلاغ عن مشكلة',
       'Send Feedback': 'إرسال ملاحظات',
       'Describe the Problem': 'اشرح المشكلة',
+      'Aya of The Day': 'آية اليوم',
     },
     'fr_FR': {
       'Imsak': 'Imsak',
@@ -281,6 +283,7 @@ class LocalStrings extends Translations {
       'Report a Problem': 'Signaler un problème',
       'Send Feedback': 'Envoyer un retour',
       'Describe the Problem': 'Décrivez le problème',
+      'Aya of The Day': 'Verset du jour',
     },
   };
 }

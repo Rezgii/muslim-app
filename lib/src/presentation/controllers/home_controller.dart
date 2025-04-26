@@ -1,10 +1,14 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as dev;
+import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
+import 'package:muslim/src/core/config/hive_service.dart';
+import 'package:muslim/src/core/utils/const/quran.dart';
 import 'package:muslim/src/core/utils/func/functions.dart';
 import 'package:muslim/src/core/utils/func/local_notification_service.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
+import 'package:muslim/src/data/models/surah_model.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:intl/intl.dart';
 
@@ -13,13 +17,15 @@ class HomeController extends GetxController {
   List<PrayerTimeModel>? daysPrayers;
   late String prayerName;
   late String prayerTime;
+  SurahModel? surah;
+  int? ayaNumber;
 
   RxString countdown = '- 00 : 00 : 00'.obs;
   Timer? _timer;
   bool _isPositiveTimer = false;
   bool isTestMode = false;
 
-  // Get Next Prayer TIme and Setup Counter
+  // Get Next Prayer Time and Setup Counter
   @override
   void onInit() async {
     super.onInit();
@@ -28,7 +34,37 @@ class HomeController extends GetxController {
     _updateNextPrayer();
     _initializeAndStartCountdown();
     _formatPrayerTime();
+    ayaOfTheDay();
   }
+
+  //Initialize Aya of The Day
+  void ayaOfTheDay() {
+  final HiveService hive = HiveService.instance;
+  final DateTime today = DateTime.now();
+
+  final int? previousSurahNumber = hive.getSetting('surahNumber');
+  final int? previousAyaNumber = hive.getSetting('ayaNumber');
+  final DateTime? savedDate = hive.getSetting('date');
+
+  final bool isNewDay = savedDate == null ||
+      savedDate.year != today.year ||
+      savedDate.month != today.month ||
+      savedDate.day != today.day;
+
+  if (isNewDay || previousSurahNumber == null || previousAyaNumber == null) {
+    int surahNumber = Random().nextInt(114) + 1;
+    surah = SurahModel.fromMap(quran[surahNumber - 1]);
+    ayaNumber = Random().nextInt(surah!.versesCount) + 1;
+
+    hive.setSetting('surahNumber', surahNumber);
+    hive.setSetting('ayaNumber', ayaNumber);
+    hive.setSetting('date', today);
+  } else {
+    surah = SurahModel.fromMap(quran[previousSurahNumber - 1]);
+    ayaNumber = previousAyaNumber;
+  }
+}
+
 
   // Notification + Shorebird Updates Check
   @override
@@ -63,7 +99,7 @@ class HomeController extends GetxController {
         // Perform the update
         await updater.update();
       } on UpdateException catch (error) {
-        log(error.message);
+        dev.log(error.message);
       }
     }
   }

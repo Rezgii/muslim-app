@@ -35,6 +35,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     try {
       await launchUrl(emailUri);
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Some Error Occurred. Try Again Later'.tr)),
       );
