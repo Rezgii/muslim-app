@@ -48,7 +48,7 @@ If you like the project, please ⭐ the repository to support it!
 ## 🧠 Author
 
 **Abderrazak**  
-- GitHub: [your-username](https://github.com/Rezgii)  
-- LinkedIn: [your-linkedin]([https://linkedin.com/](https://www.linkedin.com/in/abderrazak-belghit-017b29278/))
+- GitHub: [Abderrazak Belghit](https://github.com/Rezgii)  
+- LinkedIn: [Abderrazak Belghit]([https://linkedin.com/](https://www.linkedin.com/in/abderrazak-belghit-017b29278/))
 
 ---
