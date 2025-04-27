@@ -47,8 +47,8 @@ If you like the project, please ⭐ the repository to support it!
 
 ## 🧠 Author
 
-**Abderrazak**  
+**Abderrazak Belghit**  
 - GitHub: [Abderrazak Belghit](https://github.com/Rezgii)  
 - LinkedIn: [Abderrazak Belghit](https://www.linkedin.com/in/abderrazak-belghit-017b29278/)
-
+- Instagram: [Abderrazak Belghit](https://www.instagram.com/abderrazak_belghit/)  
 ---
