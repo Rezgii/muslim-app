@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
             translations: LocalStrings(),
             debugShowCheckedModeBanner: false,
-            theme: themeController.lightTheme,
+            theme: themeController.darkTheme,
             darkTheme: themeController.darkTheme,
             themeMode: themeController.themeMode,
             title: 'Muslim',
