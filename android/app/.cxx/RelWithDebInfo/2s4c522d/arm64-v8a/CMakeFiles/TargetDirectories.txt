@@ -1,0 +1,2 @@
+D:/Work/Flutter Projects/Muslim App/muslim/android/app/.cxx/RelWithDebInfo/2s4c522d/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Work/Flutter Projects/Muslim App/muslim/android/app/.cxx/RelWithDebInfo/2s4c522d/arm64-v8a/CMakeFiles/rebuild_cache.dir
