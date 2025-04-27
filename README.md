@@ -1,5 +1,4 @@
-![Logo](https://github.com/user-attachments/assets/fef0b0d6-05e1-40bd-bac3-6c5f82b55ea4)
-
+![Logo](https://github.com/user-attachments/assets/43eee282-77a2-4f0c-a2b8-5c2f739a199e)
 
 # 📱 Muslim App
 
