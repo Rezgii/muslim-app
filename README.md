@@ -1,4 +1,4 @@
-![small logo-08](https://github.com/user-attachments/assets/dc567ec3-91f2-49ce-807e-5bc4bcb614dc)
+![Logo](https://github.com/user-attachments/assets/dc567ec3-91f2-49ce-807e-5bc4bcb614dc)
 
 # 📱 Muslim App
 
