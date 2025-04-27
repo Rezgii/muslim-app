@@ -43,5 +43,4 @@ app.*.map.json
 /android/app/release
 
 
-lib\src\core\config\firebase
-.env
+/lib/src/core/config/firebase
