@@ -4,6 +4,13 @@
 
 ---
 
+## 📸 Screenshots
+
+![1712700435849](https://github.com/user-attachments/assets/0b518cf5-d398-435b-825a-94c8377f5c4c)
+
+
+---
+
 ## ✨ Features
 
 - 🕋 **Prayer Times** based on user location
