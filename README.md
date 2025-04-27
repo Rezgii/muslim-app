@@ -1,5 +1,3 @@
-![Logo](https://github.com/user-attachments/assets/dc567ec3-91f2-49ce-807e-5bc4bcb614dc)
-
 # 📱 Muslim App
 
 **Muslim App** is a simple and powerful mobile application built to help Muslims stay connected to their faith with easy access to prayer times and other essential Islamic features — all in one place.
@@ -8,6 +6,10 @@
 
 ## 📸 Screenshots
 
+![Screenshot 6](https://github.com/user-attachments/assets/a1c816c5-38d6-41c3-844a-9548fbb12bc8)
+![Screenshot 5](https://github.com/user-attachments/assets/79d6f2dc-db04-428d-b57a-87bdbc3a5593)
+![Screenshot 2](https://github.com/user-attachments/assets/76c558c2-553e-4eca-a0c3-49a45168fbff)
+![Screenshot 1](https://github.com/user-attachments/assets/79425f5b-f110-4aff-b042-2305f647489b)
 
 
 ---
