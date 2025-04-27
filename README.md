@@ -49,6 +49,6 @@ If you like the project, please ⭐ the repository to support it!
 
 **Abderrazak**  
 - GitHub: [Abderrazak Belghit](https://github.com/Rezgii)  
-- LinkedIn: [Abderrazak Belghit]([https://linkedin.com/](https://www.linkedin.com/in/abderrazak-belghit-017b29278/))
+- LinkedIn: [Abderrazak Belghit](https://www.linkedin.com/in/abderrazak-belghit-017b29278/)
 
 ---
