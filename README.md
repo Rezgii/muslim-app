@@ -1,16 +1,70 @@
-# muslim
+📱 Muslim App
+Muslim App is a simple and powerful mobile application built to help Muslims stay connected to their faith with easy access to prayer times, Qibla direction, Quran, and other essential Islamic features — all in one place.
 
-A new Flutter project.
+✨ Features
+🕋 Prayer Times based on user location
 
-## Getting Started
+🧭 Qibla Direction compass
 
-This project is a starting point for a Flutter application.
+📖 Holy Quran with offline access
 
-A few resources to get you started if this is your first Flutter project:
+📆 Islamic Calendar with important dates
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+📋 Daily Azkar and Duas
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+🕌 Nearby Mosques locator
+
+🛎 Prayer Reminders with customizable notifications
+
+🛠 Tech Stack
+Flutter — Cross-platform mobile app framework
+
+Firebase — Authentication, Database, and Notifications
+
+Location Services — To detect user position for prayer times and Qibla
+
+API Integrations — For Quran text and prayer time data
+
+📦 Installation
+Clone the repo:
+
+bash
+Copy
+Edit
+git clone https://github.com/your-username/muslim-app.git
+cd muslim-app
+Install dependencies:
+
+bash
+Copy
+Edit
+flutter pub get
+Run the app:
+
+bash
+Copy
+Edit
+flutter run
+✅ Make sure you have Flutter installed and configured.
+
+🔥 Upcoming Features
+Hijri Date Converter
+
+Audio Quran Recitation
+
+Personal Tasbeeh Counter
+
+Customizable Themes (Light/Dark Mode)
+
+📜 License
+This project is licensed under the MIT License.
+
+🙏 Contributing
+Contributions are welcome!
+Please open an issue first to discuss any major changes.
+
+🤝 Support
+If you like the project, please ⭐ the repository to support it!
+
+📸 Screenshots
+(Add your app screenshots here later when available.)
