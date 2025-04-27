@@ -49,9 +49,9 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
             translations: LocalStrings(),
             debugShowCheckedModeBanner: false,
-            theme: themeController.darkTheme,
+            theme: themeController.lightTheme,
             darkTheme: themeController.darkTheme,
-            themeMode: themeController.themeMode,
+            themeMode: ThemeMode.dark,
             title: 'Muslim',
             locale: controller.mylocale,
             home: child,
