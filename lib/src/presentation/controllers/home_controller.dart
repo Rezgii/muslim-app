@@ -39,32 +39,33 @@ class HomeController extends GetxController {
 
   //Initialize Aya of The Day
   void ayaOfTheDay() {
-  final HiveService hive = HiveService.instance;
-  final DateTime today = DateTime.now();
+    final HiveService hive = HiveService.instance;
+    final DateTime today = DateTime.now();
 
-  final int? previousSurahNumber = hive.getSetting('surahNumber');
-  final int? previousAyaNumber = hive.getSetting('ayaNumber');
-  final DateTime? savedDate = hive.getSetting('date');
+    final int? previousSurahNumber = hive.getSetting('surahNumber');
+    final int? previousAyaNumber = hive.getSetting('ayaNumber');
+    final DateTime? savedDate = hive.getSetting('date');
 
-  final bool isNewDay = savedDate == null ||
-      savedDate.year != today.year ||
-      savedDate.month != today.month ||
-      savedDate.day != today.day;
+    final bool isNewDay =
+        savedDate == null ||
+        savedDate.year != today.year ||
+        savedDate.month != today.month ||
+        savedDate.day != today.day;
 
-  if (isNewDay || previousSurahNumber == null || previousAyaNumber == null) {
-    int surahNumber = Random().nextInt(114) + 1;
-    surah = SurahModel.fromMap(quran[surahNumber - 1]);
-    ayaNumber = Random().nextInt(surah!.versesCount) + 1;
+    if (isNewDay || previousSurahNumber == null || previousAyaNumber == null) {
+      int surahNumber = Random().nextInt(114) + 1;
+      surah = SurahModel.fromMap(quran[surahNumber - 1]);
+      ayaNumber = Random().nextInt(surah!.versesCount) + 1;
 
-    hive.setSetting('surahNumber', surahNumber);
-    hive.setSetting('ayaNumber', ayaNumber);
-    hive.setSetting('date', today);
-  } else {
-    surah = SurahModel.fromMap(quran[previousSurahNumber - 1]);
-    ayaNumber = previousAyaNumber;
+      hive.setSetting('surahNumber', surahNumber);
+      hive.setSetting('ayaNumber', ayaNumber);
+      hive.setSetting('date', today);
+    } else {
+      surah = SurahModel.fromMap(quran[previousSurahNumber - 1]);
+      ayaNumber = previousAyaNumber;
+    }
+    update();
   }
-}
-
 
   // Notification + Shorebird Updates Check
   @override

@@ -46,7 +46,15 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   FeaturesGridWidget(controller: controller),
-                  const CarouselFeatureWidget(),
+                  GetBuilder<HomeController>(
+                    init: HomeController(),
+                    builder: (_) {
+                      if (controller.surah == null) {
+                        return const SizedBox();
+                      }
+                      return const CarouselFeatureWidget();
+                    },
+                  ),
                 ],
               ),
             ),
@@ -118,7 +126,8 @@ class AyaWidget extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Text(
-                controller.surah!.verses[controller.ayaNumber!]['text']['ar'],
+                controller.surah!.verses[controller.ayaNumber!]['text']['ar'] ??
+                    '',
                 style: TextStyle(fontSize: 20.sp, color: Colors.black),
                 textAlign: TextAlign.center,
                 softWrap: true,
@@ -128,7 +137,7 @@ class AyaWidget extends StatelessWidget {
             ),
           ),
           const Spacer(),
-    
+
           Text(
             "${controller.surah!.name['ar']} (السورة رقم ${controller.surah!.number} - ${controller.surah!.place['ar']} - الآية ${controller.ayaNumber!.toString()})",
             style: const TextStyle(color: Colors.black),
