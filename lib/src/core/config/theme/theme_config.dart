@@ -19,13 +19,7 @@ class ThemeController extends GetxController {
   void initTheme() {
     bool? isDarkMode = HiveService.instance.getSetting('darkMode');
 
-    if (isDarkMode == null) {
-      bool systemDark = Get.isPlatformDarkMode;
-      _themeMode.value = systemDark ? ThemeMode.dark : ThemeMode.light;
-      HiveService.instance.setSetting('darkMode', systemDark);
-    } else {
-      _themeMode.value = isDarkMode ? ThemeMode.dark : ThemeMode.light;
-    }
+    _themeMode.value = isDarkMode == true ? ThemeMode.dark : ThemeMode.light;
   }
 
   // to change theme use this line => Get.find<ThemeController>().toggleTheme()
