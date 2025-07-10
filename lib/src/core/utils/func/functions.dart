@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
 import 'package:muslim/src/core/utils/func/local_notification_service.dart';
@@ -23,6 +24,9 @@ bool get isLocationGiven =>
 Map<dynamic, dynamic> location = HiveService.instance.getSetting(
   'locationData',
 );
+List<Placemark>? locationName;
+Placemark? placeName;
+
 bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
 List<PrayerTimeModel>? prayersTime;
 
@@ -32,6 +36,11 @@ DateTime prayerDay = DateTime.now();
 
 void initializeScreen() async {
   if (isLocationGiven) {
+    locationName = await placemarkFromCoordinates(
+      double.parse(location['latitude']),
+      double.parse(location['longitude']),
+    );
+    placeName = locationName!.first;
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null &&
         HiveService.instance.getPrayerTimes('year') != DateTime.now().year) {
       await getDataFromAPI();
@@ -195,7 +204,6 @@ Future<void> _savePrayersInHive(Map<String, dynamic> yearlyPrayerTime) async {
 
   log('========END Saving Yearly Prayers=======');
 }
-
 
 Future<void> getDataFromAPI() async {
   List<PrayerTimeModel> daysPrayers = [];

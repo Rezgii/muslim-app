@@ -46,22 +46,22 @@ class HomeController extends GetxController {
     final int? previousAyaNumber = hive.getSetting('ayaNumber');
     final DateTime? savedDate = hive.getSetting('date');
 
-    final bool isNewDay =
+    bool isNewDay =
         savedDate == null ||
         savedDate.year != today.year ||
         savedDate.month != today.month ||
         savedDate.day != today.day;
 
     if (isNewDay || previousSurahNumber == null || previousAyaNumber == null) {
-      int surahNumber = Random().nextInt(114) + 1;
-      surah = SurahModel.fromMap(quran[surahNumber - 1]);
-      ayaNumber = Random().nextInt(surah!.versesCount) + 1;
+      int surahNumber = Random().nextInt(114);
+      surah = SurahModel.fromMap(quran[surahNumber]);
+      ayaNumber = Random().nextInt(surah!.versesCount);
 
       hive.setSetting('surahNumber', surahNumber);
       hive.setSetting('ayaNumber', ayaNumber);
       hive.setSetting('date', today);
     } else {
-      surah = SurahModel.fromMap(quran[previousSurahNumber - 1]);
+      surah = SurahModel.fromMap(quran[previousSurahNumber]);
       ayaNumber = previousAyaNumber;
     }
     update();
@@ -160,7 +160,7 @@ class HomeController extends GetxController {
     Duration remaining = nextPrayerDateTime.difference(DateTime.now());
     if (remaining.inSeconds >= 0) {
       countdown.value = _formatDuration(remaining);
-      if (remaining.inSeconds == 0) {
+      if (remaining.inSeconds == 0 && prayerName != "Sunrise") {
         playAdhan();
         _isPositiveTimer = true;
         _timer?.cancel();

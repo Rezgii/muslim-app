@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/theme/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:muslim/src/core/utils/func/functions.dart';
 import 'package:muslim/src/data/models/prayer_time_model.dart';
 import 'package:muslim/src/presentation/controllers/home_controller.dart';
 import 'package:muslim/src/presentation/screens/services/islamic_events_screen.dart';
@@ -223,29 +224,27 @@ class FeaturesGridWidget extends StatelessWidget {
         //   img: 'assets/images/quran.svg',
         //   routeName: '/quran',
         // ),
-        const HomeItemWidget(
-          title: 'Thiker',
-          img: 'assets/images/tasbih.svg',
-          routeName: '/thiker',
-        ),
+        const HomeItemWidget(title: 'Thiker', img: 'assets/images/tasbih.svg'),
         HomeItemWidget(
           title: 'Prayer',
           img: 'assets/images/time.svg',
-          routeName: '/prayer',
           prayerTimeModel: controller.todayPrayer,
         ),
         HomeItemWidget(
           title: 'Calendar',
           img: 'assets/images/calendar.svg',
-          routeName: '/prayer',
           prayerTimeModel: controller.todayPrayer,
         ),
         HomeItemWidget(
           title: 'Events',
           img: 'assets/images/event.svg',
-          routeName: '/events',
           prayerTimeModel: controller.todayPrayer,
         ),
+        // HomeItemWidget(
+        //   title: 'Qiblah',
+        //   img: 'assets/images/qiblah.svg',
+        //   prayerTimeModel: controller.todayPrayer,
+        // ),
       ],
     );
   }
@@ -341,7 +340,8 @@ class HeaderWidget extends StatelessWidget {
         SvgPicture.asset('assets/images/user.svg', height: 60.h),
         12.horizontalSpace,
         Text(
-          'أهلا و سهلا',
+          // 'أهلا و سهلا',
+          "${placeName!.country!}, ${placeName!.subLocality!}",
           style: TextStyle(color: AppColors.primaryColor, fontSize: 24.sp),
         ),
         const Spacer(),
@@ -401,13 +401,11 @@ class HomeItemWidget extends StatelessWidget {
     super.key,
     required this.title,
     required this.img,
-    required this.routeName,
     this.prayerTimeModel,
   });
 
   final String title;
   final String img;
-  final String routeName;
   final PrayerTimeModel? prayerTimeModel;
 
   @override
@@ -442,7 +440,16 @@ class HomeItemWidget extends StatelessWidget {
             transition: Transition.circularReveal,
             curve: Curves.easeIn,
           );
-        } else {
+        }
+        // else if (title == 'Qiblah') {
+        //   Get.to(
+        //     () => const QiblahScreen(),
+        //     duration: const Duration(milliseconds: 650),
+        //     transition: Transition.circularReveal,
+        //     curve: Curves.easeIn,
+        //   );
+        // }
+        else {
           Get.to(
             () => const PrayerTimeScreen(),
             arguments: {'isToday': true, 'prayersTime': prayerTimeModel},

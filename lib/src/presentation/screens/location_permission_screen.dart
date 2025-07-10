@@ -35,9 +35,8 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
     }
 
     location = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-      accuracy: LocationAccuracy.best,
-    ));
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.best),
+    );
 
     await HiveService.instance.setSetting('location', true);
     await HiveService.instance.setSetting('locationData', {
@@ -76,12 +75,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
                 width: 230.w,
               ),
               50.verticalSpace,
-              Text(
-                'Allow your location'.tr,
-                style: TextStyle(
-                  fontSize: 24.sp,
-                ),
-              ),
+              Text('Allow your location'.tr, style: TextStyle(fontSize: 24.sp)),
               15.verticalSpace,
               Text(
                 'We will need your location to \ngive you better experience'.tr,
@@ -105,9 +99,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
                       builder: (context) {
                         return const Dialog(
                           backgroundColor: Colors.transparent,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                          child: Center(child: CircularProgressIndicator()),
                         );
                       },
                     );
@@ -115,9 +107,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
                   },
                   child: Text(
                     "Sure, I'd like that".tr,
-                    style: const TextStyle(
-                      color: AppColors.backgroundColor,
-                    ),
+                    style: const TextStyle(color: AppColors.backgroundColor),
                   ),
                 ),
               ),
