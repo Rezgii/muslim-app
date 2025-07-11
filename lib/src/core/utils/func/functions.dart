@@ -26,6 +26,8 @@ Map<dynamic, dynamic> location = HiveService.instance.getSetting(
 );
 List<Placemark>? locationName;
 Placemark? placeName;
+String? country = HiveService.instance.getSetting('country');
+String? city = HiveService.instance.getSetting('city');
 
 bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
 List<PrayerTimeModel>? prayersTime;
@@ -36,11 +38,8 @@ DateTime prayerDay = DateTime.now();
 
 void initializeScreen() async {
   if (isLocationGiven) {
-    locationName = await placemarkFromCoordinates(
-      double.parse(location['latitude']),
-      double.parse(location['longitude']),
-    );
-    placeName = locationName!.first;
+    log(country.toString());
+    log(city.toString());
     if (HiveService.instance.getPrayerTimes('yearlyPrayerTime') == null &&
         HiveService.instance.getPrayerTimes('year') != DateTime.now().year) {
       await getDataFromAPI();

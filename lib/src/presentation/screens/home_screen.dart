@@ -341,7 +341,7 @@ class HeaderWidget extends StatelessWidget {
         12.horizontalSpace,
         Text(
           // 'أهلا و سهلا',
-          "${placeName!.country!}, ${placeName!.subLocality!}",
+          "${country.toString()}, ${city.toString()}",
           style: TextStyle(color: AppColors.primaryColor, fontSize: 24.sp),
         ),
         const Spacer(),

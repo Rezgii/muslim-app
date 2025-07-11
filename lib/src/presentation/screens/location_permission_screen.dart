@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:muslim/src/core/config/hive_service.dart';
@@ -38,11 +39,19 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
       locationSettings: const LocationSettings(accuracy: LocationAccuracy.best),
     );
 
+    locationName = await placemarkFromCoordinates(
+      location!.latitude,
+      location!.longitude,
+    );
+    placeName = locationName!.first;
+
     await HiveService.instance.setSetting('location', true);
     await HiveService.instance.setSetting('locationData', {
       'latitude': location!.latitude.toString(),
       'longitude': location!.longitude.toString(),
     });
+    await HiveService.instance.setSetting('country', placeName!.country);
+    await HiveService.instance.setSetting('city', placeName!.subLocality);
 
     return true;
   }
